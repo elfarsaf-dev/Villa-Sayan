@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Dashboard — Villa</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    * { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .material-symbols-outlined { font-variation-settings: 'FILL' 0,'wght' 300,'GRAD' 0,'opsz' 24; font-size: 20px; vertical-align: middle; }
+    .icon-fill { font-variation-settings: 'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24; }
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: #f1f5f9; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+    .sidebar-link { display: flex; align-items: center; gap: 10px; padding: 9px 14px; border-radius: 8px; cursor: pointer; font-size: 0.875rem; font-weight: 500; color: #475569; transition: all 0.15s; white-space: nowrap; }
+    .sidebar-link:hover { background: #f1f5f9; color: #1e293b; }
+    .sidebar-link.active { background: #1e3a2f; color: #fff; }
+    .badge { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 20px; font-size: 0.7rem; font-weight: 600; }
+    .badge-pending  { background:#fef9c3; color:#854d0e; }
+    .badge-active   { background:#dcfce7; color:#166534; }
+    .badge-suspended{ background:#fee2e2; color:#991b1b; }
+    .badge-confirmed{ background:#dbeafe; color:#1e40af; }
+    .badge-replied  { background:#ede9fe; color:#5b21b6; }
+    .badge-cancelled{ background:#f1f5f9; color:#64748b; }
+    .btn { display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;font-size:0.8125rem;font-weight:600;cursor:pointer;transition:all .15s;border:none; }
+    .btn-primary { background:#1e3a2f;color:#fff; }
+    .btn-primary:hover { background:#2d4f3f; }
+    .btn-danger  { background:#fee2e2;color:#991b1b; }
+    .btn-danger:hover { background:#fecaca; }
+    .btn-ghost   { background:#f1f5f9;color:#475569; }
+    .btn-ghost:hover { background:#e2e8f0; }
+    .btn-sm { padding:5px 10px;font-size:0.75rem; }
+    input, textarea, select { border:1.5px solid #e2e8f0;border-radius:8px;padding:9px 12px;font-size:0.875rem;width:100%;outline:none;transition:border .15s;background:#fff; }
+    input:focus, textarea:focus, select:focus { border-color:#1e3a2f; }
+    label { font-size:0.75rem;font-weight:600;color:#64748b;display:block;margin-bottom:5px; }
+    .card { background:#fff;border-radius:12px;border:1px solid #f1f5f9;box-shadow:0 1px 3px rgba(0,0,0,0.06); }
+    table { width:100%;border-collapse:collapse; }
+    th { text-align:left;font-size:0.7rem;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.08em;padding:10px 14px;border-bottom:1.5px solid #f1f5f9; }
+    td { padding:10px 14px;font-size:0.8125rem;color:#334155;border-bottom:1px solid #f8fafc;vertical-align:middle; }
+    tr:hover td { background:#f8fafc; }
+    .modal-bg { position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:100;display:flex;align-items:center;justify-content:center;padding:16px; }
+    .modal { background:#fff;border-radius:16px;max-width:500px;width:100%;max-height:90vh;overflow-y:auto;padding:28px; }
+    .toast { position:fixed;bottom:24px;right:24px;padding:12px 18px;border-radius:10px;font-size:0.8125rem;font-weight:600;z-index:200;transform:translateY(8px);opacity:0;transition:all .3s;pointer-events:none; }
+    .toast.show { transform:translateY(0);opacity:1; }
+    .toast-success { background:#dcfce7;color:#166534;border:1px solid #bbf7d0; }
+    .toast-error   { background:#fee2e2;color:#991b1b;border:1px solid #fecaca; }
+  </style>
+</head>
+<body class="bg-slate-50 min-h-screen">
+
+<!-- ─── TOAST ─── -->
+<div id="toast" class="toast"></div>
+
+<!-- ─── LOGIN SCREEN ─── -->
+<div id="login-screen" class="min-h-screen flex items-center justify-center p-4">
+  <div class="card w-full max-w-sm p-8">
+    <div class="text-center mb-8">
+      <div class="text-2xl font-bold text-slate-800 mb-1">Villa Admin</div>
+      <div class="text-sm text-slate-400" id="login-subtitle">Login ke dashboard pengelola villa</div>
+    </div>
+
+    <!-- Config worker URL -->
+    <div id="config-section" class="mb-5 p-4 rounded-xl bg-amber-50 border border-amber-200">
+      <label>URL Cloudflare Worker</label>
+      <div class="flex gap-2">
+        <input id="worker-url-input" type="url" placeholder="https://villa-admin.yourname.workers.dev" style="width:auto;flex:1;"/>
+        <button class="btn btn-ghost btn-sm" onclick="saveWorkerUrl()">Simpan</button>
+      </div>
+      <p class="text-xs text-amber-700 mt-2">Isi URL worker Cloudflare setelah deploy. <a href="#" onclick="showSetupModal()" class="underline font-semibold">Setup superadmin pertama?</a></p>
+    </div>
+
+    <!-- Login tab / Register tab -->
+    <div class="flex border border-slate-200 rounded-xl p-1 mb-5 bg-slate-50">
+      <button id="tab-login" class="flex-1 py-2 rounded-lg text-sm font-semibold bg-white shadow-sm text-slate-800" onclick="switchTab('login')">Login</button>
+      <button id="tab-register" class="flex-1 py-2 rounded-lg text-sm font-semibold text-slate-400" onclick="switchTab('register')">Daftar</button>
+    </div>
+
+    <form id="login-form" onsubmit="doLogin(event)">
+      <div class="space-y-4">
+        <div><label>Username</label><input id="l-username" type="text" required/></div>
+        <div><label>Password</label><input id="l-password" type="password" required/></div>
+        <button type="submit" class="btn btn-primary w-full justify-center">
+          <span class="material-symbols-outlined">login</span> Masuk
+        </button>
+      </div>
+    </form>
+
+    <form id="register-form" class="hidden" onsubmit="doRegister(event)">
+      <div class="space-y-4">
+        <div><label>Username</label><input id="r-username" type="text" required/></div>
+        <div><label>Password</label><input id="r-password" type="password" required minlength="6"/></div>
+        <div><label>Email (opsional)</label><input id="r-email" type="email"/></div>
+        <p class="text-xs text-slate-500 bg-slate-50 p-3 rounded-lg">Akun baru memerlukan persetujuan superadmin sebelum bisa login.</p>
+        <button type="submit" class="btn btn-primary w-full justify-center">
+          <span class="material-symbols-outlined">person_add</span> Daftar
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ─── DASHBOARD ─── -->
+<div id="dashboard" class="hidden flex h-screen overflow-hidden">
+
+  <!-- Sidebar -->
+  <aside id="sidebar" class="w-56 bg-white border-r border-slate-100 flex flex-col flex-shrink-0 h-screen overflow-y-auto">
+    <div class="px-5 py-5 border-b border-slate-100">
+      <div class="font-bold text-slate-800 text-base">Villa Admin</div>
+      <div id="sidebar-user" class="text-xs text-slate-400 mt-0.5"></div>
+    </div>
+
+    <!-- Villa selector (superadmin) -->
+    <div id="villa-selector-wrap" class="hidden px-4 pt-3">
+      <label>Villa Aktif</label>
+      <select id="villa-selector" onchange="onVillaChange(this.value)" style="font-size:0.8rem;padding:6px 10px;"></select>
+    </div>
+
+    <nav class="flex-1 px-3 py-3 space-y-0.5">
+      <div onclick="showSection('inquiries')"  class="sidebar-link" data-section="inquiries"><span class="material-symbols-outlined">inbox</span>Reservasi</div>
+      <div onclick="showSection('info')"        class="sidebar-link" data-section="info"><span class="material-symbols-outlined">home</span>Info Villa</div>
+      <div onclick="showSection('facilities')"  class="sidebar-link" data-section="facilities"><span class="material-symbols-outlined">pool</span>Fasilitas</div>
+      <div onclick="showSection('policies')"    class="sidebar-link" data-section="policies"><span class="material-symbols-outlined">rule</span>Kebijakan</div>
+      <div onclick="showSection('contacts')"    class="sidebar-link" data-section="contacts"><span class="material-symbols-outlined">contacts</span>Kontak</div>
+      <div onclick="showSection('gallery')"     class="sidebar-link" data-section="gallery"><span class="material-symbols-outlined">photo_library</span>Galeri</div>
+      <div id="nav-users"     onclick="showSection('users')"     class="sidebar-link hidden" data-section="users"><span class="material-symbols-outlined">group</span>Pengguna</div>
+      <div id="nav-new-villa" onclick="showSection('new-villa')" class="sidebar-link hidden" data-section="new-villa"><span class="material-symbols-outlined">add_home</span>Villa Baru</div>
+    </nav>
+
+    <div class="px-3 pb-4">
+      <button onclick="logout()" class="sidebar-link w-full" style="color:#ef4444;">
+        <span class="material-symbols-outlined">logout</span>Keluar
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="flex-1 overflow-y-auto bg-slate-50">
+    <div id="section-content" class="p-6 max-w-5xl mx-auto">
+      <div class="text-slate-400 text-center pt-20">Memuat data...</div>
+    </div>
+  </main>
+</div>
+
+<!-- ─── SETUP MODAL ─── -->
+<div id="setup-modal" class="hidden modal-bg" onclick="if(event.target===this)this.classList.add('hidden')">
+  <div class="modal">
+    <h3 class="text-lg font-bold text-slate-800 mb-2">Setup Superadmin Pertama</h3>
+    <p class="text-sm text-slate-500 mb-5">Hanya bisa dijalankan jika belum ada user sama sekali.</p>
+    <form onsubmit="doSetup(event)" class="space-y-4">
+      <div><label>Username Superadmin</label><input id="s-username" type="text" required/></div>
+      <div><label>Password</label><input id="s-password" type="password" required minlength="6"/></div>
+      <div class="flex gap-3">
+        <button type="submit" class="btn btn-primary flex-1 justify-center">Buat Superadmin</button>
+        <button type="button" class="btn btn-ghost" onclick="document.getElementById('setup-modal').classList.add('hidden')">Batal</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+// ── App State ──────────────────────────────────────────────────────
+const S = {
+  token: localStorage.getItem('villa_token') || '',
+  user: JSON.parse(localStorage.getItem('villa_user') || 'null'),
+  currentVillaId: localStorage.getItem('villa_current_id') || '',
+  currentSection: 'inquiries',
+  villas: [],
+};
+
+// ── Worker URL ─────────────────────────────────────────────────────
+function getWorkerUrl() {
+  return localStorage.getItem('villa_worker_url') || '';
+}
+function saveWorkerUrl() {
+  const v = document.getElementById('worker-url-input').value.trim().replace(/\/$/, '');
+  if (v) { localStorage.setItem('villa_worker_url', v); showToast('Worker URL disimpan!', 'success'); }
+}
+document.getElementById('worker-url-input').value = getWorkerUrl();
+
+// ── API helper ─────────────────────────────────────────────────────
+async function api(path, options = {}) {
+  const base = getWorkerUrl();
+  if (!base) throw new Error('Worker URL belum diatur!');
+  const res = await fetch(base + path, {
+    headers: {
+      'Content-Type': 'application/json',
+      ...(S.token ? { Authorization: `Bearer ${S.token}` } : {}),
+      ...(options.headers || {}),
+    },
+    ...options,
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+  return data;
+}
+
+// ── Toast ──────────────────────────────────────────────────────────
+let toastTimer;
+function showToast(msg, type = 'success') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = `toast toast-${type} show`;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+// ── Auth ───────────────────────────────────────────────────────────
+function switchTab(tab) {
+  document.getElementById('login-form').classList.toggle('hidden', tab !== 'login');
+  document.getElementById('register-form').classList.toggle('hidden', tab !== 'register');
+  document.getElementById('tab-login').className = tab === 'login'
+    ? 'flex-1 py-2 rounded-lg text-sm font-semibold bg-white shadow-sm text-slate-800'
+    : 'flex-1 py-2 rounded-lg text-sm font-semibold text-slate-400';
+  document.getElementById('tab-register').className = tab === 'register'
+    ? 'flex-1 py-2 rounded-lg text-sm font-semibold bg-white shadow-sm text-slate-800'
+    : 'flex-1 py-2 rounded-lg text-sm font-semibold text-slate-400';
+}
+
+async function doLogin(e) {
+  e.preventDefault();
+  try {
+    const data = await api('/auth/login', {
+      method: 'POST',
+      body: JSON.stringify({ username: document.getElementById('l-username').value, password: document.getElementById('l-password').value }),
+    });
+    S.token = data.token;
+    S.user  = data.user;
+    localStorage.setItem('villa_token', S.token);
+    localStorage.setItem('villa_user', JSON.stringify(S.user));
+    enterDashboard();
+  } catch (err) { showToast(err.message, 'error'); }
+}
+
+async function doRegister(e) {
+  e.preventDefault();
+  try {
+    await api('/auth/register', {
+      method: 'POST',
+      body: JSON.stringify({
+        username: document.getElementById('r-username').value,
+        password: document.getElementById('r-password').value,
+        email:    document.getElementById('r-email').value || undefined,
+      }),
+    });
+    showToast('Pendaftaran berhasil! Tunggu persetujuan superadmin.', 'success');
+    switchTab('login');
+  } catch (err) { showToast(err.message, 'error'); }
+}
+
+function logout() {
+  S.token = ''; S.user = null;
+  localStorage.removeItem('villa_token');
+  localStorage.removeItem('villa_user');
+  document.getElementById('dashboard').classList.add('hidden');
+  document.getElementById('login-screen').classList.remove('hidden');
+}
+
+// ── Setup ──────────────────────────────────────────────────────────
+function showSetupModal() { document.getElementById('setup-modal').classList.remove('hidden'); }
+async function doSetup(e) {
+  e.preventDefault();
+  try {
+    await api('/setup', {
+      method: 'POST',
+      body: JSON.stringify({ username: document.getElementById('s-username').value, password: document.getElementById('s-password').value }),
+    });
+    showToast('Superadmin berhasil dibuat! Silakan login.', 'success');
+    document.getElementById('setup-modal').classList.add('hidden');
+  } catch (err) { showToast(err.message, 'error'); }
+}
+
+// ── Dashboard ──────────────────────────────────────────────────────
+async function enterDashboard() {
+  document.getElementById('login-screen').classList.add('hidden');
+  document.getElementById('dashboard').classList.remove('hidden');
+  document.getElementById('sidebar-user').textContent = `${S.user.username} · ${S.user.role}`;
+
+  // Show superadmin-only nav items
+  if (S.user.role === 'superadmin') {
+    document.getElementById('nav-users').classList.remove('hidden');
+    document.getElementById('nav-new-villa').classList.remove('hidden');
+    document.getElementById('villa-selector-wrap').classList.remove('hidden');
+    // Load all villas
+    try {
+      S.villas = await api('/villas');
+      const sel = document.getElementById('villa-selector');
+      sel.innerHTML = S.villas.map(v => `<option value="${v.id}">${v.name}</option>`).join('');
+      S.currentVillaId = S.villas[0]?.id || '';
+      sel.value = S.currentVillaId;
+      localStorage.setItem('villa_current_id', S.currentVillaId);
+    } catch {}
+  } else {
+    S.currentVillaId = S.user.villa_id || '';
+  }
+
+  showSection('inquiries');
+}
+
+function onVillaChange(id) {
+  S.currentVillaId = id;
+  localStorage.setItem('villa_current_id', id);
+  showSection(S.currentSection);
+}
+
+function showSection(name) {
+  S.currentSection = name;
+  document.querySelectorAll('.sidebar-link').forEach(el => {
+    el.classList.toggle('active', el.dataset.section === name);
+  });
+  const sec = {
+    inquiries:  renderInquiries,
+    info:       renderInfo,
+    facilities: renderFacilities,
+    policies:   renderPolicies,
+    contacts:   renderContacts,
+    gallery:    renderGallery,
+    users:      renderUsers,
+    'new-villa': renderNewVilla,
+  }[name];
+  if (sec) sec();
+}
+
+// ── Shared helpers ─────────────────────────────────────────────────
+function setContent(html) {
+  document.getElementById('section-content').innerHTML = html;
+}
+function villaId() { return S.currentVillaId; }
+function badgeHtml(status) {
+  return `<span class="badge badge-${status}">${status}</span>`;
+}
+function iconBtn(icon, color, onclick, title='') {
+  return `<button class="p-1.5 rounded-lg hover:bg-slate-100 text-${color}" onclick="${onclick}" title="${title}">
+    <span class="material-symbols-outlined" style="font-size:16px;">${icon}</span></button>`;
+}
+
+// ── Section: Reservasi (Inquiries) ────────────────────────────────
+async function renderInquiries() {
+  setContent('<div class="text-slate-400 text-center pt-20">Memuat reservasi...</div>');
+  try {
+    const data = await api('/inquiries');
+    const counts = { all: data.length, pending: 0, confirmed: 0, cancelled: 0 };
+    data.forEach(i => { if (counts[i.status] !== undefined) counts[i.status]++; });
+    const statusColor = { pending:'yellow', confirmed:'blue', replied:'purple', cancelled:'slate' };
+    const rows = data.map(i => `
+      <tr>
+        <td>${i.name}</td>
+        <td>${i.phone || '-'}</td>
+        <td>${i.checkin_date || '-'}</td>
+        <td>${i.checkout_date || '-'}</td>
+        <td>${i.num_guests || '-'}</td>
+        <td>${badgeHtml(i.status)}</td>
+        <td>${i.message ? `<span class="text-slate-400 text-xs">${i.message.slice(0,40)}…</span>` : '-'}</td>
+        <td>
+          <select class="text-xs py-1 px-2" style="width:auto;" onchange="updateInquiry('${i.id}',this.value)">
+            ${['pending','replied','confirmed','cancelled'].map(s => `<option ${s===i.status?'selected':''}>${s}</option>`).join('')}
+          </select>
+        </td>
+      </tr>`).join('') || '<tr><td colspan="8" class="text-center text-slate-400 py-6">Belum ada reservasi</td></tr>';
+
+    setContent(`
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <h1 class="text-xl font-bold text-slate-800">Permintaan Reservasi</h1>
+          <p class="text-sm text-slate-400">${counts.all} total · ${counts.pending} menunggu</p>
+        </div>
+      </div>
+      <div class="card overflow-hidden">
+        <div class="overflow-x-auto">
+          <table>
+            <thead><tr>
+              <th>Nama</th><th>WA/Telp</th><th>Check-in</th><th>Check-out</th><th>Tamu</th>
+              <th>Status</th><th>Pesan</th><th>Ubah Status</th>
+            </tr></thead>
+            <tbody>${rows}</tbody>
+          </table>
+        </div>
+      </div>`);
+  } catch (e) { setContent(`<div class="text-red-500 text-center pt-20">${e.message}</div>`); }
+}
+
+async function updateInquiry(id, status) {
+  try {
+    await api(`/inquiries/${id}`, { method: 'PATCH', body: JSON.stringify({ status }) });
+    showToast('Status diperbarui', 'success');
+  } catch (e) { showToast(e.message, 'error'); renderInquiries(); }
+}
+
+// ── Section: Info Villa ────────────────────────────────────────────
+async function renderInfo() {
+  if (!villaId()) return setContent('<div class="text-slate-400 text-center pt-20">Pilih villa terlebih dahulu</div>');
+  setContent('<div class="text-slate-400 text-center pt-20">Memuat...</div>');
+  try {
+    const v = await api(`/villas/${villaId()}`);
+    setContent(`
+      <div class="flex items-center justify-between mb-6">
+        <h1 class="text-xl font-bold text-slate-800">Info Villa</h1>
+        <div class="text-xs text-slate-400">Slug: <code class="bg-slate-100 px-2 py-0.5 rounded">/&nbsp;${v.slug || '-'}</code></div>
+      </div>
+      <div class="card p-6">
+        <form onsubmit="saveInfo(event)" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="md:col-span-2"><label>Nama Villa</label><input name="name" value="${v.name||''}"/></div>
+          <div><label>Slug (URL path)</label><input name="slug" value="${v.slug||''}"/></div>
+          <div><label>Tagline</label><input name="tagline" value="${v.tagline||''}"/></div>
+          <div class="md:col-span-2"><label>Deskripsi</label><textarea name="description" rows="3">${v.description||''}</textarea></div>
+          <div><label>Alamat</label><input name="address" value="${v.address||''}"/></div>
+          <div><label>Kota</label><input name="city" value="${v.city||''}"/></div>
+          <div><label>Provinsi</label><input name="province" value="${v.province||''}"/></div>
+          <div><label>Kapasitas Maks.</label><input name="max_guests" type="number" value="${v.max_guests||''}"/></div>
+          <div><label>Catatan Kapasitas</label><input name="max_guests_note" value="${v.max_guests_note||''}"/></div>
+          <div><label>Harga Extra Bed (Rp)</label><input name="extra_bed_price" type="number" value="${v.extra_bed_price||''}"/></div>
+          <div><label>Catatan Extra Bed</label><input name="extra_bed_note" value="${v.extra_bed_note||''}"/></div>
+          <div><label>Jam Check-in</label><input name="checkin_time" value="${v.checkin_time||'14.00 WIB'}"/></div>
+          <div><label>Jam Check-out</label><input name="checkout_time" value="${v.checkout_time||'12.00 WIB'}"/></div>
+          <div class="md:col-span-2"><button type="submit" class="btn btn-primary"><span class="material-symbols-outlined">save</span>Simpan Perubahan</button></div>
+        </form>
+      </div>`);
+  } catch (e) { setContent(`<div class="text-red-500 text-center pt-20">${e.message}</div>`); }
+}
+
+async function saveInfo(e) {
+  e.preventDefault();
+  const fd = new FormData(e.target);
+  const body = Object.fromEntries(fd.entries());
+  if (body.max_guests) body.max_guests = parseInt(body.max_guests);
+  if (body.extra_bed_price) body.extra_bed_price = parseInt(body.extra_bed_price);
+  try {
+    await api(`/villas/${villaId()}`, { method: 'PATCH', body: JSON.stringify(body) });
+    showToast('Info villa disimpan!', 'success');
+  } catch (e) { showToast(e.message, 'error'); }
+}
+
+// ── Section: Fasilitas ────────────────────────────────────────────
+async function renderFacilities() {
+  if (!villaId()) return setContent('<div class="text-slate-400 text-center pt-20">Pilih villa</div>');
+  try {
+    const data = await api(`/villas/${villaId()}/facilities`);
+    const rows = data.map(f => `
+      <tr>
+        <td><span class="material-symbols-outlined text-green-700" style="font-size:18px;">${f.icon||'star'}</span></td>
+        <td class="font-medium">${f.name}</td>
+        <td class="text-slate-400">${f.description||'-'}</td>
+        <td>${f.sort_order}</td>
+        <td>${f.is_active ? badgeHtml('active') : badgeHtml('suspended')}</td>
+        <td class="flex gap-1">
+          ${iconBtn('edit','slate-500',`editFacility('${f.id}','${esc(f.name)}','${esc(f.icon||'star')}','${esc(f.description||'')}',${f.sort_order})`,'Edit')}
+          ${iconBtn('delete','red-400',`deleteFacility('${f.id}')`,'Hapus')}
+        </td>
+      </tr>`).join('') || '<tr><td colspan="6" class="text-center text-slate-400 py-6">Belum ada fasilitas</td></tr>';
+
+    setContent(`
+      <div class="flex items-center justify-between mb-6">
+        <h1 class="text-xl font-bold text-slate-800">Fasilitas</h1>
+        <button class="btn btn-primary btn-sm" onclick="openFacilityModal()">
+          <span class="material-symbols-outlined">add</span>Tambah</button>
+      </div>
+      <div class="card overflow-hidden">
+        <table><thead><tr><th>Ikon</th><th>Nama</th><th>Deskripsi</th><th>Urutan</th><th>Status</th><th>Aksi</th></tr></thead>
+        <tbody>${rows}</tbody></table>
+      </div>
+
+      <!-- Modal -->
+      <div id="fac-modal" class="hidden modal-bg" onclick="if(event.target===this)this.classList.add('hidden')">
+        <div class="modal">
+          <h3 class="text-lg font-bold text-slate-800 mb-5" id="fac-modal-title">Tambah Fasilitas</h3>
+          <form onsubmit="saveFacility(event)" class="space-y-4">
+            <input type="hidden" id="fac-id"/>
+            <div class="grid grid-cols-2 gap-3">
+              <div><label>Nama</label><input id="fac-name" required/></div>
+              <div><label>Ikon (Material)</label><input id="fac-icon" placeholder="pool"/></div>
+            </div>
+            <div><label>Deskripsi</label><textarea id="fac-desc" rows="2"></textarea></div>
+            <div><label>Urutan</label><input id="fac-order" type="number" value="0"/></div>
+            <div class="flex gap-3">
+              <button type="submit" class="btn btn-primary flex-1 justify-center">Simpan</button>
+              <button type="button" class="btn btn-ghost" onclick="document.getElementById('fac-modal').classList.add('hidden')">Batal</button>
+            </div>
+          </form>
+        </div>
+      </div>`);
+  } catch (e) { setContent(`<div class="text-red-500 text-center pt-20">${e.message}</div>`); }
+}
+
+function openFacilityModal(id='', name='', icon='', desc='', order=0) {
+  document.getElementById('fac-id').value = id;
+  document.getElementById('fac-name').value = name;
+  document.getElementById('fac-icon').value = icon;
+  document.getElementById('fac-desc').value = desc;
+  document.getElementById('fac-order').value = order;
+  document.getElementById('fac-modal-title').textContent = id ? 'Edit Fasilitas' : 'Tambah Fasilitas';
+  document.getElementById('fac-modal').classList.remove('hidden');
+}
+function editFacility(id, name, icon, desc, order) { openFacilityModal(id, name, icon, desc, order); }
+
+async function saveFacility(e) {
+  e.preventDefault();
+  const id   = document.getElementById('fac-id').value;
+  const body = {
+    name: document.getElementById('fac-name').value,
+    icon: document.getElementById('fac-icon').value || 'star',
+    description: document.getElementById('fac-desc').value,
+    sort_order: parseInt(document.getElementById('fac-order').value) || 0,
+  };
+  try {
+    if (id) await api(`/facilities/${id}`, { method: 'PATCH', body: JSON.stringify(body) });
+    else    await api(`/villas/${villaId()}/facilities`, { method: 'POST', body: JSON.stringify(body) });
+    showToast('Fasilitas disimpan!', 'success');
+    renderFacilities();
+  } catch (e) { showToast(e.message, 'error'); }
+}
+
+async function deleteFacility(id) {
+  if (!confirm('Hapus fasilitas ini?')) return;
+  try { await api(`/facilities/${id}`, { method: 'DELETE' }); showToast('Dihapus', 'success'); renderFacilities(); }
+  catch (e) { showToast(e.message, 'error'); }
+}
+
+// ── Section: Kebijakan ────────────────────────────────────────────
+async function renderPolicies() {
+  if (!villaId()) return setContent('<div class="text-slate-400 text-center pt-20">Pilih villa</div>');
+  try {
+    const data = await api(`/villas/${villaId()}/policies`);
+    const typeColor = { schedule:'bg-blue-50 text-blue-700', note:'bg-yellow-50 text-yellow-700', prohibition:'bg-red-50 text-red-700', rule:'bg-slate-50 text-slate-700' };
+    const rows = data.map(p => `
+      <tr>
+        <td><span class="badge ${typeColor[p.type]||''}">${p.type}</span></td>
+        <td>${p.content}</td>
+        <td>${p.sort_order}</td>
+        <td class="flex gap-1">
+          ${iconBtn('edit','slate-500',`editPolicy('${p.id}','${esc(p.type)}','${esc(p.content)}',${p.sort_order})`,'Edit')}
+          ${iconBtn('delete','red-400',`deletePolicy('${p.id}')`,'Hapus')}
+        </td>
+      </tr>`).join('') || '<tr><td colspan="4" class="text-center text-slate-400 py-6">Belum ada kebijakan</td></tr>';
+
+    setContent(`
+      <div class="flex items-center justify-between mb-6">
+        <h1 class="text-xl font-bold text-slate-800">Kebijakan & Aturan</h1>
+        <button class="btn btn-primary btn-sm" onclick="openPolicyModal()"><span class="material-symbols-outlined">add</span>Tambah</button>
+      </div>
+      <div class="card overflow-hidden">
+        <table><thead><tr><th>Tipe</th><th>Isi</th><th>Urutan</th><th>Aksi</th></tr></thead>
+        <tbody>${rows}</tbody></table>
+      </div>
+
+      <div id="pol-modal" class="hidden modal-bg" onclick="if(event.target===this)this.classList.add('hidden')">
+        <div class="modal">
+          <h3 class="text-lg font-bold text-slate-800 mb-5" id="pol-modal-title">Tambah Kebijakan</h3>
+          <form onsubmit="savePolicy(event)" class="space-y-4">
+            <input type="hidden" id="pol-id"/>
+            <div><label>Tipe</label>
+              <select id="pol-type">
+                <option>schedule</option><option>note</option><option>prohibition</option><option>rule</option>
+              </select>
+            </div>
+            <div><label>Isi</label><textarea id="pol-content" rows="2" required></textarea></div>
+            <div><label>Urutan</label><input id="pol-order" type="number" value="0"/></div>
+            <div class="flex gap-3">
+              <button type="submit" class="btn btn-primary flex-1 justify-center">Simpan</button>
+              <button type="button" class="btn btn-ghost" onclick="document.getElementById('pol-modal').classList.add('hidden')">Batal</button>
+            </div>
+          </form>
+        </div>
+      </div>`);
+  } catch (e) { setContent(`<div class="text-red-500 text-center pt-20">${e.message}</div>`); }
+}
+
+function openPolicyModal(id='',type='note',content='',order=0) {
+  document.getElementById('pol-id').value = id;
+  document.getElementById('pol-type').value = type;
+  document.getElementById('pol-content').value = content;
+  document.getElementById('pol-order').value = order;
+  document.getElementById('pol-modal-title').textContent = id ? 'Edit Kebijakan' : 'Tambah Kebijakan';
+  document.getElementById('pol-modal').classList.remove('hidden');
+}
+function editPolicy(id, type, content, order) { openPolicyModal(id, type, content, order); }
+
+async function savePolicy(e) {
+  e.preventDefault();
+  const id   = document.getElementById('pol-id').value;
+  const body = { type: document.getElementById('pol-type').value, content: document.getElementById('pol-content').value, sort_order: parseInt(document.getElementById('pol-order').value)||0 };
+  try {
+    if (id) await api(`/policies/${id}`, { method: 'PATCH', body: JSON.stringify(body) });
+    else    await api(`/villas/${villaId()}/policies`, { method: 'POST', body: JSON.stringify(body) });
+    showToast('Kebijakan disimpan!', 'success'); renderPolicies();
+  } catch (e) { showToast(e.message, 'error'); }
+}
+async function deletePolicy(id) {
+  if (!confirm('Hapus kebijakan ini?')) return;
+  try { await api(`/policies/${id}`, { method: 'DELETE' }); showToast('Dihapus', 'success'); renderPolicies(); }
+  catch (e) { showToast(e.message, 'error'); }
+}
+
+// ── Section: Kontak ────────────────────────────────────────────────
+async function renderContacts() {
+  if (!villaId()) return setContent('<div class="text-slate-400 text-center pt-20">Pilih villa</div>');
+  try {
+    const data = await api(`/villas/${villaId()}/contacts`);
+    const rows = data.map(c => `
+      <tr>
+        <td><span class="badge bg-slate-100 text-slate-600">${c.type}</span></td>
+        <td>${c.label||'-'}</td>
+        <td class="font-mono">${c.value}</td>
+        <td>${c.is_primary ? '<span class="badge badge-active">Utama</span>' : ''}</td>
+        <td>${iconBtn('delete','red-400',`deleteContact('${c.id}')`,'Hapus')}</td>
+      </tr>`).join('') || '<tr><td colspan="5" class="text-center text-slate-400 py-6">Belum ada kontak</td></tr>';
+
+    setContent(`
+      <div class="flex items-center justify-between mb-6">
+        <h1 class="text-xl font-bold text-slate-800">Kontak Admin</h1>
+        <button class="btn btn-primary btn-sm" onclick="document.getElementById('con-modal').classList.remove('hidden')"><span class="material-symbols-outlined">add</span>Tambah</button>
+      </div>
+      <div class="card overflow-hidden">
+        <table><thead><tr><th>Tipe</th><th>Label</th><th>Nomor / Alamat</th><th>Utama</th><th>Hapus</th></tr></thead>
+        <tbody>${rows}</tbody></table>
+      </div>
+
+      <div id="con-modal" class="hidden modal-bg" onclick="if(event.target===this)this.classList.add('hidden')">
+        <div class="modal">
+          <h3 class="text-lg font-bold text-slate-800 mb-5">Tambah Kontak</h3>
+          <form onsubmit="saveContact(event)" class="space-y-4">
+            <div class="grid grid-cols-2 gap-3">
+              <div><label>Tipe</label>
+                <select id="con-type"><option>whatsapp</option><option>phone</option><option>email</option><option>instagram</option></select>
+              </div>
+              <div><label>Label</label><input id="con-label" placeholder="Admin Villa"/></div>
+            </div>
+            <div><label>Nilai (nomor/alamat)</label><input id="con-value" required/></div>
+            <div class="flex items-center gap-2">
+              <input id="con-primary" type="checkbox" style="width:auto;" class="rounded"/>
+              <label style="margin:0">Kontak utama</label>
+            </div>
+            <div class="flex gap-3">
+              <button type="submit" class="btn btn-primary flex-1 justify-center">Simpan</button>
+              <button type="button" class="btn btn-ghost" onclick="document.getElementById('con-modal').classList.add('hidden')">Batal</button>
+            </div>
+          </form>
+        </div>
+      </div>`);
+  } catch (e) { setContent(`<div class="text-red-500 text-center pt-20">${e.message}</div>`); }
+}
+
+async function saveContact(e) {
+  e.preventDefault();
+  const body = { type: document.getElementById('con-type').value, label: document.getElementById('con-label').value, value: document.getElementById('con-value').value, is_primary: document.getElementById('con-primary').checked };
+  try {
+    await api(`/villas/${villaId()}/contacts`, { method: 'POST', body: JSON.stringify(body) });
+    showToast('Kontak ditambah!', 'success'); renderContacts();
+  } catch (e) { showToast(e.message, 'error'); }
+}
+async function deleteContact(id) {
+  if (!confirm('Hapus kontak ini?')) return;
+  try { await api(`/contacts/${id}`, { method: 'DELETE' }); showToast('Dihapus', 'success'); renderContacts(); }
+  catch (e) { showToast(e.message, 'error'); }
+}
+
+// ── Section: Galeri ────────────────────────────────────────────────
+async function renderGallery() {
+  if (!villaId()) return setContent('<div class="text-slate-400 text-center pt-20">Pilih villa</div>');
+  try {
+    const data = await api(`/villas/${villaId()}/gallery`);
+    const photos = data.map(g => `
+      <div class="relative group overflow-hidden rounded-xl aspect-video bg-slate-100">
+        <img src="${g.url}" alt="${g.alt||''}" class="w-full h-full object-cover"/>
+        <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
+          <button onclick="deleteGallery('${g.id}')" class="bg-red-500 text-white rounded-lg px-3 py-1.5 text-xs font-semibold">Hapus</button>
+        </div>
+        ${g.alt ? `<div class="absolute bottom-0 inset-x-0 bg-black/40 text-white text-xs px-2 py-1">${g.alt}</div>` : ''}
+      </div>`).join('') || '<div class="col-span-3 text-center text-slate-400 py-10">Belum ada foto</div>';
+
+    setContent(`
+      <div class="flex items-center justify-between mb-6">
+        <h1 class="text-xl font-bold text-slate-800">Galeri Foto</h1>
+        <button class="btn btn-primary btn-sm" onclick="document.getElementById('gal-upload').classList.remove('hidden')">
+          <span class="material-symbols-outlined">upload</span>Upload Foto</button>
+      </div>
+
+      <!-- Upload panel -->
+      <div id="gal-upload" class="hidden card p-5 mb-5">
+        <h4 class="font-semibold text-slate-700 mb-3">Upload ke GitHub</h4>
+        <div class="grid md:grid-cols-3 gap-3 items-end">
+          <div class="md:col-span-2"><label>Pilih Foto (jpg/png/webp)</label>
+            <input id="gal-file" type="file" accept="image/*" style="padding:6px;"/></div>
+          <div><label>Keterangan (alt)</label><input id="gal-alt" placeholder="Kolam renang villa"/></div>
+          <div class="md:col-span-3 flex gap-3">
+            <button class="btn btn-primary" onclick="uploadPhoto()"><span class="material-symbols-outlined">cloud_upload</span>Upload</button>
+            <button class="btn btn-ghost" onclick="document.getElementById('gal-upload').classList.add('hidden')">Batal</button>
+          </div>
+        </div>
+        <p id="gal-status" class="text-xs text-slate-400 mt-2"></p>
+      </div>
+
+      <div class="grid grid-cols-2 md:grid-cols-3 gap-3">${photos}</div>`);
+  } catch (e) { setContent(`<div class="text-red-500 text-center pt-20">${e.message}</div>`); }
+}
+
+async function uploadPhoto() {
+  const fileInput = document.getElementById('gal-file');
+  const alt       = document.getElementById('gal-alt').value;
+  const statusEl  = document.getElementById('gal-status');
+  if (!fileInput.files.length) return showToast('Pilih file terlebih dahulu', 'error');
+  if (!getWorkerUrl()) return showToast('Worker URL belum diatur', 'error');
+
+  const fd = new FormData();
+  fd.append('file', fileInput.files[0]);
+  fd.append('villa_id', villaId());
+  fd.append('alt', alt);
+
+  try {
+    statusEl.textContent = 'Mengupload...';
+    const res = await fetch(getWorkerUrl() + '/upload/github', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${S.token}` },
+      body: fd,
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error);
+    showToast('Foto berhasil diupload!', 'success');
+    statusEl.textContent = '';
+    renderGallery();
+  } catch (e) { statusEl.textContent = 'Gagal: ' + e.message; showToast(e.message, 'error'); }
+}
+
+async function deleteGallery(id) {
+  if (!confirm('Hapus foto ini?')) return;
+  try { await api(`/gallery/${id}`, { method: 'DELETE' }); showToast('Foto dihapus', 'success'); renderGallery(); }
+  catch (e) { showToast(e.message, 'error'); }
+}
+
+// ── Section: Pengguna (superadmin) ────────────────────────────────
+async function renderUsers() {
+  if (S.user?.role !== 'superadmin') return setContent('<div class="text-slate-400 text-center pt-20">Akses ditolak</div>');
+  try {
+    const [users, villas] = await Promise.all([api('/users'), S.villas.length ? Promise.resolve(S.villas) : api('/villas')]);
+    const villaMap = Object.fromEntries(villas.map(v => [v.id, v.name]));
+    const rows = users.map(u => `
+      <tr>
+        <td class="font-medium">${u.username}</td>
+        <td>${u.email||'-'}</td>
+        <td><span class="badge ${u.role==='superadmin'?'bg-purple-100 text-purple-700':'bg-slate-100 text-slate-600'}">${u.role}</span></td>
+        <td>${u.villa_id ? villaMap[u.villa_id]||u.villa_id.slice(0,8) : '-'}</td>
+        <td>${badgeHtml(u.status)}</td>
+        <td>${u.created_at?.slice(0,10)||'-'}</td>
+        <td class="flex gap-1 flex-wrap">
+          ${u.status === 'pending'    ? `<button class="btn btn-sm bg-green-100 text-green-700" onclick="approveUser('${u.id}')">Setujui</button>` : ''}
+          ${u.status === 'active'     ? `<button class="btn btn-sm bg-orange-100 text-orange-700" onclick="suspendUser('${u.id}')">Suspend</button>` : ''}
+          ${u.status === 'suspended'  ? `<button class="btn btn-sm bg-green-100 text-green-700" onclick="approveUser('${u.id}')">Aktifkan</button>` : ''}
+          <button class="btn btn-sm bg-slate-100 text-slate-600" onclick="editUserRole('${u.id}','${u.role}','${u.villa_id||''}')">Peran</button>
+          ${u.id !== S.user?.sub ? `<button class="btn btn-sm btn-danger" onclick="deleteUser('${u.id}')">Hapus</button>` : ''}
+        </td>
+      </tr>`).join('') || '<tr><td colspan="7" class="text-center text-slate-400 py-6">Belum ada pengguna</td></tr>';
+
+    setContent(`
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <h1 class="text-xl font-bold text-slate-800">Pengguna</h1>
+          <p class="text-sm text-slate-400">${users.filter(u=>u.status==='pending').length} menunggu persetujuan</p>
+        </div>
+      </div>
+      <div class="card overflow-hidden">
+        <div class="overflow-x-auto">
+          <table><thead><tr><th>Username</th><th>Email</th><th>Peran</th><th>Villa</th><th>Status</th><th>Daftar</th><th>Aksi</th></tr></thead>
+          <tbody>${rows}</tbody></table>
+        </div>
+      </div>
+
+      <div id="role-modal" class="hidden modal-bg" onclick="if(event.target===this)this.classList.add('hidden')">
+        <div class="modal">
+          <h3 class="text-lg font-bold text-slate-800 mb-5">Edit Peran Pengguna</h3>
+          <form onsubmit="saveUserRole(event)" class="space-y-4">
+            <input type="hidden" id="ru-id"/>
+            <div><label>Peran</label>
+              <select id="ru-role"><option value="admin">admin</option><option value="superadmin">superadmin</option></select>
+            </div>
+            <div><label>Villa yang dikelola</label>
+              <select id="ru-villa">
+                <option value="">— Tidak ada —</option>
+                ${villas.map(v => `<option value="${v.id}">${v.name}</option>`).join('')}
+              </select>
+            </div>
+            <div class="flex gap-3">
+              <button type="submit" class="btn btn-primary flex-1 justify-center">Simpan</button>
+              <button type="button" class="btn btn-ghost" onclick="document.getElementById('role-modal').classList.add('hidden')">Batal</button>
+            </div>
+          </form>
+        </div>
+      </div>`);
+  } catch (e) { setContent(`<div class="text-red-500 text-center pt-20">${e.message}</div>`); }
+}
+
+function editUserRole(id, role, villaId) {
+  document.getElementById('ru-id').value   = id;
+  document.getElementById('ru-role').value = role;
+  document.getElementById('ru-villa').value = villaId;
+  document.getElementById('role-modal').classList.remove('hidden');
+}
+async function saveUserRole(e) {
+  e.preventDefault();
+  const id = document.getElementById('ru-id').value;
+  try {
+    await api(`/users/${id}/role`, { method: 'PATCH', body: JSON.stringify({ role: document.getElementById('ru-role').value, villa_id: document.getElementById('ru-villa').value || null }) });
+    showToast('Peran diperbarui!', 'success'); renderUsers();
+  } catch (e) { showToast(e.message, 'error'); }
+}
+async function approveUser(id) {
+  try { await api(`/users/${id}/approve`, { method: 'PATCH' }); showToast('Akun disetujui!', 'success'); renderUsers(); }
+  catch (e) { showToast(e.message, 'error'); }
+}
+async function suspendUser(id) {
+  try { await api(`/users/${id}/suspend`, { method: 'PATCH' }); showToast('Akun disuspend', 'success'); renderUsers(); }
+  catch (e) { showToast(e.message, 'error'); }
+}
+async function deleteUser(id) {
+  if (!confirm('Hapus pengguna ini secara permanen?')) return;
+  try { await api(`/users/${id}`, { method: 'DELETE' }); showToast('Pengguna dihapus', 'success'); renderUsers(); }
+  catch (e) { showToast(e.message, 'error'); }
+}
+
+// ── Section: Villa Baru ────────────────────────────────────────────
+function renderNewVilla() {
+  setContent(`
+    <h1 class="text-xl font-bold text-slate-800 mb-6">Tambah Villa Baru</h1>
+    <div class="card p-6 max-w-2xl">
+      <form onsubmit="createVilla(event)" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="md:col-span-2"><label>Nama Villa *</label><input id="nv-name" required/></div>
+        <div><label>Slug (URL path) *</label><input id="nv-slug" placeholder="diandra3" required/>
+          <p class="text-xs text-slate-400 mt-1">Akan dapat diakses di /slug pada website</p></div>
+        <div><label>Tagline</label><input id="nv-tagline"/></div>
+        <div class="md:col-span-2"><label>Deskripsi</label><textarea id="nv-desc" rows="3"></textarea></div>
+        <div><label>Alamat</label><input id="nv-address"/></div>
+        <div><label>Kota</label><input id="nv-city"/></div>
+        <div><label>Provinsi</label><input id="nv-prov"/></div>
+        <div><label>Kapasitas Maks.</label><input id="nv-guests" type="number"/></div>
+        <div><label>Jam Check-in</label><input id="nv-cin" value="14.00 WIB"/></div>
+        <div><label>Jam Check-out</label><input id="nv-cout" value="12.00 WIB"/></div>
+        <div class="md:col-span-2">
+          <button type="submit" class="btn btn-primary"><span class="material-symbols-outlined">add_home</span>Buat Villa</button>
+        </div>
+      </form>
+    </div>`);
+}
+
+async function createVilla(e) {
+  e.preventDefault();
+  const body = {
+    name: document.getElementById('nv-name').value,
+    slug: document.getElementById('nv-slug').value,
+    tagline: document.getElementById('nv-tagline').value,
+    description: document.getElementById('nv-desc').value,
+    address: document.getElementById('nv-address').value,
+    city: document.getElementById('nv-city').value,
+    province: document.getElementById('nv-prov').value,
+    max_guests: parseInt(document.getElementById('nv-guests').value)||null,
+    checkin_time: document.getElementById('nv-cin').value,
+    checkout_time: document.getElementById('nv-cout').value,
+  };
+  try {
+    const v = await api('/villas', { method: 'POST', body: JSON.stringify(body) });
+    showToast(`Villa "${v.name}" berhasil dibuat!`, 'success');
+    S.villas.push(v);
+    const sel = document.getElementById('villa-selector');
+    if (sel) sel.innerHTML += `<option value="${v.id}">${v.name}</option>`;
+    e.target.reset();
+  } catch (e) { showToast(e.message, 'error'); }
+}
+
+// ── Utils ──────────────────────────────────────────────────────────
+function esc(str) { return (str||'').replace(/'/g, "\\'").replace(/"/g, '&quot;'); }
+
+// ── Init ───────────────────────────────────────────────────────────
+if (S.token && S.user) {
+  enterDashboard();
+}
+</script>
+</body>
+</html>
