@@ -386,18 +386,9 @@
       <span class="text-[10px] tracking-[0.2em] uppercase font-semibold text-secondary block mb-3">Galeri Foto</span>
       <h2 class="font-serif text-3xl md:text-4xl text-primary">Lihat Sendiri Keindahannya</h2>
     </div>
-    <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
-      <div class="img-zoom overflow-hidden rounded-xl col-span-2 md:col-span-1 md:row-span-2">
-        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBpg7UQBgDi6Q7WNDt9zOfmGmvY-F9cqVup-JC4WsS43ZV1jPQLK0QgrzHZSgkKQadlZe9GvkmmeeK2J_46nWG_1YmPz3veJBnFXZeQX6cKlP9VOpUUbRYNVJbNbK-TMlrFfOOXSTU2xZCdt4l_YA2eqEDybQA6Z-umEaltpevgwpeBny1ginKgHMPolQwQcT5Y5MmIdyb0Xct5c9F4ox2npVDYUPc-o_1mq8pFFjP0Z0vDNRq6esEYnwdro5aQAWg8JaMKtdiC8Uc" alt="Villa" class="w-full h-60 md:h-full object-cover"/>
-      </div>
-      <div class="img-zoom overflow-hidden rounded-xl">
-        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDXJcGzpc5CZ3_9wj_DE5uJMPAv9AHichosqHrDH9RIKFZsgmPZei71ZLIsYOsM4DT2-0cn0cXI4t-Q5a1s9S98T1xAKyaN4G_4nzaqyyJN-UdogQl_nfHZnXHcI1gOrMfcVUadaI2kqjhNtONZG_XNHm4k2iVsDo0loKxZfP-ev5lI_jcQG40-Sc6LQy9q4fXA2fybJQ4wbN7KxBcnTMtuCq33O8NOAkXVKhBsTzCN4w8GaFV2awihmqvDyLYIBIO_fACGs3EY9fg" alt="Pool" class="w-full h-52 object-cover"/>
-      </div>
-      <div class="img-zoom overflow-hidden rounded-xl">
-        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCnMOxZu592uhJmT2hDksI3xkvZ_M9ea75nvl_qGUReiLv8cFsokRO-kkY3BK9OMetactQJOSzArvPLVhBGZXQA2WYSCNNcodc5w9_qPdXugfwQMceGbmmTFSrnij8G-XRlf2VhrIInFLqlyj5Rwm0-NcHksloUiSaZIVyTMzi-4kcHfGfDgDqZTdznvGpZYLTQcj_ifA7OdtpAFpsQNRbvLb7qhA92hfvKSpU-NRGTvVi4p6lQRaMh-Q--ojsW8k64DYiJlLk6XkM" alt="Interior" class="w-full h-52 object-cover"/>
-      </div>
-      <div class="img-zoom overflow-hidden rounded-xl col-span-2">
-        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDXJcGzpc5CZ3_9wj_DE5uJMPAv9AHichosqHrDH9RIKFZsgmPZei71ZLIsYOsM4DT2-0cn0cXI4t-Q5a1s9S98T1xAKyaN4G_4nzaqyyJN-UdogQl_nfHZnXHcI1gOrMfcVUadaI2kqjhNtONZG_XNHm4k2iVsDo0loKxZfP-ev5lI_jcQG40-Sc6LQy9q4fXA2fybJQ4wbN7KxBcnTMtuCq33O8NOAkXVKhBsTzCN4w8GaFV2awihmqvDyLYIBIO_fACGs3EY9fg" alt="View" class="w-full h-52 object-cover"/>
+    <div id="gallery-grid" class="grid grid-cols-2 md:grid-cols-3 gap-3">
+      <div class="col-span-2 md:col-span-3 text-center py-12 text-on-surface-variant text-sm" id="gallery-loading">
+        Memuat galeri...
       </div>
     </div>
   </div>
@@ -618,25 +609,25 @@
       loadVillaData();
     } catch (e) {
       console.warn('Supabase init failed, using static data:', e);
+      renderGallery([]);
     }
+  } else {
+    renderGallery([]);
   }
 
   async function loadVillaData() {
     if (!sb) return;
     try {
-      // Load facilities
-      const { data: facilities } = await sb
-        .from('facilities')
-        .select('*')
-        .eq('villa_id', VILLA_ID)
-        .eq('is_active', true)
-        .order('sort_order');
+      const [{ data: facilities }, { data: gallery }] = await Promise.all([
+        sb.from('facilities').select('*').eq('villa_id', VILLA_ID).eq('is_active', true).order('sort_order'),
+        sb.from('gallery').select('*').eq('villa_id', VILLA_ID).eq('is_active', true).order('sort_order'),
+      ]);
 
-      if (facilities && facilities.length > 0) {
-        renderFacilities(facilities);
-      }
+      if (facilities && facilities.length > 0) renderFacilities(facilities);
+      renderGallery(gallery || []);
     } catch (e) {
       console.warn('Failed to load Supabase data:', e);
+      renderGallery([]);
     }
   }
 
@@ -649,6 +640,26 @@
         <p class="text-[0.75rem] text-on-surface-variant leading-relaxed">${f.description || ''}</p>
       </div>
     `).join('');
+  }
+
+  function renderGallery(list) {
+    const grid = document.getElementById('gallery-grid');
+    if (!list || list.length === 0) {
+      grid.innerHTML = `<div class="col-span-2 md:col-span-3 text-center py-16 text-on-surface-variant">
+        <span class="material-symbols-outlined text-4xl mb-3 block" style="opacity:0.4;">photo_library</span>
+        <p class="text-sm">Foto galeri akan segera hadir.</p>
+      </div>`;
+      return;
+    }
+    grid.innerHTML = list.map((img, i) => {
+      const isFirst = i === 0;
+      const isWide  = i === list.length - 1 && list.length % 2 === 0;
+      const cls     = isFirst ? 'col-span-2 md:col-span-1 md:row-span-2' : isWide ? 'col-span-2' : '';
+      const hClass  = isFirst ? 'h-60 md:h-full' : 'h-52';
+      return `<div class="img-zoom overflow-hidden rounded-xl ${cls}">
+        <img src="${img.url}" alt="${img.alt || 'Galeri Villa'}" class="w-full ${hClass} object-cover" loading="lazy"/>
+      </div>`;
+    }).join('');
   }
 
   // ── Submit inquiry to Supabase ──
