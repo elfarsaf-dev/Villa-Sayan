@@ -35,3 +35,4 @@ externalPort = 3000
 
 [userenv.shared]
 VITE_SUPABASE_URL = "https://bgwkwlrkvbspycqsdeif.supabase.co"
+VITE_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJnd2t3bHJrdmJzcHljcXNkZWlmIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NDg1NTU3MCwiZXhwIjoyMDkwNDMxNTcwfQ.2O5kzmEP5S4Ija7vgtlnftj_Y6zkJT9Qfhzxeec5hgY"
