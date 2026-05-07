@@ -3,60 +3,56 @@
 <head>
   <meta charset="utf-8"/>
   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-  <title>Lumina Private Estate — Ubud, Bali</title>
-  <meta name="description" content="Lumina Private Estate — villa eksklusif tersembunyi di jantung perbukitan Ubud. Nikmati kemewahan dalam kesederhanaan, kolam renang infinity pribadi, dan pelayanan butler 24 jam."/>
+  <title>Villa Diandra 2 — Sekipan, Tawangmangu</title>
+  <meta name="description" content="Villa Diandra 2 — Private villa eksklusif di Sekipan, Tawangmangu. Kolam renang privat, pemandangan pegunungan, kapasitas 25–30 orang."/>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏡</text></svg>"/>
+
+  <!-- Supabase CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+
+  <!-- Supabase config injected by Vite -->
+  <script>
+    window.__SUPABASE_URL__ = '%VITE_SUPABASE_URL%';
+    window.__SUPABASE_KEY__ = '%VITE_SUPABASE_ANON_KEY%';
+  </script>
+
   <script id="tailwind-config">
     tailwind.config = {
       darkMode: "class",
       theme: {
         extend: {
           colors: {
-            "primary": "#1a281b",
-            "primary-container": "#2f3e30",
+            "primary": "#1e3a2f",
+            "primary-container": "#2d4f3f",
             "on-primary": "#ffffff",
-            "on-primary-container": "#98a997",
-            "secondary": "#6b5c4c",
-            "secondary-container": "#f4dfcb",
+            "on-primary-container": "#a8c5b5",
+            "secondary": "#5c6b5e",
+            "secondary-container": "#dde8df",
             "on-secondary": "#ffffff",
-            "on-secondary-container": "#716252",
-            "tertiary": "#212719",
-            "background": "#fbf9f4",
-            "surface": "#fbf9f4",
-            "surface-dim": "#dbdad5",
-            "surface-bright": "#fbf9f4",
+            "on-secondary-container": "#3a4d3d",
+            "background": "#f8faf8",
+            "surface": "#f8faf8",
+            "surface-dim": "#d8ddd9",
             "surface-container-lowest": "#ffffff",
-            "surface-container-low": "#f5f3ee",
-            "surface-container": "#f0eee9",
-            "surface-container-high": "#eae8e3",
-            "surface-container-highest": "#e4e2dd",
-            "on-surface": "#1b1c19",
-            "on-surface-variant": "#434842",
-            "surface-variant": "#e4e2dd",
-            "outline": "#747872",
-            "outline-variant": "#c4c8c0",
-            "inverse-surface": "#30312e",
-            "inverse-on-surface": "#f2f1ec",
-            "inverse-primary": "#bacbb8",
-            "error": "#ba1a1a",
-            "on-error": "#ffffff",
+            "surface-container-low": "#f2f5f2",
+            "surface-container": "#ecefec",
+            "surface-container-high": "#e6eae6",
+            "surface-container-highest": "#e0e4e0",
+            "on-surface": "#191d1a",
+            "on-surface-variant": "#404944",
+            "outline": "#707973",
+            "outline-variant": "#bfc9c1",
           },
           borderRadius: {
             "DEFAULT": "0.125rem",
-            "lg": "0.25rem",
+            "lg": "0.375rem",
             "xl": "0.5rem",
             "2xl": "0.75rem",
             "full": "9999px",
-          },
-          spacing: {
-            "gutter": "16px",
-            "container-max": "1280px",
-            "unit": "8px",
-            "section-gap": "80px",
-            "margin-edge": "24px",
           },
           fontFamily: {
             "serif": ["Noto Serif", "Georgia", "serif"],
@@ -66,208 +62,194 @@
       },
     }
   </script>
+
   <style>
     .material-symbols-outlined {
       font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
       font-size: 24px;
     }
     body {
-      background-color: #fbf9f4;
-      color: #1b1c19;
+      background-color: #f8faf8;
+      color: #191d1a;
       -webkit-font-smoothing: antialiased;
       font-family: "Plus Jakarta Sans", sans-serif;
     }
-    .snap-x {
-      scroll-snap-type: x mandatory;
-      -webkit-overflow-scrolling: touch;
-    }
+    .snap-x { scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }
     .snap-start { scroll-snap-align: start; }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     .font-serif { font-family: "Noto Serif", Georgia, serif; }
-
-    /* Smooth scroll */
     html { scroll-behavior: smooth; }
 
-    /* Nav blur */
-    .nav-blur {
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-    }
-
-    /* Fade in animation */
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(24px); }
       to   { opacity: 1; transform: translateY(0); }
     }
-    .fade-up { animation: fadeUp 0.8s ease forwards; }
-    .fade-up-delay-1 { animation: fadeUp 0.8s ease 0.15s both; }
-    .fade-up-delay-2 { animation: fadeUp 0.8s ease 0.3s both; }
-    .fade-up-delay-3 { animation: fadeUp 0.8s ease 0.45s both; }
+    .fade-up          { animation: fadeUp 0.8s ease forwards; }
+    .fade-up-delay-1  { animation: fadeUp 0.8s ease 0.15s both; }
+    .fade-up-delay-2  { animation: fadeUp 0.8s ease 0.3s both; }
+    .fade-up-delay-3  { animation: fadeUp 0.8s ease 0.45s both; }
 
-    /* Gallery dots */
-    .dot { transition: opacity 0.3s ease; }
-
-    /* Divider ornament */
-    .ornament::before, .ornament::after {
-      content: '';
-      display: inline-block;
-      width: 40px;
-      height: 1px;
-      background: #c4c8c0;
-      vertical-align: middle;
-      margin: 0 12px;
-    }
-
-    /* Hover image zoom */
     .img-zoom img { transition: transform 0.6s ease; }
     .img-zoom:hover img { transform: scale(1.04); }
 
-    /* Form input */
+    nav.scrolled { background: rgba(248,250,248,0.96) !important; border-bottom: 1px solid #e0e4e0; }
+
     input, textarea, select {
-      background: #ffffff;
-      border: 1px solid #c4c8c0;
-      border-radius: 0.25rem;
-      padding: 12px 16px;
-      width: 100%;
-      font-family: "Plus Jakarta Sans", sans-serif;
-      font-size: 0.9375rem;
-      color: #1b1c19;
-      outline: none;
-      transition: border-color 0.2s;
+      background: #fff; border: 1px solid #bfc9c1; border-radius: 0.375rem;
+      padding: 12px 16px; width: 100%;
+      font-family: "Plus Jakarta Sans", sans-serif; font-size: 0.9375rem;
+      color: #191d1a; outline: none; transition: border-color 0.2s;
     }
-    input:focus, textarea:focus, select:focus { border-color: #1a281b; }
-    textarea { resize: vertical; min-height: 120px; }
+    input:focus, textarea:focus, select:focus { border-color: #1e3a2f; }
+    textarea { resize: vertical; min-height: 110px; }
 
-    /* Button */
     .btn-primary {
-      background: #1a281b;
-      color: #ffffff;
-      padding: 14px 32px;
-      border-radius: 0.25rem;
-      font-size: 0.75rem;
-      letter-spacing: 0.1em;
-      font-weight: 600;
-      text-transform: uppercase;
-      transition: background 0.2s;
-      cursor: pointer;
-      border: none;
-      display: inline-block;
+      background: #1e3a2f; color: #fff; padding: 13px 28px;
+      border-radius: 0.375rem; font-size: 0.7rem; letter-spacing: 0.12em;
+      font-weight: 600; text-transform: uppercase; transition: background 0.2s;
+      cursor: pointer; border: none; display: inline-block; text-decoration: none;
     }
-    .btn-primary:hover { background: #2f3e30; }
+    .btn-primary:hover { background: #2d4f3f; }
     .btn-outline {
-      background: transparent;
-      color: #1a281b;
-      padding: 13px 32px;
-      border-radius: 0.25rem;
-      font-size: 0.75rem;
-      letter-spacing: 0.1em;
-      font-weight: 600;
-      text-transform: uppercase;
-      border: 1px solid #1a281b;
-      transition: all 0.2s;
-      cursor: pointer;
-      display: inline-block;
+      background: transparent; color: #1e3a2f; padding: 12px 28px;
+      border-radius: 0.375rem; font-size: 0.7rem; letter-spacing: 0.12em;
+      font-weight: 600; text-transform: uppercase; border: 1.5px solid #1e3a2f;
+      transition: all 0.2s; cursor: pointer; display: inline-block; text-decoration: none;
     }
-    .btn-outline:hover { background: #1a281b; color: #fff; }
+    .btn-outline:hover { background: #1e3a2f; color: #fff; }
+    .btn-outline-white {
+      background: transparent; color: rgba(255,255,255,0.8);
+      padding: 12px 28px; border-radius: 0.375rem; font-size: 0.7rem;
+      letter-spacing: 0.12em; font-weight: 600; text-transform: uppercase;
+      border: 1.5px solid rgba(255,255,255,0.4); transition: all 0.2s;
+      cursor: pointer; display: inline-block; text-decoration: none;
+    }
+    .btn-outline-white:hover { background: rgba(255,255,255,0.15); color: #fff; }
 
-    /* Sticky nav active */
-    nav.scrolled { background: rgba(251,249,244,0.95) !important; border-bottom: 1px solid #e4e2dd; }
-
-    /* Accordion */
     .faq-content { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; }
-    .faq-content.open { max-height: 400px; }
+    .faq-content.open { max-height: 300px; }
     .faq-icon { transition: transform 0.3s ease; }
     .faq-item.open .faq-icon { transform: rotate(45deg); }
+
+    /* Prohibition badge */
+    .prohibition-badge {
+      display: flex; align-items: flex-start; gap: 10px;
+      padding: 10px 14px; border-radius: 0.375rem;
+      background: #fff5f5; border: 1px solid #fecaca;
+    }
+    .note-badge {
+      display: flex; align-items: flex-start; gap: 10px;
+      padding: 10px 14px; border-radius: 0.375rem;
+      background: #fffbeb; border: 1px solid #fde68a;
+    }
+
+    /* Skeleton loader */
+    .skeleton { background: linear-gradient(90deg, #e0e4e0 25%, #ecefec 50%, #e0e4e0 75%);
+      background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 6px; }
+    @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+
+    /* WhatsApp float */
+    .wa-float {
+      position: fixed; bottom: 24px; right: 24px; z-index: 100;
+      width: 56px; height: 56px; border-radius: 50%;
+      background: #25D366; color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 20px rgba(37,211,102,0.4);
+      text-decoration: none; transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .wa-float:hover { transform: scale(1.08); box-shadow: 0 6px 24px rgba(37,211,102,0.5); }
   </style>
 </head>
 <body>
 
+<!-- WhatsApp float button -->
+<a class="wa-float" href="https://wa.me/6282228981345" target="_blank" title="Hubungi via WhatsApp">
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+  </svg>
+</a>
+
 <!-- ─── NAVIGATION ─── -->
 <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300" style="background: transparent;">
   <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-    <a href="#" class="font-serif text-xl tracking-widest text-white" id="nav-logo">LUMINA</a>
+    <a href="#" class="font-serif text-lg tracking-widest text-white" id="nav-logo">DIANDRA 2</a>
     <div class="hidden md:flex items-center gap-8" id="nav-links">
       <a href="#about" class="text-[11px] tracking-widest uppercase font-semibold text-white/80 hover:text-white transition-colors">Villa</a>
       <a href="#facilities" class="text-[11px] tracking-widest uppercase font-semibold text-white/80 hover:text-white transition-colors">Fasilitas</a>
       <a href="#gallery" class="text-[11px] tracking-widest uppercase font-semibold text-white/80 hover:text-white transition-colors">Galeri</a>
-      <a href="#location" class="text-[11px] tracking-widest uppercase font-semibold text-white/80 hover:text-white transition-colors">Lokasi</a>
+      <a href="#rules" class="text-[11px] tracking-widest uppercase font-semibold text-white/80 hover:text-white transition-colors">Aturan</a>
       <a href="#contact" class="btn-primary text-[11px] py-2 px-5">Reservasi</a>
     </div>
-    <!-- Mobile hamburger -->
     <button id="menu-btn" class="md:hidden text-white" onclick="toggleMenu()">
       <span class="material-symbols-outlined">menu</span>
     </button>
   </div>
-  <!-- Mobile menu -->
-  <div id="mobile-menu" class="hidden md:hidden bg-surface-container-low border-t border-outline-variant px-6 py-4 space-y-4">
-    <a href="#about" class="block text-[11px] tracking-widest uppercase font-semibold text-on-surface" onclick="toggleMenu()">Villa</a>
+  <div id="mobile-menu" class="hidden md:hidden px-6 py-4 space-y-4" style="background: rgba(248,250,248,0.98); border-top: 1px solid #e0e4e0;">
+    <a href="#about"      class="block text-[11px] tracking-widest uppercase font-semibold text-on-surface" onclick="toggleMenu()">Villa</a>
     <a href="#facilities" class="block text-[11px] tracking-widest uppercase font-semibold text-on-surface" onclick="toggleMenu()">Fasilitas</a>
-    <a href="#gallery" class="block text-[11px] tracking-widest uppercase font-semibold text-on-surface" onclick="toggleMenu()">Galeri</a>
-    <a href="#location" class="block text-[11px] tracking-widest uppercase font-semibold text-on-surface" onclick="toggleMenu()">Lokasi</a>
-    <a href="#contact" class="block text-[11px] tracking-widest uppercase font-semibold text-primary" onclick="toggleMenu()">Reservasi</a>
+    <a href="#gallery"    class="block text-[11px] tracking-widest uppercase font-semibold text-on-surface" onclick="toggleMenu()">Galeri</a>
+    <a href="#rules"      class="block text-[11px] tracking-widest uppercase font-semibold text-on-surface" onclick="toggleMenu()">Aturan</a>
+    <a href="#contact"    class="block text-[11px] tracking-widest uppercase font-semibold text-primary" onclick="toggleMenu()">Reservasi</a>
   </div>
 </nav>
 
-<!-- ─── HERO GALLERY ─── -->
+<!-- ─── HERO ─── -->
 <section class="w-full relative overflow-hidden" id="hero">
   <div class="flex overflow-x-auto snap-x no-scrollbar h-screen" id="gallery-slider">
     <div class="flex-none w-full h-full snap-start relative">
-      <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBpg7UQBgDi6Q7WNDt9zOfmGmvY-F9cqVup-JC4WsS43ZV1jPQLK0QgrzHZSgkKQadlZe9GvkmmeeK2J_46nWG_1YmPz3veJBnFXZeQX6cKlP9VOpUUbRYNVJbNbK-TMlrFfOOXSTU2xZCdt4l_YA2eqEDybQA6Z-umEaltpevgwpeBny1ginKgHMPolQwQcT5Y5MmIdyb0Xct5c9F4ox2npVDYUPc-o_1mq8pFFjP0Z0vDNRq6esEYnwdro5aQAWg8JaMKtdiC8Uc" alt="Villa Lumina — pemandangan eksterior"/>
-      <div class="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/60"></div>
+      <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBpg7UQBgDi6Q7WNDt9zOfmGmvY-F9cqVup-JC4WsS43ZV1jPQLK0QgrzHZSgkKQadlZe9GvkmmeeK2J_46nWG_1YmPz3veJBnFXZeQX6cKlP9VOpUUbRYNVJbNbK-TMlrFfOOXSTU2xZCdt4l_YA2eqEDybQA6Z-umEaltpevgwpeBny1ginKgHMPolQwQcT5Y5MmIdyb0Xct5c9F4ox2npVDYUPc-o_1mq8pFFjP0Z0vDNRq6esEYnwdro5aQAWg8JaMKtdiC8Uc" alt="Villa Diandra 2"/>
+      <div class="absolute inset-0 bg-gradient-to-b from-black/40 via-black/10 to-black/70"></div>
     </div>
     <div class="flex-none w-full h-full snap-start relative">
-      <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDXJcGzpc5CZ3_9wj_DE5uJMPAv9AHichosqHrDH9RIKFZsgmPZei71ZLIsYOsM4DT2-0cn0cXI4t-Q5a1s9S98T1xAKyaN4G_4nzaqyyJN-UdogQl_nfHZnXHcI1gOrMfcVUadaI2kqjhNtONZG_XNHm4k2iVsDo0loKxZfP-ev5lI_jcQG40-Sc6LQy9q4fXA2fybJQ4wbN7KxBcnTMtuCq33O8NOAkXVKhBsTzCN4w8GaFV2awihmqvDyLYIBIO_fACGs3EY9fg" alt="Infinity pool pribadi"/>
-      <div class="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/60"></div>
+      <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDXJcGzpc5CZ3_9wj_DE5uJMPAv9AHichosqHrDH9RIKFZsgmPZei71ZLIsYOsM4DT2-0cn0cXI4t-Q5a1s9S98T1xAKyaN4G_4nzaqyyJN-UdogQl_nfHZnXHcI1gOrMfcVUadaI2kqjhNtONZG_XNHm4k2iVsDo0loKxZfP-ev5lI_jcQG40-Sc6LQy9q4fXA2fybJQ4wbN7KxBcnTMtuCq33O8NOAkXVKhBsTzCN4w8GaFV2awihmqvDyLYIBIO_fACGs3EY9fg" alt="Kolam renang privat"/>
+      <div class="absolute inset-0 bg-gradient-to-b from-black/40 via-black/10 to-black/70"></div>
     </div>
     <div class="flex-none w-full h-full snap-start relative">
-      <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCnMOxZu592uhJmT2hDksI3xkvZ_M9ea75nvl_qGUReiLv8cFsokRO-kkY3BK9OMetactQJOSzArvPLVhBGZXQA2WYSCNNcodc5w9_qPdXugfwQMceGbmmTFSrnij8G-XRlf2VhrIInFLqlyj5Rwm0-NcHksloUiSaZIVyTMzi-4kcHfGfDgDqZTdznvGpZYLTQcj_ifA7OdtpAFpsQNRbvLb7qhA92hfvKSpU-NRGTvVi4p6lQRaMh-Q--ojsW8k64DYiJlLk6XkM" alt="Dapur gourmet"/>
-      <div class="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/60"></div>
+      <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCnMOxZu592uhJmT2hDksI3xkvZ_M9ea75nvl_qGUReiLv8cFsokRO-kkY3BK9OMetactQJOSzArvPLVhBGZXQA2WYSCNNcodc5w9_qPdXugfwQMceGbmmTFSrnij8G-XRlf2VhrIInFLqlyj5Rwm0-NcHksloUiSaZIVyTMzi-4kcHfGfDgDqZTdznvGpZYLTQcj_ifA7OdtpAFpsQNRbvLb7qhA92hfvKSpU-NRGTvVi4p6lQRaMh-Q--ojsW8k64DYiJlLk6XkM" alt="Pemandangan pegunungan"/>
+      <div class="absolute inset-0 bg-gradient-to-b from-black/40 via-black/10 to-black/70"></div>
     </div>
   </div>
 
-  <!-- Hero text -->
-  <div class="absolute bottom-20 left-6 md:left-16 z-10 text-white max-w-xl">
-    <p class="fade-up text-[10px] tracking-[0.2em] uppercase font-semibold mb-3 opacity-80">Ubud, Bali — Indonesia</p>
-    <h1 class="fade-up-delay-1 font-serif text-4xl md:text-6xl leading-tight mb-4">Lumina<br/>Private Estate</h1>
-    <p class="fade-up-delay-2 text-sm md:text-base opacity-80 leading-relaxed max-w-sm">Sebuah simfoni ketenangan tersembunyi di jantung perbukitan Ubud</p>
-    <div class="fade-up-delay-3 flex gap-3 mt-6">
-      <a href="#contact" class="btn-primary">Reservasi Sekarang</a>
-      <a href="#about" class="btn-outline" style="color:white; border-color:rgba(255,255,255,0.5);">Jelajahi</a>
+  <div class="absolute bottom-24 left-6 md:left-16 z-10 text-white max-w-xl">
+    <p class="fade-up text-[10px] tracking-[0.2em] uppercase font-semibold mb-3 opacity-70">Sekipan, Tawangmangu · Karanganyar</p>
+    <h1 id="hero-title" class="fade-up-delay-1 font-serif text-4xl md:text-6xl leading-tight mb-3">Villa Diandra 2</h1>
+    <p id="hero-tagline" class="fade-up-delay-2 text-sm md:text-base opacity-80 leading-relaxed max-w-sm">Private Villa Eksklusif dengan Kolam Renang Pribadi &amp; Panorama Pegunungan Sekipan</p>
+    <div class="fade-up-delay-3 flex flex-wrap gap-3 mt-6">
+      <a href="#contact" class="btn-primary">Hubungi Admin</a>
+      <a href="#about"   class="btn-outline-white">Selengkapnya</a>
     </div>
   </div>
 
-  <!-- Slider dots -->
   <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-2 z-10" id="dots">
-    <button class="dot w-5 h-[3px] rounded-full bg-white opacity-100" onclick="goToSlide(0)"></button>
-    <button class="dot w-2 h-[3px] rounded-full bg-white opacity-40" onclick="goToSlide(1)"></button>
-    <button class="dot w-2 h-[3px] rounded-full bg-white opacity-40" onclick="goToSlide(2)"></button>
+    <button class="dot-btn transition-all duration-300" style="width:20px;height:3px;border-radius:2px;background:white;opacity:1;border:none;cursor:pointer;" onclick="goToSlide(0)"></button>
+    <button class="dot-btn transition-all duration-300" style="width:8px;height:3px;border-radius:2px;background:white;opacity:0.4;border:none;cursor:pointer;"  onclick="goToSlide(1)"></button>
+    <button class="dot-btn transition-all duration-300" style="width:8px;height:3px;border-radius:2px;background:white;opacity:0.4;border:none;cursor:pointer;"  onclick="goToSlide(2)"></button>
   </div>
 
-  <!-- Scroll hint -->
-  <div class="absolute right-6 bottom-12 flex flex-col items-center gap-2 text-white opacity-50">
+  <div class="absolute right-6 bottom-14 flex flex-col items-center gap-2 text-white opacity-40 hidden md:flex">
     <div class="w-[1px] h-12 bg-white"></div>
-    <span class="text-[9px] tracking-widest uppercase" style="writing-mode: vertical-rl;">Scroll</span>
+    <span class="text-[9px] tracking-widest uppercase" style="writing-mode:vertical-rl;">Scroll</span>
   </div>
 </section>
 
-<!-- ─── STRIP STATS ─── -->
+<!-- ─── STATS STRIP ─── -->
 <section class="bg-primary text-white">
-  <div class="max-w-6xl mx-auto px-6 py-8 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+  <div class="max-w-6xl mx-auto px-6 py-7 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
     <div>
-      <div class="font-serif text-3xl mb-1">4</div>
+      <div class="font-serif text-3xl mb-1">3</div>
       <div class="text-[10px] tracking-widest uppercase opacity-60">Kamar Tidur</div>
     </div>
     <div>
-      <div class="font-serif text-3xl mb-1">6</div>
+      <div class="font-serif text-3xl mb-1">3</div>
       <div class="text-[10px] tracking-widest uppercase opacity-60">Kamar Mandi</div>
     </div>
     <div>
-      <div class="font-serif text-3xl mb-1">800<span class="text-lg">m²</span></div>
-      <div class="text-[10px] tracking-widest uppercase opacity-60">Luas Estate</div>
+      <div class="font-serif text-3xl mb-1">2</div>
+      <div class="text-[10px] tracking-widest uppercase opacity-60">Lantai</div>
     </div>
     <div>
-      <div class="font-serif text-3xl mb-1">12</div>
+      <div class="font-serif text-3xl mb-1">25–30</div>
       <div class="text-[10px] tracking-widest uppercase opacity-60">Tamu Maksimal</div>
     </div>
   </div>
@@ -278,98 +260,120 @@
   <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-16 items-center">
     <div>
       <span class="text-[10px] tracking-[0.2em] uppercase font-semibold text-secondary block mb-4">Tentang Villa</span>
-      <h2 class="font-serif text-3xl md:text-4xl text-primary leading-snug mb-6">Sebuah Simfoni<br/>Ketenangan</h2>
-      <div class="space-y-4 text-on-surface-variant text-[0.9375rem] leading-relaxed">
-        <p>Tersembunyi di jantung perbukitan Ubud yang asri, Lumina Private Estate mendefinisikan ulang konsep kemewahan dalam kesederhanaan. Arsitektur kami yang terkurasi secara editorial menyatu dengan lanskap tropis, menawarkan ruang di mana batas antara interior dan eksterior menghilang secara harmonis.</p>
-        <p>Setiap sudut dirancang untuk memicu restorasi jiwa. Bangun dengan hembusan angin pagi membawa aroma petrichor segar, kemudian melangkah menuju kolam renang infinity pribadi yang jernih, memantulkan birunya langit Bali.</p>
-        <p>Di Lumina, kami tidak hanya menawarkan tempat menginap — tetapi sebuah perjalanan kembali ke diri sendiri.</p>
+      <h2 id="about-title" class="font-serif text-3xl md:text-4xl text-primary leading-snug mb-6">Villa Diandra 2<br/>Sekipan, Tawangmangu</h2>
+      <div id="about-desc" class="space-y-4 text-on-surface-variant text-[0.9375rem] leading-relaxed">
+        <p>Villa 2 lantai eksklusif dengan bangunan dan furniture serba baru, terletak di kawasan Sekipan yang asri. Nikmati udara pegunungan yang segar dan pemandangan hutan hijau yang memanjakan mata.</p>
+        <p>Dilengkapi kolam renang privat, balkon lantai atas dengan panorama pegunungan Sekipan yang memukau, serta berbagai fasilitas lengkap untuk kenyamanan maksimal selama menginap.</p>
+        <p>Cocok untuk keluarga besar, reuni, gathering perusahaan, atau liburan bersama teman — dengan kapasitas hingga 25–30 orang.</p>
       </div>
-      <div class="mt-8 grid grid-cols-2 gap-4">
+
+      <!-- Check in/out -->
+      <div class="mt-8 flex gap-6">
         <div class="border-l-2 border-primary/20 pl-4 py-1">
-          <h4 class="text-[10px] tracking-widest uppercase font-semibold text-primary mb-2">Privasi Mutlak</h4>
-          <p class="text-[0.8125rem] text-on-surface-variant leading-relaxed">Estate tertutup penuh, jauh dari keramaian wisata.</p>
+          <h4 class="text-[10px] tracking-widest uppercase font-semibold text-primary mb-1">Check-in</h4>
+          <p class="text-[0.875rem] text-on-surface-variant font-semibold">14.00 WIB</p>
         </div>
         <div class="border-l-2 border-primary/20 pl-4 py-1">
-          <h4 class="text-[10px] tracking-widest uppercase font-semibold text-primary mb-2">Butler 24 Jam</h4>
-          <p class="text-[0.8125rem] text-on-surface-variant leading-relaxed">Tim profesional untuk setiap kebutuhan Anda.</p>
+          <h4 class="text-[10px] tracking-widest uppercase font-semibold text-primary mb-1">Check-out</h4>
+          <p class="text-[0.875rem] text-on-surface-variant font-semibold">12.00 WIB</p>
         </div>
         <div class="border-l-2 border-primary/20 pl-4 py-1">
-          <h4 class="text-[10px] tracking-widest uppercase font-semibold text-primary mb-2">Arsitektur Editorial</h4>
-          <p class="text-[0.8125rem] text-on-surface-variant leading-relaxed">Desain harmonis menyatu dengan alam tropis.</p>
-        </div>
-        <div class="border-l-2 border-primary/20 pl-4 py-1">
-          <h4 class="text-[10px] tracking-widest uppercase font-semibold text-primary mb-2">Check-in Fleksibel</h4>
-          <p class="text-[0.8125rem] text-on-surface-variant leading-relaxed">Sesuaikan jadwal kedatangan Anda sendiri.</p>
+          <h4 class="text-[10px] tracking-widest uppercase font-semibold text-primary mb-1">Extra Bed</h4>
+          <p class="text-[0.875rem] text-on-surface-variant font-semibold">Rp100.000/bed</p>
+          <p class="text-[10px] text-on-surface-variant">Weekday: gratis</p>
         </div>
       </div>
     </div>
+
     <div class="grid grid-cols-2 gap-3">
-      <div class="img-zoom overflow-hidden rounded-lg row-span-2">
-        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBpg7UQBgDi6Q7WNDt9zOfmGmvY-F9cqVup-JC4WsS43ZV1jPQLK0QgrzHZSgkKQadlZe9GvkmmeeK2J_46nWG_1YmPz3veJBnFXZeQX6cKlP9VOpUUbRYNVJbNbK-TMlrFfOOXSTU2xZCdt4l_YA2eqEDybQA6Z-umEaltpevgwpeBny1ginKgHMPolQwQcT5Y5MmIdyb0Xct5c9F4ox2npVDYUPc-o_1mq8pFFjP0Z0vDNRq6esEYnwdro5aQAWg8JaMKtdiC8Uc" alt="Villa exterior" class="w-full h-full object-cover"/>
+      <div class="img-zoom overflow-hidden rounded-xl row-span-2">
+        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBpg7UQBgDi6Q7WNDt9zOfmGmvY-F9cqVup-JC4WsS43ZV1jPQLK0QgrzHZSgkKQadlZe9GvkmmeeK2J_46nWG_1YmPz3veJBnFXZeQX6cKlP9VOpUUbRYNVJbNbK-TMlrFfOOXSTU2xZCdt4l_YA2eqEDybQA6Z-umEaltpevgwpeBny1ginKgHMPolQwQcT5Y5MmIdyb0Xct5c9F4ox2npVDYUPc-o_1mq8pFFjP0Z0vDNRq6esEYnwdro5aQAWg8JaMKtdiC8Uc" alt="Villa eksterior" class="w-full h-full object-cover"/>
       </div>
-      <div class="img-zoom overflow-hidden rounded-lg">
-        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDXJcGzpc5CZ3_9wj_DE5uJMPAv9AHichosqHrDH9RIKFZsgmPZei71ZLIsYOsM4DT2-0cn0cXI4t-Q5a1s9S98T1xAKyaN4G_4nzaqyyJN-UdogQl_nfHZnXHcI1gOrMfcVUadaI2kqjhNtONZG_XNHm4k2iVsDo0loKxZfP-ev5lI_jcQG40-Sc6LQy9q4fXA2fybJQ4wbN7KxBcnTMtuCq33O8NOAkXVKhBsTzCN4w8GaFV2awihmqvDyLYIBIO_fACGs3EY9fg" alt="Infinity pool" class="w-full h-48 object-cover"/>
+      <div class="img-zoom overflow-hidden rounded-xl">
+        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDXJcGzpc5CZ3_9wj_DE5uJMPAv9AHichosqHrDH9RIKFZsgmPZei71ZLIsYOsM4DT2-0cn0cXI4t-Q5a1s9S98T1xAKyaN4G_4nzaqyyJN-UdogQl_nfHZnXHcI1gOrMfcVUadaI2kqjhNtONZG_XNHm4k2iVsDo0loKxZfP-ev5lI_jcQG40-Sc6LQy9q4fXA2fybJQ4wbN7KxBcnTMtuCq33O8NOAkXVKhBsTzCN4w8GaFV2awihmqvDyLYIBIO_fACGs3EY9fg" alt="Pool" class="w-full h-48 object-cover"/>
       </div>
-      <div class="img-zoom overflow-hidden rounded-lg">
-        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCnMOxZu592uhJmT2hDksI3xkvZ_M9ea75nvl_qGUReiLv8cFsokRO-kkY3BK9OMetactQJOSzArvPLVhBGZXQA2WYSCNNcodc5w9_qPdXugfwQMceGbmmTFSrnij8G-XRlf2VhrIInFLqlyj5Rwm0-NcHksloUiSaZIVyTMzi-4kcHfGfDgDqZTdznvGpZYLTQcj_ifA7OdtpAFpsQNRbvLb7qhA92hfvKSpU-NRGTvVi4p6lQRaMh-Q--ojsW8k64DYiJlLk6XkM" alt="Dapur" class="w-full h-48 object-cover"/>
+      <div class="img-zoom overflow-hidden rounded-xl">
+        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCnMOxZu592uhJmT2hDksI3xkvZ_M9ea75nvl_qGUReiLv8cFsokRO-kkY3BK9OMetactQJOSzArvPLVhBGZXQA2WYSCNNcodc5w9_qPdXugfwQMceGbmmTFSrnij8G-XRlf2VhrIInFLqlyj5Rwm0-NcHksloUiSaZIVyTMzi-4kcHfGfDgDqZTdznvGpZYLTQcj_ifA7OdtpAFpsQNRbvLb7qhA92hfvKSpU-NRGTvVi4p6lQRaMh-Q--ojsW8k64DYiJlLk6XkM" alt="Pemandangan" class="w-full h-48 object-cover"/>
       </div>
     </div>
   </div>
 </section>
 
 <!-- ─── FACILITIES ─── -->
-<section id="facilities" class="py-24 px-6" style="background:#f0eee9;">
+<section id="facilities" class="py-24 px-6" style="background:#ecefec;">
   <div class="max-w-6xl mx-auto">
     <div class="text-center mb-14">
-      <span class="text-[10px] tracking-[0.2em] uppercase font-semibold text-secondary block mb-3">Yang Kami Tawarkan</span>
-      <h2 class="font-serif text-3xl md:text-4xl text-primary">Fasilitas Utama</h2>
+      <span class="text-[10px] tracking-[0.2em] uppercase font-semibold text-secondary block mb-3">Yang Kami Sediakan</span>
+      <h2 class="font-serif text-3xl md:text-4xl text-primary">Fasilitas Lengkap</h2>
       <div class="flex items-center justify-center mt-4">
         <div class="w-12 h-[1px] bg-outline-variant"></div>
         <div class="w-1.5 h-1.5 rounded-full bg-primary/30 mx-3"></div>
         <div class="w-12 h-[1px] bg-outline-variant"></div>
       </div>
     </div>
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-      <!-- Cards -->
-      <div class="bg-white rounded-xl p-6 flex flex-col items-center text-center hover:shadow-md transition-shadow">
-        <span class="material-symbols-outlined text-primary mb-4" style="font-size:32px;">pool</span>
-        <h5 class="text-[10px] tracking-widest uppercase font-semibold text-primary mb-2">Private Pool</h5>
-        <p class="text-[0.75rem] text-on-surface-variant leading-relaxed">Infinity pool pribadi dengan pemandangan lembah hijau Ubud yang memukau</p>
+
+    <!-- Facilities grid — rendered by JS -->
+    <div id="facilities-grid" class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <!-- Static fallback (replaced by JS if Supabase loads) -->
+      <div class="bg-white rounded-xl p-5 flex flex-col items-center text-center hover:shadow-md transition-shadow">
+        <span class="material-symbols-outlined text-primary mb-3" style="font-size:30px;">pool</span>
+        <h5 class="text-[10px] tracking-widest uppercase font-semibold text-primary mb-2">Kolam Renang Privat</h5>
+        <p class="text-[0.75rem] text-on-surface-variant leading-relaxed">Private pool eksklusif hanya untuk tamu villa</p>
       </div>
-      <div class="bg-white rounded-xl p-6 flex flex-col items-center text-center hover:shadow-md transition-shadow">
-        <span class="material-symbols-outlined text-primary mb-4" style="font-size:32px;">restaurant</span>
-        <h5 class="text-[10px] tracking-widest uppercase font-semibold text-primary mb-2">Gourmet Kitchen</h5>
-        <p class="text-[0.75rem] text-on-surface-variant leading-relaxed">Dapur modern lengkap dengan peralatan standar chef profesional Michelin</p>
+      <div class="bg-white rounded-xl p-5 flex flex-col items-center text-center hover:shadow-md transition-shadow">
+        <span class="material-symbols-outlined text-primary mb-3" style="font-size:30px;">landscape</span>
+        <h5 class="text-[10px] tracking-widest uppercase font-semibold text-primary mb-2">Balkon Panorama</h5>
+        <p class="text-[0.75rem] text-on-surface-variant leading-relaxed">Pemandangan hutan dan pegunungan Sekipan</p>
       </div>
-      <div class="bg-white rounded-xl p-6 flex flex-col items-center text-center hover:shadow-md transition-shadow">
-        <span class="material-symbols-outlined text-primary mb-4" style="font-size:32px;">park</span>
-        <h5 class="text-[10px] tracking-widest uppercase font-semibold text-primary mb-2">Tropical Garden</h5>
-        <p class="text-[0.75rem] text-on-surface-variant leading-relaxed">Taman tropis pribadi yang rimbun dan terawat, surga tersembunyi di Bali</p>
+      <div class="bg-white rounded-xl p-5 flex flex-col items-center text-center hover:shadow-md transition-shadow">
+        <span class="material-symbols-outlined text-primary mb-3" style="font-size:30px;">bed</span>
+        <h5 class="text-[10px] tracking-widest uppercase font-semibold text-primary mb-2">3 Kamar Tidur</h5>
+        <p class="text-[0.75rem] text-on-surface-variant leading-relaxed">3 kamar dengan total 4 tempat tidur nyaman</p>
       </div>
-      <div class="bg-white rounded-xl p-6 flex flex-col items-center text-center hover:shadow-md transition-shadow">
-        <span class="material-symbols-outlined text-primary mb-4" style="font-size:32px;">spa</span>
-        <h5 class="text-[10px] tracking-widest uppercase font-semibold text-primary mb-2">Wellness Area</h5>
-        <p class="text-[0.75rem] text-on-surface-variant leading-relaxed">Ruang meditasi, yoga, dan perawatan spa untuk memulihkan energi jiwa</p>
+      <div class="bg-white rounded-xl p-5 flex flex-col items-center text-center hover:shadow-md transition-shadow">
+        <span class="material-symbols-outlined text-primary mb-3" style="font-size:30px;">shower</span>
+        <h5 class="text-[10px] tracking-widest uppercase font-semibold text-primary mb-2">3 Kamar Mandi</h5>
+        <p class="text-[0.75rem] text-on-surface-variant leading-relaxed">Semua dilengkapi fasilitas air panas</p>
       </div>
-      <div class="bg-white rounded-xl p-6 flex flex-col items-center text-center hover:shadow-md transition-shadow">
-        <span class="material-symbols-outlined text-primary mb-4" style="font-size:32px;">bedroom_parent</span>
-        <h5 class="text-[10px] tracking-widest uppercase font-semibold text-primary mb-2">4 Kamar Suite</h5>
-        <p class="text-[0.75rem] text-on-surface-variant leading-relaxed">Setiap kamar dirancang dengan linen premium dan pemandangan eksklusif</p>
+      <div class="bg-white rounded-xl p-5 flex flex-col items-center text-center hover:shadow-md transition-shadow">
+        <span class="material-symbols-outlined text-primary mb-3" style="font-size:30px;">kitchen</span>
+        <h5 class="text-[10px] tracking-widest uppercase font-semibold text-primary mb-2">Dapur Lengkap</h5>
+        <p class="text-[0.75rem] text-on-surface-variant leading-relaxed">Kulkas, rice cooker, dispenser, minibar</p>
       </div>
-      <div class="bg-white rounded-xl p-6 flex flex-col items-center text-center hover:shadow-md transition-shadow">
-        <span class="material-symbols-outlined text-primary mb-4" style="font-size:32px;">outdoor_dining</span>
-        <h5 class="text-[10px] tracking-widest uppercase font-semibold text-primary mb-2">Dining Terbuka</h5>
-        <p class="text-[0.75rem] text-on-surface-variant leading-relaxed">Area makan al fresco dengan pemandangan sawah dan hutan tropis</p>
+      <div class="bg-white rounded-xl p-5 flex flex-col items-center text-center hover:shadow-md transition-shadow">
+        <span class="material-symbols-outlined text-primary mb-3" style="font-size:30px;">tv</span>
+        <h5 class="text-[10px] tracking-widest uppercase font-semibold text-primary mb-2">2 Smart TV</h5>
+        <p class="text-[0.75rem] text-on-surface-variant leading-relaxed">Karaoke &amp; sound system tersedia</p>
       </div>
-      <div class="bg-white rounded-xl p-6 flex flex-col items-center text-center hover:shadow-md transition-shadow">
-        <span class="material-symbols-outlined text-primary mb-4" style="font-size:32px;">wifi</span>
-        <h5 class="text-[10px] tracking-widest uppercase font-semibold text-primary mb-2">High-Speed WiFi</h5>
-        <p class="text-[0.75rem] text-on-surface-variant leading-relaxed">Koneksi internet fiber optik berkecepatan tinggi di seluruh area estate</p>
+      <div class="bg-white rounded-xl p-5 flex flex-col items-center text-center hover:shadow-md transition-shadow">
+        <span class="material-symbols-outlined text-primary mb-3" style="font-size:30px;">videogame_asset</span>
+        <h5 class="text-[10px] tracking-widest uppercase font-semibold text-primary mb-2">Free PS3</h5>
+        <p class="text-[0.75rem] text-on-surface-variant leading-relaxed">PlayStation 3 gratis selama menginap</p>
       </div>
-      <div class="bg-white rounded-xl p-6 flex flex-col items-center text-center hover:shadow-md transition-shadow">
-        <span class="material-symbols-outlined text-primary mb-4" style="font-size:32px;">support_agent</span>
-        <h5 class="text-[10px] tracking-widest uppercase font-semibold text-primary mb-2">Butler 24/7</h5>
-        <p class="text-[0.75rem] text-on-surface-variant leading-relaxed">Tim concierge profesional siap melayani setiap keinginan Anda kapan saja</p>
+      <div class="bg-white rounded-xl p-5 flex flex-col items-center text-center hover:shadow-md transition-shadow">
+        <span class="material-symbols-outlined text-primary mb-3" style="font-size:30px;">outdoor_grill</span>
+        <h5 class="text-[10px] tracking-widest uppercase font-semibold text-primary mb-2">Fasilitas BBQ</h5>
+        <p class="text-[0.75rem] text-on-surface-variant leading-relaxed">Peralatan bakar untuk sesi barbekyu</p>
+      </div>
+      <div class="bg-white rounded-xl p-5 flex flex-col items-center text-center hover:shadow-md transition-shadow">
+        <span class="material-symbols-outlined text-primary mb-3" style="font-size:30px;">wifi</span>
+        <h5 class="text-[10px] tracking-widest uppercase font-semibold text-primary mb-2">WiFi Seluruh Area</h5>
+        <p class="text-[0.75rem] text-on-surface-variant leading-relaxed">Internet cepat di lantai 1 dan 2</p>
+      </div>
+      <div class="bg-white rounded-xl p-5 flex flex-col items-center text-center hover:shadow-md transition-shadow">
+        <span class="material-symbols-outlined text-primary mb-3" style="font-size:30px;">local_parking</span>
+        <h5 class="text-[10px] tracking-widest uppercase font-semibold text-primary mb-2">Parkir Luas</h5>
+        <p class="text-[0.75rem] text-on-surface-variant leading-relaxed">Kapasitas hingga 5 mobil</p>
+      </div>
+      <div class="bg-white rounded-xl p-5 flex flex-col items-center text-center hover:shadow-md transition-shadow">
+        <span class="material-symbols-outlined text-primary mb-3" style="font-size:30px;">restaurant</span>
+        <h5 class="text-[10px] tracking-widest uppercase font-semibold text-primary mb-2">Layanan Catering</h5>
+        <p class="text-[0.75rem] text-on-surface-variant leading-relaxed">Pilihan menu sesuai selera tersedia</p>
+      </div>
+      <div class="bg-white rounded-xl p-5 flex flex-col items-center text-center hover:shadow-md transition-shadow">
+        <span class="material-symbols-outlined text-primary mb-3" style="font-size:30px;">groups</span>
+        <h5 class="text-[10px] tracking-widest uppercase font-semibold text-primary mb-2">Kapasitas 25–30 Orang</h5>
+        <p class="text-[0.75rem] text-on-surface-variant leading-relaxed">Ideal untuk gathering keluarga besar</p>
       </div>
     </div>
   </div>
@@ -379,386 +383,367 @@
 <section id="gallery" class="py-24 px-6">
   <div class="max-w-6xl mx-auto">
     <div class="text-center mb-14">
-      <span class="text-[10px] tracking-[0.2em] uppercase font-semibold text-secondary block mb-3">Galeri</span>
-      <h2 class="font-serif text-3xl md:text-4xl text-primary">Setiap Sudut, Sebuah Cerita</h2>
+      <span class="text-[10px] tracking-[0.2em] uppercase font-semibold text-secondary block mb-3">Galeri Foto</span>
+      <h2 class="font-serif text-3xl md:text-4xl text-primary">Lihat Sendiri Keindahannya</h2>
     </div>
     <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
-      <div class="img-zoom overflow-hidden rounded-lg col-span-2 md:col-span-1 md:row-span-2">
-        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBpg7UQBgDi6Q7WNDt9zOfmGmvY-F9cqVup-JC4WsS43ZV1jPQLK0QgrzHZSgkKQadlZe9GvkmmeeK2J_46nWG_1YmPz3veJBnFXZeQX6cKlP9VOpUUbRYNVJbNbK-TMlrFfOOXSTU2xZCdt4l_YA2eqEDybQA6Z-umEaltpevgwpeBny1ginKgHMPolQwQcT5Y5MmIdyb0Xct5c9F4ox2npVDYUPc-o_1mq8pFFjP0Z0vDNRq6esEYnwdro5aQAWg8JaMKtdiC8Uc" alt="Villa Lumina" class="w-full h-64 md:h-full object-cover"/>
+      <div class="img-zoom overflow-hidden rounded-xl col-span-2 md:col-span-1 md:row-span-2">
+        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBpg7UQBgDi6Q7WNDt9zOfmGmvY-F9cqVup-JC4WsS43ZV1jPQLK0QgrzHZSgkKQadlZe9GvkmmeeK2J_46nWG_1YmPz3veJBnFXZeQX6cKlP9VOpUUbRYNVJbNbK-TMlrFfOOXSTU2xZCdt4l_YA2eqEDybQA6Z-umEaltpevgwpeBny1ginKgHMPolQwQcT5Y5MmIdyb0Xct5c9F4ox2npVDYUPc-o_1mq8pFFjP0Z0vDNRq6esEYnwdro5aQAWg8JaMKtdiC8Uc" alt="Villa" class="w-full h-60 md:h-full object-cover"/>
       </div>
-      <div class="img-zoom overflow-hidden rounded-lg">
-        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDXJcGzpc5CZ3_9wj_DE5uJMPAv9AHichosqHrDH9RIKFZsgmPZei71ZLIsYOsM4DT2-0cn0cXI4t-Q5a1s9S98T1xAKyaN4G_4nzaqyyJN-UdogQl_nfHZnXHcI1gOrMfcVUadaI2kqjhNtONZG_XNHm4k2iVsDo0loKxZfP-ev5lI_jcQG40-Sc6LQy9q4fXA2fybJQ4wbN7KxBcnTMtuCq33O8NOAkXVKhBsTzCN4w8GaFV2awihmqvDyLYIBIO_fACGs3EY9fg" alt="Infinity pool" class="w-full h-52 object-cover"/>
+      <div class="img-zoom overflow-hidden rounded-xl">
+        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDXJcGzpc5CZ3_9wj_DE5uJMPAv9AHichosqHrDH9RIKFZsgmPZei71ZLIsYOsM4DT2-0cn0cXI4t-Q5a1s9S98T1xAKyaN4G_4nzaqyyJN-UdogQl_nfHZnXHcI1gOrMfcVUadaI2kqjhNtONZG_XNHm4k2iVsDo0loKxZfP-ev5lI_jcQG40-Sc6LQy9q4fXA2fybJQ4wbN7KxBcnTMtuCq33O8NOAkXVKhBsTzCN4w8GaFV2awihmqvDyLYIBIO_fACGs3EY9fg" alt="Pool" class="w-full h-52 object-cover"/>
       </div>
-      <div class="img-zoom overflow-hidden rounded-lg">
-        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCnMOxZu592uhJmT2hDksI3xkvZ_M9ea75nvl_qGUReiLv8cFsokRO-kkY3BK9OMetactQJOSzArvPLVhBGZXQA2WYSCNNcodc5w9_qPdXugfwQMceGbmmTFSrnij8G-XRlf2VhrIInFLqlyj5Rwm0-NcHksloUiSaZIVyTMzi-4kcHfGfDgDqZTdznvGpZYLTQcj_ifA7OdtpAFpsQNRbvLb7qhA92hfvKSpU-NRGTvVi4p6lQRaMh-Q--ojsW8k64DYiJlLk6XkM" alt="Dapur" class="w-full h-52 object-cover"/>
+      <div class="img-zoom overflow-hidden rounded-xl">
+        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCnMOxZu592uhJmT2hDksI3xkvZ_M9ea75nvl_qGUReiLv8cFsokRO-kkY3BK9OMetactQJOSzArvPLVhBGZXQA2WYSCNNcodc5w9_qPdXugfwQMceGbmmTFSrnij8G-XRlf2VhrIInFLqlyj5Rwm0-NcHksloUiSaZIVyTMzi-4kcHfGfDgDqZTdznvGpZYLTQcj_ifA7OdtpAFpsQNRbvLb7qhA92hfvKSpU-NRGTvVi4p6lQRaMh-Q--ojsW8k64DYiJlLk6XkM" alt="Interior" class="w-full h-52 object-cover"/>
       </div>
-      <div class="img-zoom overflow-hidden rounded-lg col-span-2">
-        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDXJcGzpc5CZ3_9wj_DE5uJMPAv9AHichosqHrDH9RIKFZsgmPZei71ZLIsYOsM4DT2-0cn0cXI4t-Q5a1s9S98T1xAKyaN4G_4nzaqyyJN-UdogQl_nfHZnXHcI1gOrMfcVUadaI2kqjhNtONZG_XNHm4k2iVsDo0loKxZfP-ev5lI_jcQG40-Sc6LQy9q4fXA2fybJQ4wbN7KxBcnTMtuCq33O8NOAkXVKhBsTzCN4w8GaFV2awihmqvDyLYIBIO_fACGs3EY9fg" alt="Pool sunset" class="w-full h-52 object-cover"/>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ─── TESTIMONIAL ─── -->
-<section class="py-24 px-6" style="background:#1a281b;">
-  <div class="max-w-3xl mx-auto text-center text-white">
-    <span class="font-serif text-5xl opacity-30 leading-none">"</span>
-    <blockquote class="font-serif text-2xl md:text-3xl leading-relaxed mt-2 mb-8">
-      Lumina bukan sekadar villa. Ini adalah pengalaman yang mengubah cara Anda memandang ketenangan.
-    </blockquote>
-    <div class="flex items-center justify-center gap-3">
-      <div class="w-8 h-[1px] bg-white/30"></div>
-      <div>
-        <p class="text-[11px] tracking-widest uppercase font-semibold">Amara & Raka Santoso</p>
-        <p class="text-[10px] opacity-50 mt-1">Honeymoon, Maret 2025</p>
-      </div>
-      <div class="w-8 h-[1px] bg-white/30"></div>
-    </div>
-    <!-- Rating stars -->
-    <div class="flex justify-center gap-1 mt-6">
-      <span class="material-symbols-outlined text-yellow-400" style="font-size:18px; font-variation-settings:'FILL' 1,'wght' 400;">star</span>
-      <span class="material-symbols-outlined text-yellow-400" style="font-size:18px; font-variation-settings:'FILL' 1,'wght' 400;">star</span>
-      <span class="material-symbols-outlined text-yellow-400" style="font-size:18px; font-variation-settings:'FILL' 1,'wght' 400;">star</span>
-      <span class="material-symbols-outlined text-yellow-400" style="font-size:18px; font-variation-settings:'FILL' 1,'wght' 400;">star</span>
-      <span class="material-symbols-outlined text-yellow-400" style="font-size:18px; font-variation-settings:'FILL' 1,'wght' 400;">star</span>
-    </div>
-  </div>
-</section>
-
-<!-- ─── RATES ─── -->
-<section class="py-24 px-6">
-  <div class="max-w-4xl mx-auto text-center">
-    <span class="text-[10px] tracking-[0.2em] uppercase font-semibold text-secondary block mb-3">Harga & Paket</span>
-    <h2 class="font-serif text-3xl md:text-4xl text-primary mb-14">Pilih Pengalaman Anda</h2>
-    <div class="grid md:grid-cols-3 gap-6">
-      <div class="border border-outline-variant rounded-xl p-8 text-left hover:border-primary/40 transition-colors">
-        <div class="text-[10px] tracking-widest uppercase font-semibold text-secondary mb-4">Weekday</div>
-        <div class="font-serif text-4xl text-primary mb-1">Rp 12 Jt</div>
-        <div class="text-[11px] text-on-surface-variant mb-6">per malam</div>
-        <ul class="space-y-2 text-[0.8125rem] text-on-surface-variant">
-          <li class="flex gap-2"><span class="material-symbols-outlined text-primary" style="font-size:16px;">check</span>Sarapan untuk 4 orang</li>
-          <li class="flex gap-2"><span class="material-symbols-outlined text-primary" style="font-size:16px;">check</span>Butler 24 jam</li>
-          <li class="flex gap-2"><span class="material-symbols-outlined text-primary" style="font-size:16px;">check</span>Akses infinity pool</li>
-          <li class="flex gap-2"><span class="material-symbols-outlined text-primary" style="font-size:16px;">check</span>Transfer bandara</li>
-        </ul>
-        <a href="#contact" class="btn-outline mt-8 block text-center">Pesan</a>
-      </div>
-      <div class="border-2 border-primary rounded-xl p-8 text-left relative" style="background:#f5f3ee;">
-        <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-white text-[9px] tracking-widest uppercase py-1 px-3 rounded-full">Paling Populer</div>
-        <div class="text-[10px] tracking-widest uppercase font-semibold text-secondary mb-4">Weekend</div>
-        <div class="font-serif text-4xl text-primary mb-1">Rp 18 Jt</div>
-        <div class="text-[11px] text-on-surface-variant mb-6">per malam</div>
-        <ul class="space-y-2 text-[0.8125rem] text-on-surface-variant">
-          <li class="flex gap-2"><span class="material-symbols-outlined text-primary" style="font-size:16px;">check</span>Sarapan + makan malam</li>
-          <li class="flex gap-2"><span class="material-symbols-outlined text-primary" style="font-size:16px;">check</span>Butler 24 jam</li>
-          <li class="flex gap-2"><span class="material-symbols-outlined text-primary" style="font-size:16px;">check</span>Akses infinity pool</li>
-          <li class="flex gap-2"><span class="material-symbols-outlined text-primary" style="font-size:16px;">check</span>Transfer bandara</li>
-          <li class="flex gap-2"><span class="material-symbols-outlined text-primary" style="font-size:16px;">check</span>Sesi spa 60 menit</li>
-        </ul>
-        <a href="#contact" class="btn-primary mt-8 block text-center">Pesan</a>
-      </div>
-      <div class="border border-outline-variant rounded-xl p-8 text-left hover:border-primary/40 transition-colors">
-        <div class="text-[10px] tracking-widest uppercase font-semibold text-secondary mb-4">Paket 7 Malam</div>
-        <div class="font-serif text-4xl text-primary mb-1">Rp 98 Jt</div>
-        <div class="text-[11px] text-on-surface-variant mb-6">hemat 20%</div>
-        <ul class="space-y-2 text-[0.8125rem] text-on-surface-variant">
-          <li class="flex gap-2"><span class="material-symbols-outlined text-primary" style="font-size:16px;">check</span>All meals included</li>
-          <li class="flex gap-2"><span class="material-symbols-outlined text-primary" style="font-size:16px;">check</span>Butler 24 jam</li>
-          <li class="flex gap-2"><span class="material-symbols-outlined text-primary" style="font-size:16px;">check</span>Akses penuh fasilitas</li>
-          <li class="flex gap-2"><span class="material-symbols-outlined text-primary" style="font-size:16px;">check</span>Tour Ubud eksklusif</li>
-          <li class="flex gap-2"><span class="material-symbols-outlined text-primary" style="font-size:16px;">check</span>Yoga privat harian</li>
-        </ul>
-        <a href="#contact" class="btn-outline mt-8 block text-center">Pesan</a>
+      <div class="img-zoom overflow-hidden rounded-xl col-span-2">
+        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDXJcGzpc5CZ3_9wj_DE5uJMPAv9AHichosqHrDH9RIKFZsgmPZei71ZLIsYOsM4DT2-0cn0cXI4t-Q5a1s9S98T1xAKyaN4G_4nzaqyyJN-UdogQl_nfHZnXHcI1gOrMfcVUadaI2kqjhNtONZG_XNHm4k2iVsDo0loKxZfP-ev5lI_jcQG40-Sc6LQy9q4fXA2fybJQ4wbN7KxBcnTMtuCq33O8NOAkXVKhBsTzCN4w8GaFV2awihmqvDyLYIBIO_fACGs3EY9fg" alt="View" class="w-full h-52 object-cover"/>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ─── FAQ ─── -->
-<section class="py-20 px-6" style="background:#f0eee9;">
-  <div class="max-w-2xl mx-auto">
+<!-- ─── RULES & POLICIES ─── -->
+<section id="rules" class="py-24 px-6" style="background:#ecefec;">
+  <div class="max-w-4xl mx-auto">
     <div class="text-center mb-12">
-      <span class="text-[10px] tracking-[0.2em] uppercase font-semibold text-secondary block mb-3">FAQ</span>
-      <h2 class="font-serif text-3xl text-primary">Pertanyaan Umum</h2>
+      <span class="text-[10px] tracking-[0.2em] uppercase font-semibold text-secondary block mb-3">Ketentuan</span>
+      <h2 class="font-serif text-3xl text-primary">Aturan &amp; Kebijakan Villa</h2>
+      <p class="text-on-surface-variant text-sm mt-3">Demi kenyamanan bersama, mohon untuk diperhatikan</p>
     </div>
-    <div class="space-y-2">
-      <div class="faq-item bg-white rounded-lg overflow-hidden">
-        <button class="w-full flex items-center justify-between px-6 py-5 text-left" onclick="toggleFaq(this)">
-          <span class="text-[0.875rem] font-semibold text-on-surface">Berapa kapasitas tamu maksimal?</span>
-          <span class="material-symbols-outlined faq-icon text-primary">add</span>
-        </button>
-        <div class="faq-content px-6">
-          <p class="pb-5 text-[0.8125rem] text-on-surface-variant leading-relaxed">Lumina Private Estate dapat menampung hingga 12 tamu secara nyaman di 4 kamar suite. Setiap kamar dilengkapi dengan tempat tidur berukuran besar dan kamar mandi pribadi.</p>
+
+    <div class="grid md:grid-cols-2 gap-6">
+      <!-- Schedule -->
+      <div class="bg-white rounded-xl p-6">
+        <div class="flex items-center gap-3 mb-4">
+          <span class="material-symbols-outlined text-primary">schedule</span>
+          <h3 class="font-semibold text-primary">Jadwal &amp; Waktu</h3>
         </div>
+        <ul id="schedule-list" class="space-y-2 text-[0.875rem] text-on-surface-variant">
+          <li class="flex gap-2 items-start"><span class="material-symbols-outlined text-secondary" style="font-size:16px;margin-top:2px;">circle</span>Check-in: 14.00 WIB</li>
+          <li class="flex gap-2 items-start"><span class="material-symbols-outlined text-secondary" style="font-size:16px;margin-top:2px;">circle</span>Check-out: 12.00 WIB</li>
+          <li class="flex gap-2 items-start"><span class="material-symbols-outlined text-secondary" style="font-size:16px;margin-top:2px;">circle</span>Jam malam: maks. aktivitas luar s/d 23.30 WIB</li>
+        </ul>
       </div>
-      <div class="faq-item bg-white rounded-lg overflow-hidden">
-        <button class="w-full flex items-center justify-between px-6 py-5 text-left" onclick="toggleFaq(this)">
-          <span class="text-[0.875rem] font-semibold text-on-surface">Apakah tersedia layanan transfer bandara?</span>
-          <span class="material-symbols-outlined faq-icon text-primary">add</span>
-        </button>
-        <div class="faq-content px-6">
-          <p class="pb-5 text-[0.8125rem] text-on-surface-variant leading-relaxed">Ya, kami menyediakan layanan transfer dari dan ke Bandara Ngurah Rai (DPS) menggunakan kendaraan mewah ber-AC. Waktu tempuh sekitar 1 jam tergantung kondisi lalu lintas.</p>
+
+      <!-- Notes -->
+      <div class="bg-white rounded-xl p-6">
+        <div class="flex items-center gap-3 mb-4">
+          <span class="material-symbols-outlined text-yellow-600">info</span>
+          <h3 class="font-semibold text-primary">Catatan Penting</h3>
         </div>
+        <ul id="notes-list" class="space-y-2 text-[0.875rem] text-on-surface-variant">
+          <li class="flex gap-2 items-start"><span class="material-symbols-outlined text-yellow-500" style="font-size:16px;margin-top:2px;">warning</span>Harga dapat berubah sewaktu-waktu</li>
+          <li class="flex gap-2 items-start"><span class="material-symbols-outlined text-yellow-500" style="font-size:16px;margin-top:2px;">warning</span>Extra bed weekend: Rp100.000/bed</li>
+          <li class="flex gap-2 items-start"><span class="material-symbols-outlined text-yellow-500" style="font-size:16px;margin-top:2px;">warning</span>Weekday: free extra bed</li>
+        </ul>
       </div>
-      <div class="faq-item bg-white rounded-lg overflow-hidden">
-        <button class="w-full flex items-center justify-between px-6 py-5 text-left" onclick="toggleFaq(this)">
-          <span class="text-[0.875rem] font-semibold text-on-surface">Bagaimana kebijakan pembatalan?</span>
-          <span class="material-symbols-outlined faq-icon text-primary">add</span>
-        </button>
-        <div class="faq-content px-6">
-          <p class="pb-5 text-[0.8125rem] text-on-surface-variant leading-relaxed">Pembatalan gratis hingga 14 hari sebelum check-in. Pembatalan dalam 7–14 hari dikenakan biaya 50%. Pembatalan kurang dari 7 hari tidak dapat dikembalikan. Kami merekomendasikan asuransi perjalanan.</p>
+
+      <!-- Prohibitions -->
+      <div class="bg-white rounded-xl p-6 md:col-span-2">
+        <div class="flex items-center gap-3 mb-4">
+          <span class="material-symbols-outlined text-red-500">block</span>
+          <h3 class="font-semibold text-primary">Larangan</h3>
         </div>
-      </div>
-      <div class="faq-item bg-white rounded-lg overflow-hidden">
-        <button class="w-full flex items-center justify-between px-6 py-5 text-left" onclick="toggleFaq(this)">
-          <span class="text-[0.875rem] font-semibold text-on-surface">Apakah villa cocok untuk pernikahan atau acara?</span>
-          <span class="material-symbols-outlined faq-icon text-primary">add</span>
-        </button>
-        <div class="faq-content px-6">
-          <p class="pb-5 text-[0.8125rem] text-on-surface-variant leading-relaxed">Tentu! Lumina Private Estate adalah pilihan sempurna untuk pernikahan intim, anniversary, ulang tahun, atau corporate retreat eksklusif. Tim kami akan membantu merencanakan setiap detail acara Anda.</p>
+        <div id="prohibition-list" class="grid sm:grid-cols-2 gap-3">
+          <div class="prohibition-badge">
+            <span class="material-symbols-outlined text-red-400" style="font-size:18px;flex-shrink:0;margin-top:1px;">cancel</span>
+            <span class="text-[0.8125rem] text-on-surface-variant">Minuman keras / alkohol</span>
+          </div>
+          <div class="prohibition-badge">
+            <span class="material-symbols-outlined text-red-400" style="font-size:18px;flex-shrink:0;margin-top:1px;">cancel</span>
+            <span class="text-[0.8125rem] text-on-surface-variant">Narkoba / obat terlarang</span>
+          </div>
+          <div class="prohibition-badge">
+            <span class="material-symbols-outlined text-red-400" style="font-size:18px;flex-shrink:0;margin-top:1px;">cancel</span>
+            <span class="text-[0.8125rem] text-on-surface-variant">Aktivitas pacaran atau asusila</span>
+          </div>
+          <div class="prohibition-badge">
+            <span class="material-symbols-outlined text-red-400" style="font-size:18px;flex-shrink:0;margin-top:1px;">cancel</span>
+            <span class="text-[0.8125rem] text-on-surface-variant">Dangdutan, orgen tunggal, atau live music sejenis</span>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ─── LOCATION ─── -->
-<section id="location" class="py-24 px-6">
-  <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
-    <div>
-      <span class="text-[10px] tracking-[0.2em] uppercase font-semibold text-secondary block mb-3">Lokasi</span>
-      <h2 class="font-serif text-3xl md:text-4xl text-primary mb-6">Jantung Ubud yang Tersembunyi</h2>
-      <p class="text-on-surface-variant text-[0.9375rem] leading-relaxed mb-8">Terletak di kawasan Sayan — salah satu lembah paling spektakuler di Bali — Lumina Private Estate menawarkan aksesibilitas sempurna ke pusat seni dan budaya Ubud, namun cukup terpencil untuk memberikan privasi mutlak.</p>
-      <div class="space-y-4">
-        <div class="flex gap-4 items-start">
-          <span class="material-symbols-outlined text-primary mt-0.5" style="font-size:20px;">location_on</span>
-          <div>
-            <div class="text-[10px] tracking-widest uppercase font-semibold text-primary mb-1">Alamat</div>
-            <p class="text-[0.875rem] text-on-surface-variant">Jl. Raya Sayan, Ubud, Gianyar, Bali 80571</p>
-          </div>
-        </div>
-        <div class="flex gap-4 items-start">
-          <span class="material-symbols-outlined text-primary mt-0.5" style="font-size:20px;">flight</span>
-          <div>
-            <div class="text-[10px] tracking-widest uppercase font-semibold text-primary mb-1">Dari Bandara</div>
-            <p class="text-[0.875rem] text-on-surface-variant">±60 menit dari Bandara Ngurah Rai (DPS)</p>
-          </div>
-        </div>
-        <div class="flex gap-4 items-start">
-          <span class="material-symbols-outlined text-primary mt-0.5" style="font-size:20px;">storefront</span>
-          <div>
-            <div class="text-[10px] tracking-widest uppercase font-semibold text-primary mb-1">Dari Pusat Ubud</div>
-            <p class="text-[0.875rem] text-on-surface-variant">±10 menit dari Monkey Forest & Pasar Seni Ubud</p>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- Map embed placeholder (styled) -->
-    <div class="rounded-xl overflow-hidden h-72 md:h-96 relative" style="background:#e4e2dd;">
-      <iframe
-        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d7904.247!2d115.2532!3d-8.5069!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dd23d3d3f5b1a5b%3A0x1!2sSayan%2C%20Ubud%2C%20Gianyar%2C%20Bali!5e0!3m2!1sen!2sid!4v1"
-        width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"
-        referrerpolicy="no-referrer-when-downgrade"></iframe>
-    </div>
-  </div>
-</section>
-
-<!-- ─── CONTACT / BOOKING ─── -->
-<section id="contact" class="py-24 px-6" style="background:#1a281b;">
+<!-- ─── RESERVATION / CONTACT ─── -->
+<section id="contact" class="py-24 px-6" style="background:#1e3a2f;">
   <div class="max-w-2xl mx-auto">
     <div class="text-center mb-12 text-white">
-      <span class="text-[10px] tracking-[0.2em] uppercase font-semibold opacity-60 block mb-3">Hubungi Kami</span>
-      <h2 class="font-serif text-3xl md:text-4xl">Mulai Perjalanan Anda</h2>
-      <p class="mt-4 text-sm opacity-60 leading-relaxed">Isi formulir di bawah dan tim kami akan menghubungi Anda dalam 24 jam</p>
+      <span class="text-[10px] tracking-[0.2em] uppercase font-semibold opacity-60 block mb-3">Reservasi</span>
+      <h2 class="font-serif text-3xl md:text-4xl mb-4">Hubungi Admin Villa</h2>
+      <p class="text-sm opacity-60 leading-relaxed">Kirim pesan WhatsApp atau isi formulir di bawah — kami akan membalas secepatnya</p>
     </div>
-    <form class="space-y-4" onsubmit="submitForm(event)">
+
+    <!-- WA CTA Button -->
+    <div class="text-center mb-10">
+      <a href="https://wa.me/6282228981345" target="_blank"
+         class="inline-flex items-center gap-3 px-8 py-4 rounded-xl text-white font-semibold text-base transition-transform hover:scale-105"
+         style="background:#25D366; box-shadow:0 4px 20px rgba(37,211,102,0.35);">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+        </svg>
+        Chat WhatsApp Sekarang — 082228981345
+      </a>
+      <p class="text-white/40 text-xs mt-3">Atau isi formulir di bawah dan kami akan menghubungi Anda</p>
+    </div>
+
+    <!-- Divider -->
+    <div class="flex items-center gap-4 mb-8">
+      <div class="flex-1 h-[1px] bg-white/10"></div>
+      <span class="text-white/30 text-xs tracking-widest uppercase">Formulir Reservasi</span>
+      <div class="flex-1 h-[1px] bg-white/10"></div>
+    </div>
+
+    <!-- Booking form — saved to Supabase inquiries table -->
+    <form class="space-y-4" onsubmit="submitInquiry(event)">
       <div class="grid md:grid-cols-2 gap-4">
         <div>
-          <label class="block text-[10px] tracking-widest uppercase font-semibold text-white/60 mb-2">Nama Lengkap</label>
-          <input type="text" placeholder="Nama Anda" required/>
+          <label class="block text-[10px] tracking-widest uppercase font-semibold text-white/50 mb-2">Nama Lengkap *</label>
+          <input id="f-name" type="text" placeholder="Nama Anda" required/>
         </div>
         <div>
-          <label class="block text-[10px] tracking-widest uppercase font-semibold text-white/60 mb-2">Email</label>
-          <input type="email" placeholder="email@example.com" required/>
-        </div>
-      </div>
-      <div class="grid md:grid-cols-2 gap-4">
-        <div>
-          <label class="block text-[10px] tracking-widest uppercase font-semibold text-white/60 mb-2">Check-In</label>
-          <input type="date" required/>
-        </div>
-        <div>
-          <label class="block text-[10px] tracking-widest uppercase font-semibold text-white/60 mb-2">Check-Out</label>
-          <input type="date" required/>
-        </div>
-      </div>
-      <div class="grid md:grid-cols-2 gap-4">
-        <div>
-          <label class="block text-[10px] tracking-widest uppercase font-semibold text-white/60 mb-2">Jumlah Tamu</label>
-          <select>
-            <option>2 Tamu</option>
-            <option>4 Tamu</option>
-            <option>6 Tamu</option>
-            <option>8 Tamu</option>
-            <option>10-12 Tamu</option>
-          </select>
-        </div>
-        <div>
-          <label class="block text-[10px] tracking-widest uppercase font-semibold text-white/60 mb-2">Paket</label>
-          <select>
-            <option>Weekday</option>
-            <option>Weekend</option>
-            <option>7 Malam</option>
-            <option>Acara Khusus</option>
-          </select>
+          <label class="block text-[10px] tracking-widest uppercase font-semibold text-white/50 mb-2">Nomor WhatsApp *</label>
+          <input id="f-phone" type="tel" placeholder="08xxxxxxxxxx" required/>
         </div>
       </div>
       <div>
-        <label class="block text-[10px] tracking-widest uppercase font-semibold text-white/60 mb-2">Pesan Tambahan</label>
-        <textarea placeholder="Kebutuhan khusus, pertanyaan, atau permintaan Anda..."></textarea>
+        <label class="block text-[10px] tracking-widest uppercase font-semibold text-white/50 mb-2">Email (opsional)</label>
+        <input id="f-email" type="email" placeholder="email@contoh.com"/>
       </div>
-      <button type="submit" class="btn-primary w-full text-center mt-2" style="background:#98a997; color:#1a281b;">Kirim Permintaan</button>
+      <div class="grid md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-[10px] tracking-widest uppercase font-semibold text-white/50 mb-2">Tanggal Check-In *</label>
+          <input id="f-checkin" type="date" required/>
+        </div>
+        <div>
+          <label class="block text-[10px] tracking-widest uppercase font-semibold text-white/50 mb-2">Tanggal Check-Out *</label>
+          <input id="f-checkout" type="date" required/>
+        </div>
+      </div>
+      <div>
+        <label class="block text-[10px] tracking-widest uppercase font-semibold text-white/50 mb-2">Jumlah Tamu</label>
+        <select id="f-guests">
+          <option value="1-10">1–10 Orang</option>
+          <option value="10-15">10–15 Orang</option>
+          <option value="15-20">15–20 Orang</option>
+          <option value="20-25">20–25 Orang</option>
+          <option value="25-30">25–30 Orang</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-[10px] tracking-widest uppercase font-semibold text-white/50 mb-2">Pesan / Kebutuhan Khusus</label>
+        <textarea id="f-message" placeholder="Contoh: perlu catering, extra bed, atau pertanyaan lainnya..."></textarea>
+      </div>
+      <button type="submit" id="submit-btn" class="btn-primary w-full text-center mt-2"
+        style="background:#a8c5b5; color:#1e3a2f; font-weight:700;">
+        Kirim Permintaan Reservasi
+      </button>
     </form>
-    <!-- Contact info -->
-    <div class="mt-12 pt-8 border-t border-white/10 grid grid-cols-3 gap-4 text-center text-white">
+
+    <!-- Contact info row -->
+    <div class="mt-10 pt-8 border-t border-white/10 flex flex-col sm:flex-row justify-center gap-8 text-center text-white">
       <div>
-        <span class="material-symbols-outlined opacity-40 mb-2" style="font-size:20px;">phone</span>
-        <p class="text-[9px] tracking-widest uppercase opacity-40 mb-1">Telepon</p>
-        <a href="tel:+6236111111" class="text-[0.75rem] opacity-70 hover:opacity-100 transition-opacity">+62 361 111 111</a>
+        <span class="material-symbols-outlined opacity-40 block mb-1" style="font-size:20px;">phone</span>
+        <p class="text-[9px] tracking-widest uppercase opacity-40 mb-1">Telepon / WA</p>
+        <a href="tel:082228981345" class="text-sm opacity-70 hover:opacity-100 transition-opacity">082228981345</a>
       </div>
       <div>
-        <span class="material-symbols-outlined opacity-40 mb-2" style="font-size:20px;">mail</span>
-        <p class="text-[9px] tracking-widest uppercase opacity-40 mb-1">Email</p>
-        <a href="mailto:hello@lumina.bali" class="text-[0.75rem] opacity-70 hover:opacity-100 transition-opacity">hello@lumina.bali</a>
+        <span class="material-symbols-outlined opacity-40 block mb-1" style="font-size:20px;">location_on</span>
+        <p class="text-[9px] tracking-widest uppercase opacity-40 mb-1">Lokasi</p>
+        <span class="text-sm opacity-70">Sekipan, Tawangmangu</span>
       </div>
       <div>
-        <span class="material-symbols-outlined opacity-40 mb-2" style="font-size:20px;">chat</span>
-        <p class="text-[9px] tracking-widest uppercase opacity-40 mb-1">WhatsApp</p>
-        <a href="https://wa.me/6281234567890" class="text-[0.75rem] opacity-70 hover:opacity-100 transition-opacity">+62 812 345 678</a>
+        <span class="material-symbols-outlined opacity-40 block mb-1" style="font-size:20px;">schedule</span>
+        <p class="text-[9px] tracking-widest uppercase opacity-40 mb-1">Check-in / out</p>
+        <span class="text-sm opacity-70">14.00 / 12.00 WIB</span>
       </div>
     </div>
   </div>
 </section>
 
-<!-- Toast notification -->
-<div id="toast" class="fixed bottom-6 right-6 bg-primary text-white px-5 py-3 rounded-lg text-sm shadow-xl transition-all duration-300 opacity-0 pointer-events-none translate-y-2">
-  Terima kasih! Kami akan menghubungi Anda segera.
-</div>
+<!-- Toast -->
+<div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-primary text-white px-6 py-3 rounded-lg text-sm shadow-xl transition-all duration-300 opacity-0 pointer-events-none translate-y-2 whitespace-nowrap z-50"></div>
 
 <!-- ─── FOOTER ─── -->
-<footer class="bg-surface-container-high border-t border-primary/5 px-6">
-  <div class="max-w-6xl mx-auto py-12">
-    <div class="grid md:grid-cols-4 gap-8 mb-10">
-      <div class="md:col-span-2">
-        <div class="font-serif text-2xl tracking-widest text-primary mb-3">LUMINA</div>
-        <p class="text-[0.8125rem] text-on-surface-variant leading-relaxed max-w-xs">Villa eksklusif yang menawarkan kemewahan dalam ketenangan, tersembunyi di antara perbukitan hijau Ubud, Bali.</p>
-        <div class="flex gap-4 mt-5">
-          <a href="#" class="opacity-50 hover:opacity-100 transition-opacity"><span class="material-symbols-outlined text-primary">public</span></a>
-          <a href="#" class="opacity-50 hover:opacity-100 transition-opacity"><span class="material-symbols-outlined text-primary">share</span></a>
-          <a href="#" class="opacity-50 hover:opacity-100 transition-opacity"><span class="material-symbols-outlined text-primary">photo_camera</span></a>
-        </div>
+<footer class="px-6" style="background:#ecefec; border-top:1px solid #bfc9c1;">
+  <div class="max-w-6xl mx-auto py-10">
+    <div class="grid md:grid-cols-3 gap-8 mb-8">
+      <div>
+        <div class="font-serif text-xl tracking-widest text-primary mb-3">VILLA DIANDRA 2</div>
+        <p class="text-[0.8125rem] text-on-surface-variant leading-relaxed max-w-xs">Private villa eksklusif dengan kolam renang pribadi dan pemandangan pegunungan Sekipan, Tawangmangu.</p>
       </div>
       <div>
-        <h6 class="text-[10px] tracking-widest uppercase font-semibold text-primary mb-4">Menu</h6>
+        <h6 class="text-[10px] tracking-widest uppercase font-semibold text-primary mb-4">Navigasi</h6>
         <ul class="space-y-2">
-          <li><a href="#about" class="text-[0.8125rem] text-on-surface-variant hover:text-primary transition-colors">Tentang Villa</a></li>
+          <li><a href="#about"      class="text-[0.8125rem] text-on-surface-variant hover:text-primary transition-colors">Tentang Villa</a></li>
           <li><a href="#facilities" class="text-[0.8125rem] text-on-surface-variant hover:text-primary transition-colors">Fasilitas</a></li>
-          <li><a href="#gallery" class="text-[0.8125rem] text-on-surface-variant hover:text-primary transition-colors">Galeri</a></li>
-          <li><a href="#location" class="text-[0.8125rem] text-on-surface-variant hover:text-primary transition-colors">Lokasi</a></li>
-          <li><a href="#contact" class="text-[0.8125rem] text-on-surface-variant hover:text-primary transition-colors">Reservasi</a></li>
+          <li><a href="#gallery"    class="text-[0.8125rem] text-on-surface-variant hover:text-primary transition-colors">Galeri</a></li>
+          <li><a href="#rules"      class="text-[0.8125rem] text-on-surface-variant hover:text-primary transition-colors">Aturan Villa</a></li>
+          <li><a href="#contact"    class="text-[0.8125rem] text-on-surface-variant hover:text-primary transition-colors">Reservasi</a></li>
         </ul>
       </div>
       <div>
         <h6 class="text-[10px] tracking-widest uppercase font-semibold text-primary mb-4">Kontak</h6>
         <ul class="space-y-2 text-[0.8125rem] text-on-surface-variant">
-          <li>Jl. Raya Sayan, Ubud</li>
-          <li>Gianyar, Bali 80571</li>
-          <li class="pt-1"><a href="tel:+6236111111" class="hover:text-primary transition-colors">+62 361 111 111</a></li>
-          <li><a href="mailto:hello@lumina.bali" class="hover:text-primary transition-colors">hello@lumina.bali</a></li>
+          <li>Sekipan, Tawangmangu</li>
+          <li>Karanganyar, Jawa Tengah</li>
+          <li class="pt-1">
+            <a href="https://wa.me/6282228981345" class="hover:text-primary transition-colors flex items-center gap-1">
+              <span class="material-symbols-outlined" style="font-size:14px;">chat</span>082228981345
+            </a>
+          </li>
         </ul>
       </div>
     </div>
-    <div class="pt-6 border-t border-primary/10 text-center">
-      <p class="text-[9px] text-on-surface-variant tracking-widest uppercase">
-        &copy; 2025 Lumina Private Estates. All Rights Reserved.
-      </p>
+    <div class="pt-6 border-t border-outline-variant text-center">
+      <p class="text-[9px] text-on-surface-variant tracking-widest uppercase">&copy; 2025 Villa Diandra 2 Sekipan. All Rights Reserved.</p>
     </div>
   </div>
 </footer>
 
 <script>
-  // ── Navbar scroll behavior ──
-  const navbar = document.getElementById('navbar');
-  const navLogo = document.getElementById('nav-logo');
+  // ── Supabase init ──
+  const SUPABASE_URL = window.__SUPABASE_URL__;
+  const SUPABASE_KEY = window.__SUPABASE_KEY__;
+  const VILLA_ID     = 'a1b2c3d4-e5f6-7890-abcd-ef1234567890';
+
+  let sb = null;
+  if (SUPABASE_URL && SUPABASE_KEY &&
+      !SUPABASE_URL.includes('%VITE_') && !SUPABASE_KEY.includes('%VITE_')) {
+    try {
+      sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+      loadVillaData();
+    } catch (e) {
+      console.warn('Supabase init failed, using static data:', e);
+    }
+  }
+
+  async function loadVillaData() {
+    if (!sb) return;
+    try {
+      // Load facilities
+      const { data: facilities } = await sb
+        .from('facilities')
+        .select('*')
+        .eq('villa_id', VILLA_ID)
+        .eq('is_active', true)
+        .order('sort_order');
+
+      if (facilities && facilities.length > 0) {
+        renderFacilities(facilities);
+      }
+    } catch (e) {
+      console.warn('Failed to load Supabase data:', e);
+    }
+  }
+
+  function renderFacilities(list) {
+    const grid = document.getElementById('facilities-grid');
+    grid.innerHTML = list.map(f => `
+      <div class="bg-white rounded-xl p-5 flex flex-col items-center text-center hover:shadow-md transition-shadow">
+        <span class="material-symbols-outlined text-primary mb-3" style="font-size:30px;">${f.icon || 'star'}</span>
+        <h5 class="text-[10px] tracking-widest uppercase font-semibold text-primary mb-2">${f.name}</h5>
+        <p class="text-[0.75rem] text-on-surface-variant leading-relaxed">${f.description || ''}</p>
+      </div>
+    `).join('');
+  }
+
+  // ── Submit inquiry to Supabase ──
+  async function submitInquiry(e) {
+    e.preventDefault();
+    const btn = document.getElementById('submit-btn');
+    btn.textContent = 'Mengirim...';
+    btn.disabled = true;
+
+    const checkinVal  = document.getElementById('f-checkin').value;
+    const checkoutVal = document.getElementById('f-checkout').value;
+
+    const payload = {
+      villa_id:      VILLA_ID,
+      name:          document.getElementById('f-name').value,
+      phone:         document.getElementById('f-phone').value,
+      email:         document.getElementById('f-email').value || null,
+      checkin_date:  checkinVal  || null,
+      checkout_date: checkoutVal || null,
+      num_guests:    parseInt(document.getElementById('f-guests').value) || null,
+      message:       document.getElementById('f-message').value || null,
+      status:        'pending',
+    };
+
+    let success = false;
+
+    if (sb) {
+      try {
+        const { error } = await sb.from('inquiries').insert([payload]);
+        if (!error) success = true;
+        else console.warn('Supabase insert error:', error);
+      } catch (err) {
+        console.warn('Failed to save inquiry:', err);
+      }
+    }
+
+    btn.textContent = 'Kirim Permintaan Reservasi';
+    btn.disabled = false;
+    e.target.reset();
+
+    showToast(success
+      ? '✓ Permintaan terkirim! Kami akan segera menghubungi Anda.'
+      : '✓ Terima kasih! Hubungi kami via WhatsApp untuk konfirmasi.');
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.style.opacity = '1';
+    t.style.transform = 'translateX(-50%) translateY(0)';
+    t.style.pointerEvents = 'auto';
+    setTimeout(() => {
+      t.style.opacity = '0';
+      t.style.transform = 'translateX(-50%) translateY(8px)';
+      t.style.pointerEvents = 'none';
+    }, 5000);
+  }
+
+  // ── Navbar scroll ──
+  const navbar   = document.getElementById('navbar');
+  const navLogo  = document.getElementById('nav-logo');
   const navLinks = document.querySelectorAll('#nav-links a:not(.btn-primary)');
 
   window.addEventListener('scroll', () => {
-    if (window.scrollY > 80) {
+    if (window.scrollY > 60) {
       navbar.classList.add('scrolled');
-      navLogo.style.color = '#1a281b';
-      navLinks.forEach(l => { l.style.color = '#434842'; });
+      navLogo.style.color = '#1e3a2f';
+      navLinks.forEach(l => l.style.color = '#404944');
     } else {
       navbar.classList.remove('scrolled');
       navLogo.style.color = '#fff';
-      navLinks.forEach(l => { l.style.color = 'rgba(255,255,255,0.8)'; });
+      navLinks.forEach(l => l.style.color = 'rgba(255,255,255,0.8)');
     }
   });
 
   // ── Mobile menu ──
   function toggleMenu() {
-    const m = document.getElementById('mobile-menu');
-    m.classList.toggle('hidden');
+    document.getElementById('mobile-menu').classList.toggle('hidden');
   }
 
   // ── Hero slider ──
-  const slider = document.getElementById('gallery-slider');
-  const dots = document.querySelectorAll('#dots .dot');
+  const slider  = document.getElementById('gallery-slider');
+  const dotBtns = document.querySelectorAll('.dot-btn');
   let current = 0;
 
   function goToSlide(i) {
     current = i;
     slider.scrollTo({ left: slider.offsetWidth * i, behavior: 'smooth' });
-    dots.forEach((d, idx) => {
+    dotBtns.forEach((d, idx) => {
       d.style.opacity = idx === i ? '1' : '0.4';
-      d.style.width = idx === i ? '20px' : '8px';
+      d.style.width   = idx === i ? '20px' : '8px';
     });
   }
 
-  // Auto-advance slider every 5s
-  setInterval(() => { goToSlide((current + 1) % 3); }, 5000);
-
-  // ── FAQ accordion ──
-  function toggleFaq(btn) {
-    const item = btn.closest('.faq-item');
-    const content = item.querySelector('.faq-content');
-    const isOpen = item.classList.contains('open');
-
-    // Close all
-    document.querySelectorAll('.faq-item.open').forEach(el => {
-      el.classList.remove('open');
-      el.querySelector('.faq-content').classList.remove('open');
-    });
-
-    if (!isOpen) {
-      item.classList.add('open');
-      content.classList.add('open');
-    }
-  }
-
-  // ── Form submit ──
-  function submitForm(e) {
-    e.preventDefault();
-    const toast = document.getElementById('toast');
-    toast.style.opacity = '1';
-    toast.style.transform = 'translateY(0)';
-    toast.style.pointerEvents = 'auto';
-    setTimeout(() => {
-      toast.style.opacity = '0';
-      toast.style.transform = 'translateY(8px)';
-      toast.style.pointerEvents = 'none';
-    }, 4000);
-    e.target.reset();
-  }
+  setInterval(() => goToSlide((current + 1) % 3), 5000);
 </script>
 </body>
 </html>
