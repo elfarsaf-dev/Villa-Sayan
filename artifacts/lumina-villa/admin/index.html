@@ -956,6 +956,7 @@ async function deleteUser(id) {
 // ── Section: Villa Baru ────────────────────────────────────────────
 function renderNewVilla() {
   window._nvFacilities = [];
+  window._nvPolicies   = [];
   setContent(`
     <h1 class="text-xl font-bold text-slate-800 mb-6">Tambah Villa Baru</h1>
 
@@ -1030,6 +1031,37 @@ function renderNewVilla() {
           <span class="material-symbols-outlined" style="font-size:15px;">add</span>Tambah ke List
         </button>
       </div>
+    </div>
+
+    <!-- Kebijakan -->
+    <div class="card p-5 max-w-2xl mt-4">
+      <div class="flex items-center justify-between mb-3">
+        <span class="font-semibold text-slate-700 flex items-center gap-1.5">
+          <span class="material-symbols-outlined" style="font-size:18px;">gavel</span>
+          Kebijakan Villa <span id="nv-pol-count" class="badge bg-slate-100 text-slate-500 ml-1">0</span>
+        </span>
+        <button onclick="nvResetDefaultPolicies()" class="btn btn-ghost btn-sm text-xs">
+          <span class="material-symbols-outlined" style="font-size:14px;">restart_alt</span>Default Syariah
+        </button>
+      </div>
+      <div id="nv-pol-list" class="space-y-1.5 mb-4">
+        <p class="text-slate-400 text-sm italic">Belum ada kebijakan — tambahkan manual, gunakan AI, atau klik "Default Syariah"</p>
+      </div>
+      <div class="border-t border-slate-100 pt-3">
+        <p class="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-2">Tambah Kebijakan</p>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+          <select id="nv-pol-type" style="font-size:0.8125rem;padding:7px 10px;">
+            <option value="prohibition">🚫 Larangan</option>
+            <option value="rule">📋 Aturan</option>
+            <option value="schedule">🕐 Jadwal</option>
+            <option value="note">📝 Catatan</option>
+          </select>
+          <input id="nv-pol-content" placeholder="Isi kebijakan..." style="font-size:0.8125rem;padding:7px 10px;" class="sm:col-span-2"/>
+        </div>
+        <button onclick="nvAddPolicy()" class="btn btn-ghost btn-sm mt-2">
+          <span class="material-symbols-outlined" style="font-size:15px;">add</span>Tambah ke List
+        </button>
+      </div>
     </div>`);
 }
 
@@ -1046,7 +1078,7 @@ async function fillNewVillaWithAI() {
 
   const logic = `Kamu adalah asisten ekstraksi data villa profesional. Tugasmu: baca teks bebas dan kembalikan HANYA JSON valid tanpa penjelasan, tanpa markdown, tanpa kode block.
 
-OUTPUT WAJIB berisi 2 key: villa_info dan facilities.
+OUTPUT WAJIB berisi 3 key: villa_info, facilities, dan policies.
 
 Contoh output LENGKAP:
 {
@@ -1055,6 +1087,12 @@ Contoh output LENGKAP:
     {"name":"Kolam Renang Privat","icon":"pool","description":"Kolam renang khusus tamu villa","sort_order":1},
     {"name":"WiFi","icon":"wifi","description":"Internet gratis seluruh area","sort_order":2},
     {"name":"3 Kamar Tidur","icon":"king_bed","description":"Kamar tidur dengan kasur nyaman","sort_order":3}
+  ],
+  "policies": [
+    {"type":"prohibition","content":"Dilarang membawa atau mengkonsumsi minuman keras / alkohol","sort_order":1},
+    {"type":"prohibition","content":"Dilarang melakukan tindakan asusila / mesum","sort_order":2},
+    {"type":"rule","content":"Tamu wajib menjaga kebersihan villa","sort_order":3},
+    {"type":"schedule","content":"Check-in 14.00 WIB, Check-out 12.00 WIB","sort_order":4}
   ]
 }
 
@@ -1108,7 +1146,13 @@ ATURAN WAJIB:
     window._nvFacilities = Array.isArray(facs) ? facs : [];
     nvRenderFacList();
 
-    status.innerHTML = `<span class="material-symbols-outlined" style="font-size:14px;color:#16a34a;">check_circle</span> Form dan ${window._nvFacilities.length} fasilitas berhasil diisi! Cek lalu klik Buat Villa.`;
+    // Isi kebijakan (fallback ke default syariah jika kosong)
+    const rawPols = Array.isArray(raw.policies) ? raw.policies : [];
+    window._nvPolicies = rawPols.length > 0 ? rawPols : NV_DEFAULT_POLICIES.map((p, i) => ({ ...p, sort_order: i }));
+    nvRenderPolList();
+
+    const polSrc = rawPols.length > 0 ? `${rawPols.length} kebijakan dari teks` : `${window._nvPolicies.length} kebijakan default syariah`;
+    status.innerHTML = `<span class="material-symbols-outlined" style="font-size:14px;color:#16a34a;">check_circle</span> Form, ${window._nvFacilities.length} fasilitas, dan ${polSrc} berhasil diisi! Cek lalu klik Buat Villa.`;
     document.getElementById('nv-name')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   } catch(e) {
     status.innerHTML = `<span class="material-symbols-outlined" style="font-size:14px;color:#991b1b;">error</span> Gagal: ${e.message}`;
@@ -1151,7 +1195,21 @@ async function createVilla(e) {
       } catch { facFail++; }
     }
 
+    // Simpan kebijakan ke DB satu per satu
+    const pols = window._nvPolicies || [];
+    let polOk = 0, polFail = 0;
+    for (let i = 0; i < pols.length; i++) {
+      const p = pols[i];
+      try {
+        await api(`/villas/${v.id}/policies`, { method: 'POST', body: JSON.stringify({
+          type: p.type || 'prohibition', content: p.content, sort_order: p.sort_order ?? i,
+        })});
+        polOk++;
+      } catch { polFail++; }
+    }
+
     window._nvFacilities = [];
+    window._nvPolicies   = [];
     S.villas.push(v);
     const sel = document.getElementById('villa-selector');
     if (sel) { sel.innerHTML += `<option value="${v.id}">${v.name}</option>`; sel.value = v.id; }
@@ -1159,10 +1217,11 @@ async function createVilla(e) {
     localStorage.setItem('villa_current_id', v.id);
     e.target.reset();
 
-    const facMsg = facOk > 0 ? ` + ${facOk} fasilitas disimpan` : '';
-    const failMsg = facFail > 0 ? ` (${facFail} fasilitas gagal)` : '';
-    showToast(`Villa "${v.name}" berhasil dibuat!${facMsg}${failMsg}`, 'success');
-    showSection('facilities');
+    const facMsg = facOk > 0 ? ` + ${facOk} fasilitas` : '';
+    const polMsg = polOk > 0 ? ` + ${polOk} kebijakan` : '';
+    const failMsg = (facFail + polFail) > 0 ? ` (${facFail+polFail} item gagal)` : '';
+    showToast(`Villa "${v.name}" berhasil dibuat!${facMsg}${polMsg} disimpan${failMsg}`, 'success');
+    showSection('policies');
   } catch (err) { showToast(err.message, 'error'); }
   finally { submitBtn && (submitBtn.disabled = false); }
 }
@@ -1206,6 +1265,61 @@ function nvRemoveFacility(idx) {
   window._nvFacilities.splice(idx, 1);
   window._nvFacilities.forEach((f, i) => f.sort_order = i);
   nvRenderFacList();
+}
+
+// ── Helper: Kebijakan di form Villa Baru ───────────────────────────
+const NV_DEFAULT_POLICIES = [
+  { type: 'prohibition', content: 'Dilarang membawa atau mengkonsumsi minuman keras / alkohol' },
+  { type: 'prohibition', content: 'Dilarang melakukan tindakan asusila / mesum di dalam villa' },
+  { type: 'prohibition', content: 'Dilarang membawa atau menggunakan narkoba dan obat-obatan terlarang' },
+  { type: 'prohibition', content: 'Dilarang membawa hewan peliharaan' },
+  { type: 'prohibition', content: 'Dilarang mengadakan pesta atau kegiatan tidak bermoral lainnya' },
+  { type: 'rule',        content: 'Tamu wajib menjaga kebersihan dan ketertiban villa selama menginap' },
+  { type: 'schedule',    content: 'Check-in mulai pukul 14.00 WIB, Check-out pukul 12.00 WIB' },
+];
+window._nvPolicies = [];
+
+const POL_LABELS = { prohibition: '🚫', rule: '📋', schedule: '🕐', note: '📝' };
+const POL_COLORS = { prohibition: 'text-red-500', rule: 'text-blue-500', schedule: 'text-amber-500', note: 'text-slate-500' };
+
+function nvRenderPolList() {
+  const pols = window._nvPolicies || [];
+  const list = document.getElementById('nv-pol-list');
+  const cnt  = document.getElementById('nv-pol-count');
+  if (!list) return;
+  if (cnt) cnt.textContent = pols.length;
+  list.innerHTML = pols.length ? pols.map((p, i) => `
+    <div class="flex items-start gap-2 bg-slate-50 rounded-lg px-3 py-2">
+      <span class="${POL_COLORS[p.type] || 'text-slate-400'} text-sm mt-0.5">${POL_LABELS[p.type] || '•'}</span>
+      <span class="text-sm text-slate-700 flex-1">${p.content}</span>
+      <button onclick="nvRemovePolicy(${i})" class="p-1 rounded hover:bg-red-100 text-red-400 flex-shrink-0" title="Hapus">
+        <span class="material-symbols-outlined" style="font-size:15px;">close</span>
+      </button>
+    </div>`).join('') : '<p class="text-slate-400 text-sm italic">Belum ada kebijakan — tambahkan manual, gunakan AI, atau klik "Default Syariah"</p>';
+}
+
+function nvAddPolicy() {
+  const type    = document.getElementById('nv-pol-type')?.value || 'prohibition';
+  const content = document.getElementById('nv-pol-content')?.value.trim();
+  if (!content) return showToast('Isi kebijakan wajib diisi', 'error');
+  if (!window._nvPolicies) window._nvPolicies = [];
+  window._nvPolicies.push({ type, content, sort_order: window._nvPolicies.length });
+  document.getElementById('nv-pol-content').value = '';
+  nvRenderPolList();
+  showToast('Kebijakan ditambahkan', 'success');
+}
+
+function nvRemovePolicy(idx) {
+  if (!window._nvPolicies) return;
+  window._nvPolicies.splice(idx, 1);
+  window._nvPolicies.forEach((p, i) => p.sort_order = i);
+  nvRenderPolList();
+}
+
+function nvResetDefaultPolicies() {
+  window._nvPolicies = NV_DEFAULT_POLICIES.map((p, i) => ({ ...p, sort_order: i }));
+  nvRenderPolList();
+  showToast('Kebijakan default syariah dimuat', 'success');
 }
 
 // ── Utils ──────────────────────────────────────────────────────────
