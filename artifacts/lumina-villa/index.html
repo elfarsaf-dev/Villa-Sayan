@@ -221,12 +221,14 @@ async function loadVillas() {
       if (!coverMap[img.villa_id]) coverMap[img.villa_id] = img;
     });
 
-    // Load primary contacts (whatsapp) per villa
-    const { data: allContacts } = await sb
-      .from('contacts')
-      .select('villa_id, type, value, is_primary')
-      .in('villa_id', villaIds)
-      .eq('type', 'whatsapp');
+    // Load primary contacts (whatsapp) per villa + global contacts (villa_id = null)
+    const [{ data: allContacts }, { data: globalContacts }] = await Promise.all([
+      sb.from('contacts').select('villa_id, type, value, is_primary').in('villa_id', villaIds).eq('type', 'whatsapp'),
+      sb.from('contacts').select('type, value, is_primary').is('villa_id', null).eq('type', 'whatsapp'),
+    ]);
+
+    // Kontak global sebagai fallback jika villa tidak punya WA sendiri
+    const globalWa = (globalContacts || []).find(c => c.is_primary) || (globalContacts || [])[0];
 
     const contactMap = {};
     (allContacts || []).forEach(c => {
@@ -235,7 +237,7 @@ async function loadVillas() {
 
     document.getElementById('villa-list').innerHTML = villas.map(v => {
       const cover   = coverMap[v.id];
-      const contact = contactMap[v.id];
+      const contact = contactMap[v.id] || globalWa;
       const location = [v.city, v.province].filter(Boolean).join(', ');
       const waNum   = contact?.value?.replace(/\D/g,'');
       const waHref  = waNum ? `https://wa.me/62${waNum.replace(/^0/,'')}` : null;

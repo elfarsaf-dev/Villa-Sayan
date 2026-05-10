@@ -103,6 +103,17 @@ CREATE POLICY "admin read inquiries"    ON inquiries   FOR SELECT USING (true);
 CREATE POLICY "admin update inquiries"  ON inquiries   FOR UPDATE USING (true);
 
 -- ================================================================
+-- MIGRATION: Global Contacts (kontak site-wide, villa_id = NULL)
+-- Jalankan ini di Supabase SQL Editor jika belum dijalankan
+-- ================================================================
+
+-- Izinkan anon CRUD kontak global (villa_id IS NULL) untuk admin panel
+CREATE POLICY "admin write contacts"
+  ON contacts FOR ALL
+  USING (true)
+  WITH CHECK (true);
+
+-- ================================================================
 -- SEED DATA — Villa Diandra 2
 -- ================================================================
 

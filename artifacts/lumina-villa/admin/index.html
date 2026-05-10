@@ -122,7 +122,7 @@
       <div onclick="showSection('info')"        class="sidebar-link" data-section="info"><span class="material-symbols-outlined">home</span>Info Villa</div>
       <div onclick="showSection('facilities')"  class="sidebar-link" data-section="facilities"><span class="material-symbols-outlined">pool</span>Fasilitas</div>
       <div onclick="showSection('policies')"    class="sidebar-link" data-section="policies"><span class="material-symbols-outlined">rule</span>Kebijakan</div>
-      <div onclick="showSection('contacts')"    class="sidebar-link" data-section="contacts"><span class="material-symbols-outlined">contacts</span>Kontak</div>
+      <div onclick="showSection('contacts')"    class="sidebar-link" data-section="contacts"><span class="material-symbols-outlined">contacts</span>Kontak Global</div>
       <div onclick="showSection('gallery')"     class="sidebar-link" data-section="gallery"><span class="material-symbols-outlined">photo_library</span>Galeri</div>
       <div id="nav-users"     onclick="showSection('users')"     class="sidebar-link hidden" data-section="users"><span class="material-symbols-outlined">group</span>Pengguna</div>
       <div id="nav-new-villa" onclick="showSection('new-villa')" class="sidebar-link hidden" data-section="new-villa"><span class="material-symbols-outlined">add_home</span>Villa Baru</div>
@@ -178,6 +178,29 @@ function saveWorkerUrl() {
   if (v) { localStorage.setItem('villa_worker_url', v); showToast('Worker URL disimpan!', 'success'); }
 }
 document.getElementById('worker-url-input').value = getWorkerUrl();
+
+// ── Supabase direct (untuk kontak global, tidak perlu worker) ──────
+const SB_URL = 'https://bgwkwlrkvbspycqsdeif.supabase.co';
+const SB_KEY = 'sb_publishable_2ox7OQXXg6FD-ogtiDyxfA_eGdUo5Jl';
+async function sbDirect(path, opts = {}) {
+  const res = await fetch(`${SB_URL}/rest/v1/${path}`, {
+    method: opts.method || 'GET',
+    headers: {
+      'apikey': SB_KEY,
+      'Authorization': `Bearer ${SB_KEY}`,
+      'Content-Type': 'application/json',
+      'Prefer': opts.prefer || (opts.method === 'POST' ? 'return=representation' : ''),
+      ...(opts.headers || {}),
+    },
+    body: opts.body,
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.message || err.error || `HTTP ${res.status}`);
+  }
+  if (opts.method === 'DELETE' || opts.returnVoid) return null;
+  return res.json();
+}
 
 // ── API helper ─────────────────────────────────────────────────────
 async function api(path, options = {}) {
@@ -591,44 +614,76 @@ async function deletePolicy(id) {
   catch (e) { showToast(e.message, 'error'); }
 }
 
-// ── Section: Kontak ────────────────────────────────────────────────
+// ── Section: Kontak Global ─────────────────────────────────────────
 async function renderContacts() {
-  if (!villaId()) return setContent('<div class="text-slate-400 text-center pt-20">Pilih villa</div>');
+  setContent('<div class="text-slate-400 text-center pt-20">Memuat kontak global...</div>');
   try {
-    const data = await api(`/villas/${villaId()}/contacts`);
+    const data = await sbDirect('contacts?villa_id=is.null&order=created_at.asc');
+    const typeIcon = { whatsapp:'chat', phone:'phone', email:'email', instagram:'photo_camera' };
+    const typeLabel = { whatsapp:'WhatsApp', phone:'Telepon', email:'Email', instagram:'Instagram' };
     const rows = data.map(c => `
       <tr>
-        <td><span class="badge bg-slate-100 text-slate-600">${c.type}</span></td>
+        <td>
+          <span class="flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-green-700" style="font-size:16px;">${typeIcon[c.type]||'contact_phone'}</span>
+            <span class="badge bg-slate-100 text-slate-600">${typeLabel[c.type]||c.type}</span>
+          </span>
+        </td>
         <td>${c.label||'-'}</td>
         <td class="font-mono">${c.value}</td>
         <td>${c.is_primary ? '<span class="badge badge-active">Utama</span>' : ''}</td>
-        <td>${iconBtn('delete','red-400',`deleteContact('${c.id}')`,'Hapus')}</td>
-      </tr>`).join('') || '<tr><td colspan="5" class="text-center text-slate-400 py-6">Belum ada kontak</td></tr>';
+        <td class="flex gap-1">
+          ${iconBtn('edit','slate-500',`openEditContact('${c.id}','${esc(c.type)}','${esc(c.label||'')}','${esc(c.value)}',${c.is_primary})`,'Edit')}
+          ${iconBtn('delete','red-400',`deleteContact('${c.id}')`,'Hapus')}
+        </td>
+      </tr>`).join('') || '<tr><td colspan="5" class="text-center text-slate-400 py-8">Belum ada kontak global. Klik "+ Tambah" untuk menambahkan.</td></tr>';
 
     setContent(`
-      <div class="flex items-center justify-between mb-6">
-        <h1 class="text-xl font-bold text-slate-800">Kontak Admin</h1>
-        <button class="btn btn-primary btn-sm" onclick="document.getElementById('con-modal').classList.remove('hidden')"><span class="material-symbols-outlined">add</span>Tambah</button>
+      <div class="flex items-center justify-between mb-2">
+        <div>
+          <h1 class="text-xl font-bold text-slate-800">Kontak Global</h1>
+          <p class="text-sm text-slate-400 mt-0.5">Tampil otomatis di semua halaman villa</p>
+        </div>
+        <button class="btn btn-primary btn-sm" onclick="openAddContact()">
+          <span class="material-symbols-outlined">add</span>Tambah
+        </button>
       </div>
-      <div class="card overflow-hidden">
-        <table><thead><tr><th>Tipe</th><th>Label</th><th>Nomor / Alamat</th><th>Utama</th><th>Hapus</th></tr></thead>
-        <tbody>${rows}</tbody></table>
+      <div class="card overflow-hidden mb-4">
+        <div class="px-4 py-3 bg-green-50 border-b border-green-100 flex items-start gap-2">
+          <span class="material-symbols-outlined text-green-600" style="font-size:18px;">info</span>
+          <p class="text-xs text-green-700">Kontak di sini berlaku untuk <strong>semua halaman</strong> — tidak perlu diset per-villa. Nomor WhatsApp utama (is_primary) akan dipakai sebagai tombol WA di hero &amp; card villa.</p>
+        </div>
+        <table>
+          <thead><tr><th>Tipe</th><th>Label</th><th>Nomor / Alamat</th><th>Utama</th><th>Aksi</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
       </div>
 
+      <!-- Modal tambah/edit kontak -->
       <div id="con-modal" class="hidden modal-bg" onclick="if(event.target===this)this.classList.add('hidden')">
         <div class="modal">
-          <h3 class="text-lg font-bold text-slate-800 mb-5">Tambah Kontak</h3>
+          <h3 class="text-lg font-bold text-slate-800 mb-5" id="con-modal-title">Tambah Kontak Global</h3>
           <form onsubmit="saveContact(event)" class="space-y-4">
+            <input type="hidden" id="con-id"/>
             <div class="grid grid-cols-2 gap-3">
               <div><label>Tipe</label>
-                <select id="con-type"><option>whatsapp</option><option>phone</option><option>email</option><option>instagram</option></select>
+                <select id="con-type">
+                  <option value="whatsapp">WhatsApp</option>
+                  <option value="phone">Telepon</option>
+                  <option value="email">Email</option>
+                  <option value="instagram">Instagram</option>
+                </select>
               </div>
               <div><label>Label</label><input id="con-label" placeholder="Admin Villa"/></div>
             </div>
-            <div><label>Nilai (nomor/alamat)</label><input id="con-value" required/></div>
+            <div>
+              <label>Nilai (nomor/alamat)</label>
+              <input id="con-value" required placeholder="082228981345"/>
+              <p class="text-xs text-slate-400 mt-1">Untuk WhatsApp/Telepon: isi nomor HP (tanpa +62). Untuk email: isi alamat email.</p>
+            </div>
             <div class="flex items-center gap-2">
               <input id="con-primary" type="checkbox" style="width:auto;" class="rounded"/>
-              <label style="margin:0">Kontak utama</label>
+              <label style="margin:0">Kontak utama (dipakai untuk tombol WA utama)</label>
             </div>
             <div class="flex gap-3">
               <button type="submit" class="btn btn-primary flex-1 justify-center">Simpan</button>
@@ -640,18 +695,55 @@ async function renderContacts() {
   } catch (e) { setContent(`<div class="text-red-500 text-center pt-20">${e.message}</div>`); }
 }
 
+function openAddContact() {
+  document.getElementById('con-id').value = '';
+  document.getElementById('con-type').value = 'whatsapp';
+  document.getElementById('con-label').value = '';
+  document.getElementById('con-value').value = '';
+  document.getElementById('con-primary').checked = false;
+  document.getElementById('con-modal-title').textContent = 'Tambah Kontak Global';
+  document.getElementById('con-modal').classList.remove('hidden');
+}
+function openEditContact(id, type, label, value, isPrimary) {
+  document.getElementById('con-id').value = id;
+  document.getElementById('con-type').value = type;
+  document.getElementById('con-label').value = label;
+  document.getElementById('con-value').value = value;
+  document.getElementById('con-primary').checked = isPrimary === true || isPrimary === 'true';
+  document.getElementById('con-modal-title').textContent = 'Edit Kontak Global';
+  document.getElementById('con-modal').classList.remove('hidden');
+}
+
 async function saveContact(e) {
   e.preventDefault();
-  const body = { type: document.getElementById('con-type').value, label: document.getElementById('con-label').value, value: document.getElementById('con-value').value, is_primary: document.getElementById('con-primary').checked };
+  const id = document.getElementById('con-id').value;
+  const body = {
+    villa_id:   null,
+    type:       document.getElementById('con-type').value,
+    label:      document.getElementById('con-label').value,
+    value:      document.getElementById('con-value').value,
+    is_primary: document.getElementById('con-primary').checked,
+  };
   try {
-    await api(`/villas/${villaId()}/contacts`, { method: 'POST', body: JSON.stringify(body) });
-    showToast('Kontak ditambah!', 'success'); renderContacts();
+    if (id) {
+      await sbDirect(`contacts?id=eq.${id}`, { method: 'PATCH', body: JSON.stringify(body), prefer: 'return=minimal', returnVoid: true });
+      showToast('Kontak diperbarui!', 'success');
+    } else {
+      await sbDirect('contacts', { method: 'POST', body: JSON.stringify(body) });
+      showToast('Kontak ditambah!', 'success');
+    }
+    document.getElementById('con-modal').classList.add('hidden');
+    renderContacts();
   } catch (e) { showToast(e.message, 'error'); }
 }
+
 async function deleteContact(id) {
   if (!confirm('Hapus kontak ini?')) return;
-  try { await api(`/contacts/${id}`, { method: 'DELETE' }); showToast('Dihapus', 'success'); renderContacts(); }
-  catch (e) { showToast(e.message, 'error'); }
+  try {
+    await sbDirect(`contacts?id=eq.${id}`, { method: 'DELETE', returnVoid: true });
+    showToast('Dihapus', 'success');
+    renderContacts();
+  } catch (e) { showToast(e.message, 'error'); }
 }
 
 // ── Section: Galeri ────────────────────────────────────────────────

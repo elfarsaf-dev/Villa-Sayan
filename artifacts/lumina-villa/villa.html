@@ -313,15 +313,23 @@ async function loadAll() {
       { data: facilities },
       { data: gallery },
       { data: policies },
-      { data: contacts },
+      { data: villaContacts },
+      { data: globalContacts },
     ] = await Promise.all([
       sb.from('facilities').select('*').eq('villa_id', vid).eq('is_active', true).order('sort_order'),
       sb.from('gallery').select('*').eq('villa_id', vid).eq('is_active', true).order('sort_order'),
       sb.from('policies').select('*').eq('villa_id', vid).order('sort_order'),
       sb.from('contacts').select('*').eq('villa_id', vid),
+      sb.from('contacts').select('*').is('villa_id', null),
     ]);
 
-    render(villaData, facilities||[], gallery||[], policies||[], contacts||[]);
+    // Kontak villa-specific didahulukan; kontak global mengisi jika kosong
+    const allContacts = [...(villaContacts||[])];
+    (globalContacts||[]).forEach(gc => {
+      if (!allContacts.some(c => c.type === gc.type)) allContacts.push(gc);
+    });
+
+    render(villaData, facilities||[], gallery||[], policies||[], allContacts);
   } catch(e) {
     document.getElementById('hero-title').textContent = 'Error: ' + e.message;
   }
