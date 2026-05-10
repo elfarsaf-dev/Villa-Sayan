@@ -208,7 +208,7 @@ async function getVillas(request) {
 }
 
 async function createVilla(request) {
-  await requireSA(request);
+  const u = await requireAuth(request);
   const b = await request.json();
   if (!b.name || !b.slug) return err('name dan slug wajib diisi');
   const ex = await sb('villa_info', 'GET', `slug=eq.${encodeURIComponent(b.slug)}&limit=1`);
@@ -221,7 +221,27 @@ async function createVilla(request) {
     extra_bed_price: b.extra_bed_price || null, extra_bed_note: b.extra_bed_note || null,
     checkin_time: b.checkin_time || '14.00 WIB', checkout_time: b.checkout_time || '12.00 WIB',
   });
-  return json(r[0] || r, 201);
+  const villa = r[0] || r;
+  // Jika admin biasa, otomatis assign mereka ke villa yang baru dibuat
+  if (u.role === 'admin') {
+    await sb('v_users', 'PATCH', `id=eq.${u.id}`, { villa_id: villa.id });
+  }
+  return json(villa, 201);
+}
+
+async function deleteVilla(request, id) {
+  await requireSA(request);
+  if (!id) return err('ID villa wajib diisi');
+  const ex = await sb('villa_info', 'GET', `id=eq.${id}&select=id&limit=1`);
+  if (!ex.length) return err('Villa tidak ditemukan', 404);
+  // Hapus semua data terkait dulu, baru villa-nya
+  await sb('facilities', 'DELETE', `villa_id=eq.${id}`);
+  await sb('policies',   'DELETE', `villa_id=eq.${id}`);
+  await sb('contacts',   'DELETE', `villa_id=eq.${id}`);
+  await sb('gallery',    'DELETE', `villa_id=eq.${id}`);
+  await sb('inquiries',  'DELETE', `villa_id=eq.${id}`);
+  await sb('villa_info', 'DELETE', `id=eq.${id}`);
+  return json({ message: 'Villa berhasil dihapus' });
 }
 
 async function getVilla(request, id) {
@@ -515,6 +535,7 @@ const ROUTES = [
   ['POST',   /^\/villas$/,                          r     => createVilla(r)],
   ['GET',    /^\/villas\/([^/]+)$/,                 (r,m) => getVilla(r, m[1])],
   ['PATCH',  /^\/villas\/([^/]+)$/,                 (r,m) => updateVilla(r, m[1])],
+  ['DELETE', /^\/villas\/([^/]+)$/,                 (r,m) => deleteVilla(r, m[1])],
 
   ['GET',    /^\/villas\/([^/]+)\/facilities$/,     (r,m) => getFacilities(r, m[1])],
   ['POST',   /^\/villas\/([^/]+)\/facilities$/,     (r,m) => createFacility(r, m[1])],

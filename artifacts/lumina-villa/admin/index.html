@@ -299,10 +299,11 @@ async function enterDashboard() {
   document.getElementById('dashboard').classList.remove('hidden');
   document.getElementById('sidebar-user').textContent = `${S.user.username} · ${S.user.role}`;
 
-  // Show superadmin-only nav items
+  // Semua role bisa tambah villa baru
+  document.getElementById('nav-new-villa').classList.remove('hidden');
+
   if (S.user.role === 'superadmin') {
     document.getElementById('nav-users').classList.remove('hidden');
-    document.getElementById('nav-new-villa').classList.remove('hidden');
     document.getElementById('villa-selector-wrap').classList.remove('hidden');
     // Load all villas
     try {
@@ -457,8 +458,41 @@ async function renderInfo() {
           <div><label>Jam Check-out</label><input name="checkout_time" value="${v.checkout_time||'12.00 WIB'}"/></div>
           <div class="md:col-span-2"><button type="submit" class="btn btn-primary"><span class="material-symbols-outlined">save</span>Simpan Perubahan</button></div>
         </form>
-      </div>`);
+      </div>
+      ${S.user?.role === 'superadmin' ? `
+      <div class="card p-5 mt-5 border-red-100" style="border-color:#fee2e2;">
+        <p class="font-semibold text-red-600 flex items-center gap-1.5 mb-1">
+          <span class="material-symbols-outlined" style="font-size:18px;">warning</span>Zona Berbahaya
+        </p>
+        <p class="text-sm text-slate-500 mb-3">Menghapus villa akan menghapus <strong>semua data</strong> terkait (fasilitas, kebijakan, galeri, kontak, reservasi) secara permanen.</p>
+        <button onclick="confirmDeleteVilla('${v.id}','${esc(v.name)}')" class="btn btn-sm" style="background:#dc2626;color:#fff;border:none;">
+          <span class="material-symbols-outlined" style="font-size:16px;">delete_forever</span>Hapus Villa Ini
+        </button>
+      </div>` : ''}
+    `);
   } catch (e) { setContent(`<div class="text-red-500 text-center pt-20">${e.message}</div>`); }
+}
+
+function confirmDeleteVilla(id, name) {
+  if (!confirm(`Hapus villa "${name}" beserta SEMUA data (fasilitas, galeri, kebijakan, kontak, reservasi)?\n\nTindakan ini tidak dapat dibatalkan!`)) return;
+  deleteVillaById(id, name);
+}
+
+async function deleteVillaById(id, name) {
+  try {
+    await api(`/villas/${id}`, { method: 'DELETE' });
+    showToast(`Villa "${name}" berhasil dihapus`, 'success');
+    // Hapus dari state lokal
+    S.villas = S.villas.filter(v => v.id !== id);
+    const sel = document.getElementById('villa-selector');
+    if (sel) {
+      sel.innerHTML = S.villas.map(v => `<option value="${v.id}">${v.name}</option>`).join('');
+      S.currentVillaId = S.villas[0]?.id || '';
+      sel.value = S.currentVillaId;
+      localStorage.setItem('villa_current_id', S.currentVillaId);
+    }
+    showSection('info');
+  } catch (e) { showToast(e.message, 'error'); }
 }
 
 async function saveInfo(e) {
@@ -1211,6 +1245,8 @@ async function createVilla(e) {
     window._nvFacilities = [];
     window._nvPolicies   = [];
     S.villas.push(v);
+    // Jika admin biasa, update villa_id lokal agar navigasi berikutnya benar
+    if (S.user.role === 'admin') S.user.villa_id = v.id;
     const sel = document.getElementById('villa-selector');
     if (sel) { sel.innerHTML += `<option value="${v.id}">${v.name}</option>`; sel.value = v.id; }
     S.currentVillaId = v.id;
