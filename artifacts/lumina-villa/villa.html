@@ -3,8 +3,11 @@
 <head>
   <meta charset="utf-8"/>
   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-  <title id="page-title">Villa — Lumina Villa</title>
-  <meta id="page-desc" name="description" content="Villa eksklusif di Tawangmangu."/>
+  <title id="page-title">Villa — Villa Tawangmangu</title>
+  <meta id="page-desc" name="description" content="Sewa villa eksklusif di Tawangmangu dengan kolam renang privat dan pemandangan pegunungan Sekipan."/>
+  <meta name="keywords" content="villa tawangmangu, sewa villa tawangmangu, villa sekipan, villa karanganyar, villa kolam renang tawangmangu"/>
+  <meta property="og:type" content="website"/>
+  <meta name="robots" content="index, follow"/>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏡</text></svg>"/>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
@@ -80,7 +83,7 @@
 
 <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300" style="background:transparent;">
   <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-    <a href="index.html" class="font-serif text-lg tracking-widest text-white" id="nav-logo">LUMINA VILLA</a>
+    <a href="index.html" class="font-serif text-lg tracking-widest text-white" id="nav-logo">VILLA TAWANGMANGU</a>
     <div class="hidden md:flex items-center gap-8" id="nav-links">
       <a href="#about"      class="text-[11px] tracking-widest uppercase font-semibold text-white/80 hover:text-white transition-colors">Villa</a>
       <a href="#facilities" class="text-[11px] tracking-widest uppercase font-semibold text-white/80 hover:text-white transition-colors">Fasilitas</a>
@@ -251,7 +254,7 @@
   <div class="max-w-6xl mx-auto py-10">
     <div class="grid md:grid-cols-3 gap-8 mb-8">
       <div>
-        <div id="footer-name" class="font-serif text-xl tracking-widest text-primary mb-3">LUMINA VILLA</div>
+        <div id="footer-name" class="font-serif text-xl tracking-widest text-primary mb-3">VILLA TAWANGMANGU</div>
         <p id="footer-desc" class="text-[0.8125rem] text-on-surface-variant leading-relaxed max-w-xs"></p>
       </div>
       <div>
@@ -332,11 +335,11 @@ function render(v, facilities, gallery, policies, contacts) {
   const waHref = waNum ? `https://wa.me/62${waNum.replace(/^0/,'')}` : '#';
 
   // Meta
-  document.title = `${v.name} — Lumina Villa`;
+  document.title = `${v.name} — Villa Tawangmangu`;
   document.getElementById('page-desc').content = v.tagline || v.description || '';
 
   // Nav & Hero
-  document.getElementById('nav-logo').textContent = (v.name||'LUMINA VILLA').toUpperCase();
+  document.getElementById('nav-logo').textContent = (v.name||'VILLA TAWANGMANGU').toUpperCase();
   document.getElementById('hero-title').textContent = v.name || '';
   document.getElementById('hero-tagline').textContent = v.tagline || '';
   document.getElementById('hero-location').textContent = location;
@@ -431,9 +434,9 @@ function render(v, facilities, gallery, policies, contacts) {
   document.getElementById('contact-info-row').innerHTML = infoHtml;
 
   // Footer
-  document.getElementById('footer-name').textContent = (v.name||'LUMINA VILLA').toUpperCase();
+  document.getElementById('footer-name').textContent = (v.name||'VILLA TAWANGMANGU').toUpperCase();
   document.getElementById('footer-desc').textContent = v.tagline || (v.description||'').slice(0,120) || '';
-  document.getElementById('footer-copy').textContent = `© ${new Date().getFullYear()} ${v.name||'Lumina Villa'}. All Rights Reserved.`;
+  document.getElementById('footer-copy').textContent = `© ${new Date().getFullYear()} ${v.name||'Villa Tawangmangu'}. All Rights Reserved.`;
   document.getElementById('footer-contacts').innerHTML = contacts.filter(c=>c.value).map(c=>{
     const href = c.type==='whatsapp'||c.type==='phone' ? `tel:${c.value}` : c.type==='email' ? `mailto:${c.value}` : '#';
     const icon = c.type==='whatsapp'?'chat':c.type==='email'?'email':'phone';
