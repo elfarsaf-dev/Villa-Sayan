@@ -718,18 +718,18 @@ async function saveContact(e) {
   e.preventDefault();
   const id = document.getElementById('con-id').value;
   const body = {
-    villa_id:   null,
     type:       document.getElementById('con-type').value,
     label:      document.getElementById('con-label').value,
     value:      document.getElementById('con-value').value,
     is_primary: document.getElementById('con-primary').checked,
   };
   try {
+    if (!getWorkerUrl()) throw new Error('Worker URL belum diatur! Isi URL Cloudflare Worker di halaman login terlebih dahulu.');
     if (id) {
-      await sbDirect(`contacts?id=eq.${id}`, { method: 'PATCH', body: JSON.stringify(body), prefer: 'return=minimal', returnVoid: true });
+      await api(`/contacts/global/${id}`, { method: 'PATCH', body: JSON.stringify(body) });
       showToast('Kontak diperbarui!', 'success');
     } else {
-      await sbDirect('contacts', { method: 'POST', body: JSON.stringify(body) });
+      await api('/contacts/global', { method: 'POST', body: JSON.stringify(body) });
       showToast('Kontak ditambah!', 'success');
     }
     document.getElementById('con-modal').classList.add('hidden');
@@ -740,7 +740,8 @@ async function saveContact(e) {
 async function deleteContact(id) {
   if (!confirm('Hapus kontak ini?')) return;
   try {
-    await sbDirect(`contacts?id=eq.${id}`, { method: 'DELETE', returnVoid: true });
+    if (!getWorkerUrl()) throw new Error('Worker URL belum diatur!');
+    await api(`/contacts/global/${id}`, { method: 'DELETE' });
     showToast('Dihapus', 'success');
     renderContacts();
   } catch (e) { showToast(e.message, 'error'); }

@@ -103,15 +103,12 @@ CREATE POLICY "admin read inquiries"    ON inquiries   FOR SELECT USING (true);
 CREATE POLICY "admin update inquiries"  ON inquiries   FOR UPDATE USING (true);
 
 -- ================================================================
--- MIGRATION: Global Contacts (kontak site-wide, villa_id = NULL)
--- Jalankan ini di Supabase SQL Editor jika belum dijalankan
+-- CATATAN: Global Contacts (kontak site-wide, villa_id = NULL)
+-- Write (INSERT/UPDATE/DELETE) dilakukan melalui Cloudflare Worker
+-- yang menggunakan service_role key — BUKAN anon key.
+-- Tidak perlu menambah policy write di sini.
+-- Lihat file: cloudflare-worker-additions.js
 -- ================================================================
-
--- Izinkan anon CRUD kontak global (villa_id IS NULL) untuk admin panel
-CREATE POLICY "admin write contacts"
-  ON contacts FOR ALL
-  USING (true)
-  WITH CHECK (true);
 
 -- ================================================================
 -- SEED DATA — Villa Diandra 2
