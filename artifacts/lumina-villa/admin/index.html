@@ -148,10 +148,6 @@
       <div onclick="showSection('gallery')"     class="sidebar-link" data-section="gallery"><span class="material-symbols-outlined">photo_library</span>Galeri</div>
       <div id="nav-users"     onclick="showSection('users')"     class="sidebar-link hidden" data-section="users"><span class="material-symbols-outlined">group</span>Pengguna</div>
       <div id="nav-new-villa" onclick="showSection('new-villa')" class="sidebar-link hidden" data-section="new-villa"><span class="material-symbols-outlined">add_home</span>Villa Baru</div>
-      <div style="height:1px;background:#f1f5f9;margin:8px 6px;"></div>
-      <div onclick="showSection('ai-import')" class="sidebar-link" data-section="ai-import" style="color:#7c3aed;">
-        <span class="material-symbols-outlined icon-fill" style="color:#7c3aed;">auto_awesome</span>Import AI
-      </div>
     </nav>
 
     <div class="px-3 pb-4">
@@ -350,7 +346,7 @@ function showSection(name) {
   const titles = {
     inquiries: 'Reservasi', info: 'Info Villa', facilities: 'Fasilitas',
     policies: 'Kebijakan', contacts: 'Kontak Global', gallery: 'Galeri',
-    users: 'Pengguna', 'new-villa': 'Villa Baru', 'ai-import': 'Import AI',
+    users: 'Pengguna', 'new-villa': 'Villa Baru',
   };
   const titleEl = document.getElementById('mobile-page-title');
   if (titleEl) titleEl.textContent = titles[name] || 'Dashboard';
@@ -364,7 +360,6 @@ function showSection(name) {
     gallery:    renderGallery,
     users:      renderUsers,
     'new-villa': renderNewVilla,
-    'ai-import': renderAIImport,
   }[name];
   if (sec) sec();
 }
@@ -962,6 +957,36 @@ async function deleteUser(id) {
 function renderNewVilla() {
   setContent(`
     <h1 class="text-xl font-bold text-slate-800 mb-6">Tambah Villa Baru</h1>
+
+    <!-- Panel AI -->
+    <div class="card p-4 mb-5 border-violet-100" style="border-color:#ede9fe;">
+      <button onclick="document.getElementById('nv-ai-panel').classList.toggle('hidden')"
+        class="flex items-center gap-2 w-full text-left">
+        <span class="material-symbols-outlined icon-fill" style="color:#7c3aed;font-size:20px;">auto_awesome</span>
+        <span class="font-semibold text-slate-700">Isi Otomatis dengan AI</span>
+        <span class="text-xs text-slate-400 ml-1">— tempel data villa, AI isi formnya</span>
+        <span class="material-symbols-outlined ml-auto text-slate-400" style="font-size:18px;">expand_more</span>
+      </button>
+      <div id="nv-ai-panel" class="mt-4">
+        <textarea id="nv-ai-input" rows="8"
+          placeholder="Tempel info villa di sini — dari WhatsApp, brosur, catatan, apapun...&#10;&#10;Contoh:&#10;VILLA DIANDRA 2 Tawangmangu&#10;🏊 Kolam renang privat&#10;🛏️ 3 kamar tidur, kapasitas 25 orang&#10;Check-in: 14.00 WIB | Check-out: 12.00 WIB&#10;☎️ 082228981345"></textarea>
+        <div class="flex flex-wrap gap-3 mt-3">
+          <button class="btn btn-primary" onclick="fillNewVillaWithAI()" id="nv-ai-btn" style="background:#7c3aed;">
+            <span class="material-symbols-outlined icon-fill">auto_awesome</span>Analisa &amp; Isi Form
+          </button>
+          <button class="btn btn-ghost" onclick="document.getElementById('nv-ai-input').value=''">
+            <span class="material-symbols-outlined">clear</span>Hapus
+          </button>
+        </div>
+        <p id="nv-ai-status" class="text-xs text-slate-500 mt-2 flex items-center gap-1.5"></p>
+        <div id="nv-ai-raw" class="hidden mt-3">
+          <p class="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-1">Respons Mentah AI</p>
+          <pre id="nv-ai-raw-text" class="text-xs text-slate-600 bg-slate-50 rounded-lg p-3 overflow-x-auto whitespace-pre-wrap" style="max-height:160px;overflow-y:auto;"></pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- Form manual -->
     <div class="card p-6 max-w-2xl">
       <form onsubmit="createVilla(event)" class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div class="md:col-span-2"><label>Nama Villa *</label><input id="nv-name" required/></div>
@@ -980,6 +1005,61 @@ function renderNewVilla() {
         </div>
       </form>
     </div>`);
+}
+
+async function fillNewVillaWithAI() {
+  const rawText = (document.getElementById('nv-ai-input')?.value || '').trim();
+  if (!rawText) return showToast('Tempel data villa terlebih dahulu', 'error');
+
+  const btn    = document.getElementById('nv-ai-btn');
+  const status = document.getElementById('nv-ai-status');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="material-symbols-outlined" style="animation:spin 1s linear infinite">progress_activity</span>Menganalisa...';
+  status.innerHTML = '<span class="material-symbols-outlined" style="font-size:14px;color:#7c3aed;">auto_awesome</span> AI sedang membaca data villa…';
+  document.getElementById('nv-ai-raw').classList.add('hidden');
+
+  const logic = `Kamu adalah asisten ekstraksi data villa. Tugasmu: baca teks bebas dan kembalikan HANYA JSON valid (tanpa penjelasan, tanpa markdown, tanpa kode block) dengan struktur berikut:
+{"name":"","slug":"","tagline":"","description":"","address":"","city":"","province":"","max_guests":0,"max_guests_note":"","extra_bed_price":0,"extra_bed_note":"","checkin_time":"14.00 WIB","checkout_time":"12.00 WIB"}
+Aturan: slug huruf kecil pakai tanda hubung, max_guests dan extra_bed_price harus integer, jawab HANYA JSON.`;
+
+  const message = `Ekstrak info villa dari teks ini:\n\n${rawText}`;
+
+  try {
+    const res = await fetch(`${AI_URL}?${new URLSearchParams({ message, logic, memory: '[]' })}`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const envelope = await res.json();
+    const rawReply = (envelope.reply || envelope.message || envelope.text || '').trim();
+
+    // Tampilkan raw response
+    document.getElementById('nv-ai-raw-text').textContent = rawReply;
+    document.getElementById('nv-ai-raw').classList.remove('hidden');
+
+    let text = rawReply.replace(/^```json\s*/i,'').replace(/^```\s*/i,'').replace(/\s*```$/i,'').trim();
+    const d = JSON.parse(text);
+
+    // Isi field form
+    const f = (id, val) => { const el = document.getElementById(id); if (el && val !== undefined && val !== null) el.value = val; };
+    f('nv-name',    d.name);
+    f('nv-slug',    d.slug);
+    f('nv-tagline', d.tagline);
+    f('nv-desc',    d.description);
+    f('nv-address', d.address);
+    f('nv-city',    d.city);
+    f('nv-prov',    d.province);
+    f('nv-cin',     d.checkin_time);
+    f('nv-cout',    d.checkout_time);
+    if (d.max_guests) f('nv-guests', d.max_guests);
+
+    status.innerHTML = '<span class="material-symbols-outlined" style="font-size:14px;color:#16a34a;">check_circle</span> Form berhasil diisi! Cek dan koreksi jika perlu, lalu klik Buat Villa.';
+    // Scroll ke form
+    document.getElementById('nv-name')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  } catch(e) {
+    status.innerHTML = `<span class="material-symbols-outlined" style="font-size:14px;color:#991b1b;">error</span> Gagal: ${e.message}`;
+    showToast('AI gagal menganalisa', 'error');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<span class="material-symbols-outlined icon-fill">auto_awesome</span>Analisa &amp; Isi Form';
+  }
 }
 
 async function createVilla(e) {
