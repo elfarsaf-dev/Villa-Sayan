@@ -24,13 +24,13 @@ args = "Start application"
 name = "Start application"
 author = "agent"
 
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "PORT=8081 pnpm --filter @workspace/lumina-villa run dev"
-waitForPort = 8081
-
 [workflows.workflow.metadata]
 outputType = "webview"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "PORT=18111 BASE_PATH=/ pnpm --filter @workspace/lumina-villa run dev"
+waitForPort = 18111
 
 [agent]
 stack = "PNPM_WORKSPACE"
