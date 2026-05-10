@@ -1059,12 +1059,14 @@ Contoh output LENGKAP:
 }
 
 ATURAN WAJIB:
-1. KEY "facilities" HARUS ADA dan DIISI — ekstrak SEMUA fasilitas dari teks (kolam renang, kamar tidur, dapur, wifi, AC, TV, parkir, bbq, dll)
-2. Setiap fasilitas wajib punya "description" deskriptif
-3. slug: huruf kecil, spasi jadi tanda hubung
-4. facilities.icon: pool, wifi, local_parking, kitchen, tv, king_bed, shower, outdoor_grill, meeting_room, spa, fitness_center, ac_unit, balcony, restaurant, hot_tub, bed, living
-5. max_guests dan extra_bed_price harus integer
-6. Jawab HANYA JSON mentah`;
+1. villa_info.description WAJIB berupa ARTIKEL DESKRIPTIF PANJANG (minimal 4-5 kalimat), bukan kalimat pendek. Gabungkan SEMUA informasi: nama villa, lokasi, suasana alam, fasilitas unggulan, kapasitas, cocok untuk siapa, keunggulan villa. Tulis seperti artikel promosi wisata yang menarik dan informatif.
+2. KEY "facilities" HARUS ADA dan DIISI — ekstrak SEMUA fasilitas dari teks (kolam renang, kamar tidur, dapur, wifi, AC, TV, parkir, bbq, dll)
+3. Setiap fasilitas wajib punya "description" deskriptif dan spesifik
+4. slug: huruf kecil, spasi jadi tanda hubung
+5. facilities.icon: pool, wifi, local_parking, kitchen, tv, king_bed, shower, outdoor_grill, meeting_room, spa, fitness_center, ac_unit, balcony, restaurant, hot_tub, bed, living
+6. max_guests dan extra_bed_price harus integer
+7. LOKASI FALLBACK: Jika alamat/kota/provinsi tidak disebutkan atau tidak jelas, wajib isi: address="Tawangmangu", city="Karanganyar", province="Jawa Tengah"
+8. Jawab HANYA JSON mentah`;
 
   const message = `Ekstrak info villa dari teks ini:\n\n${rawText}`;
 
@@ -1284,14 +1286,16 @@ Contoh output LENGKAP:
 }
 
 ATURAN WAJIB:
-1. KEY "facilities" HARUS ADA dan HARUS DIISI dari teks — ekstrak SEMUA fasilitas yang disebut (kolam renang, kamar tidur, dapur, wifi, AC, TV, parkir, bbq, dll)
-2. Setiap fasilitas beri "description" yang deskriptif berdasarkan teks
-3. slug: huruf kecil, spasi jadi tanda hubung, hapus karakter aneh
-4. facilities.icon: gunakan nama ikon Material Symbols (pool, wifi, local_parking, kitchen, tv, king_bed, shower, outdoor_grill, meeting_room, spa, fitness_center, ac_unit, balcony, camera_outdoor, restaurant, hot_tub, forest, water, backyard, deck, fireplace, checkroom, bed, chair, counter_7, living)
-5. policies.type harus salah satu: "schedule", "prohibition", "note", "rule"
-6. max_guests dan extra_bed_price harus integer, bukan string
-7. contacts.value: format 08xxx (tanpa +62 atau 62)
-8. Jawab HANYA JSON mentah, tidak ada teks lain sebelum atau sesudah JSON`;
+1. villa_info.description WAJIB berupa ARTIKEL DESKRIPTIF PANJANG (minimal 4-5 kalimat), bukan kalimat pendek. Gabungkan SEMUA informasi dari teks: nama villa, lokasi, suasana alam, fasilitas unggulan, kapasitas, cocok untuk acara apa, keunggulan villa. Tulis seperti artikel promosi wisata yang menarik dan informatif.
+2. KEY "facilities" HARUS ADA dan HARUS DIISI dari teks — ekstrak SEMUA fasilitas yang disebut (kolam renang, kamar tidur, dapur, wifi, AC, TV, parkir, bbq, dll)
+3. Setiap fasilitas beri "description" yang deskriptif dan spesifik berdasarkan teks
+4. slug: huruf kecil, spasi jadi tanda hubung, hapus karakter aneh
+5. facilities.icon: gunakan nama ikon Material Symbols (pool, wifi, local_parking, kitchen, tv, king_bed, shower, outdoor_grill, meeting_room, spa, fitness_center, ac_unit, balcony, camera_outdoor, restaurant, hot_tub, forest, water, backyard, deck, fireplace, checkroom, bed, chair, counter_7, living)
+6. policies.type harus salah satu: "schedule", "prohibition", "note", "rule"
+7. max_guests dan extra_bed_price harus integer, bukan string
+8. contacts.value: format 08xxx (tanpa +62 atau 62)
+9. LOKASI FALLBACK: Jika alamat/kota/provinsi tidak disebutkan atau tidak jelas, wajib isi: address="Tawangmangu", city="Karanganyar", province="Jawa Tengah"
+10. Jawab HANYA JSON mentah, tidak ada teks lain sebelum atau sesudah JSON`;
 
   const message = `Ekstrak data villa dari teks berikut dan kembalikan JSON sesuai skema:\n\n${rawText}`;
 
