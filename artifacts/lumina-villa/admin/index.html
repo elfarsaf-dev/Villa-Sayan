@@ -955,6 +955,7 @@ async function deleteUser(id) {
 
 // ── Section: Villa Baru ────────────────────────────────────────────
 function renderNewVilla() {
+  window._nvFacilities = [];
   setContent(`
     <h1 class="text-xl font-bold text-slate-800 mb-6">Tambah Villa Baru</h1>
 
@@ -987,7 +988,7 @@ function renderNewVilla() {
     </div>
 
     <!-- Form manual -->
-    <div class="card p-6 max-w-2xl">
+    <div class="card p-6 max-w-2xl mb-4">
       <form onsubmit="createVilla(event)" class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div class="md:col-span-2"><label>Nama Villa *</label><input id="nv-name" required/></div>
         <div><label>Slug (URL path) *</label><input id="nv-slug" placeholder="diandra3" required/>
@@ -1004,6 +1005,31 @@ function renderNewVilla() {
           <button type="submit" class="btn btn-primary"><span class="material-symbols-outlined">add_home</span>Buat Villa</button>
         </div>
       </form>
+    </div>
+
+    <!-- Fasilitas -->
+    <div class="card p-5 max-w-2xl">
+      <div class="flex items-center justify-between mb-3">
+        <span class="font-semibold text-slate-700 flex items-center gap-1.5">
+          <span class="material-symbols-outlined" style="font-size:18px;">pool</span>
+          Fasilitas Villa <span id="nv-fac-count" class="badge bg-slate-100 text-slate-500 ml-1">0</span>
+        </span>
+        <span class="text-xs text-slate-400">Akan disimpan otomatis saat villa dibuat</span>
+      </div>
+      <div id="nv-fac-list" class="space-y-1.5 mb-4">
+        <p class="text-slate-400 text-sm italic">Belum ada fasilitas — tambahkan manual di bawah atau gunakan AI di atas</p>
+      </div>
+      <div class="border-t border-slate-100 pt-3">
+        <p class="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-2">Tambah Fasilitas</p>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+          <input id="nv-fac-name" placeholder="Nama (cth: Kolam Renang)" style="font-size:0.8125rem;padding:7px 10px;"/>
+          <input id="nv-fac-icon" placeholder="Ikon Material (cth: pool)" style="font-size:0.8125rem;padding:7px 10px;"/>
+          <input id="nv-fac-desc" placeholder="Deskripsi (opsional)" style="font-size:0.8125rem;padding:7px 10px;"/>
+        </div>
+        <button onclick="nvAddFacility()" class="btn btn-ghost btn-sm mt-2">
+          <span class="material-symbols-outlined" style="font-size:15px;">add</span>Tambah ke List
+        </button>
+      </div>
     </div>`);
 }
 
@@ -1018,9 +1044,27 @@ async function fillNewVillaWithAI() {
   status.innerHTML = '<span class="material-symbols-outlined" style="font-size:14px;color:#7c3aed;">auto_awesome</span> AI sedang membaca data villa…';
   document.getElementById('nv-ai-raw').classList.add('hidden');
 
-  const logic = `Kamu adalah asisten ekstraksi data villa. Tugasmu: baca teks bebas dan kembalikan HANYA JSON valid (tanpa penjelasan, tanpa markdown, tanpa kode block) dengan struktur berikut:
-{"name":"","slug":"","tagline":"","description":"","address":"","city":"","province":"","max_guests":0,"max_guests_note":"","extra_bed_price":0,"extra_bed_note":"","checkin_time":"14.00 WIB","checkout_time":"12.00 WIB"}
-Aturan: slug huruf kecil pakai tanda hubung, max_guests dan extra_bed_price harus integer, jawab HANYA JSON.`;
+  const logic = `Kamu adalah asisten ekstraksi data villa profesional. Tugasmu: baca teks bebas dan kembalikan HANYA JSON valid tanpa penjelasan, tanpa markdown, tanpa kode block.
+
+OUTPUT WAJIB berisi 2 key: villa_info dan facilities.
+
+Contoh output LENGKAP:
+{
+  "villa_info": {"name":"Villa Diandra 2","slug":"villa-diandra-2","tagline":"Villa eksklusif dengan kolam renang privat","description":"Deskripsi lengkap...","address":"Sekipan, Tawangmangu","city":"Karanganyar","province":"Jawa Tengah","max_guests":25,"max_guests_note":"","extra_bed_price":150000,"extra_bed_note":"","checkin_time":"14.00 WIB","checkout_time":"12.00 WIB"},
+  "facilities": [
+    {"name":"Kolam Renang Privat","icon":"pool","description":"Kolam renang khusus tamu villa","sort_order":1},
+    {"name":"WiFi","icon":"wifi","description":"Internet gratis seluruh area","sort_order":2},
+    {"name":"3 Kamar Tidur","icon":"king_bed","description":"Kamar tidur dengan kasur nyaman","sort_order":3}
+  ]
+}
+
+ATURAN WAJIB:
+1. KEY "facilities" HARUS ADA dan DIISI — ekstrak SEMUA fasilitas dari teks (kolam renang, kamar tidur, dapur, wifi, AC, TV, parkir, bbq, dll)
+2. Setiap fasilitas wajib punya "description" deskriptif
+3. slug: huruf kecil, spasi jadi tanda hubung
+4. facilities.icon: pool, wifi, local_parking, kitchen, tv, king_bed, shower, outdoor_grill, meeting_room, spa, fitness_center, ac_unit, balcony, restaurant, hot_tub, bed, living
+5. max_guests dan extra_bed_price harus integer
+6. Jawab HANYA JSON mentah`;
 
   const message = `Ekstrak info villa dari teks ini:\n\n${rawText}`;
 
@@ -1030,28 +1074,39 @@ Aturan: slug huruf kecil pakai tanda hubung, max_guests dan extra_bed_price haru
     const envelope = await res.json();
     const rawReply = (envelope.reply || envelope.message || envelope.text || '').trim();
 
-    // Tampilkan raw response
     document.getElementById('nv-ai-raw-text').textContent = rawReply;
     document.getElementById('nv-ai-raw').classList.remove('hidden');
 
     let text = rawReply.replace(/^```json\s*/i,'').replace(/^```\s*/i,'').replace(/\s*```$/i,'').trim();
-    const d = JSON.parse(text);
+    const raw = JSON.parse(text);
+
+    // Normalisasi: handle flat atau nested
+    const VILLA_KEYS = ['name','slug','tagline','description','address','city','province','max_guests','checkin_time','checkout_time'];
+    let vi = raw.villa_info || {};
+    let facs = raw.facilities || [];
+    if (!raw.villa_info && VILLA_KEYS.some(k => k in raw)) {
+      vi = {}; VILLA_KEYS.concat(['max_guests_note','extra_bed_price','extra_bed_note']).forEach(k => { if (k in raw) vi[k] = raw[k]; });
+      facs = raw.facilities || [];
+    }
 
     // Isi field form
     const f = (id, val) => { const el = document.getElementById(id); if (el && val !== undefined && val !== null) el.value = val; };
-    f('nv-name',    d.name);
-    f('nv-slug',    d.slug);
-    f('nv-tagline', d.tagline);
-    f('nv-desc',    d.description);
-    f('nv-address', d.address);
-    f('nv-city',    d.city);
-    f('nv-prov',    d.province);
-    f('nv-cin',     d.checkin_time);
-    f('nv-cout',    d.checkout_time);
-    if (d.max_guests) f('nv-guests', d.max_guests);
+    f('nv-name',    vi.name);
+    f('nv-slug',    vi.slug);
+    f('nv-tagline', vi.tagline);
+    f('nv-desc',    vi.description);
+    f('nv-address', vi.address);
+    f('nv-city',    vi.city);
+    f('nv-prov',    vi.province);
+    f('nv-cin',     vi.checkin_time);
+    f('nv-cout',    vi.checkout_time);
+    if (vi.max_guests) f('nv-guests', vi.max_guests);
 
-    status.innerHTML = '<span class="material-symbols-outlined" style="font-size:14px;color:#16a34a;">check_circle</span> Form berhasil diisi! Cek dan koreksi jika perlu, lalu klik Buat Villa.';
-    // Scroll ke form
+    // Isi fasilitas
+    window._nvFacilities = Array.isArray(facs) ? facs : [];
+    nvRenderFacList();
+
+    status.innerHTML = `<span class="material-symbols-outlined" style="font-size:14px;color:#16a34a;">check_circle</span> Form dan ${window._nvFacilities.length} fasilitas berhasil diisi! Cek lalu klik Buat Villa.`;
     document.getElementById('nv-name')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   } catch(e) {
     status.innerHTML = `<span class="material-symbols-outlined" style="font-size:14px;color:#991b1b;">error</span> Gagal: ${e.message}`;
@@ -1076,20 +1131,79 @@ async function createVilla(e) {
     checkin_time: document.getElementById('nv-cin').value,
     checkout_time: document.getElementById('nv-cout').value,
   };
+  const submitBtn = e.target.querySelector('button[type="submit"]');
   try {
+    submitBtn && (submitBtn.disabled = true);
     const v = await api('/villas', { method: 'POST', body: JSON.stringify(body) });
-    showToast(`Villa "${v.name}" berhasil dibuat!`, 'success');
+
+    // Simpan fasilitas ke DB satu per satu
+    const facs = window._nvFacilities || [];
+    let facOk = 0, facFail = 0;
+    for (let i = 0; i < facs.length; i++) {
+      const f = facs[i];
+      try {
+        await api(`/villas/${v.id}/facilities`, { method: 'POST', body: JSON.stringify({
+          name: f.name, icon: f.icon || 'star', description: f.description || '', sort_order: f.sort_order ?? i, is_active: true,
+        })});
+        facOk++;
+      } catch { facFail++; }
+    }
+
+    window._nvFacilities = [];
     S.villas.push(v);
     const sel = document.getElementById('villa-selector');
-    if (sel) {
-      sel.innerHTML += `<option value="${v.id}">${v.name}</option>`;
-      sel.value = v.id;
-    }
+    if (sel) { sel.innerHTML += `<option value="${v.id}">${v.name}</option>`; sel.value = v.id; }
     S.currentVillaId = v.id;
     localStorage.setItem('villa_current_id', v.id);
     e.target.reset();
-    showSection('info');
-  } catch (e) { showToast(e.message, 'error'); }
+
+    const facMsg = facOk > 0 ? ` + ${facOk} fasilitas disimpan` : '';
+    const failMsg = facFail > 0 ? ` (${facFail} fasilitas gagal)` : '';
+    showToast(`Villa "${v.name}" berhasil dibuat!${facMsg}${failMsg}`, 'success');
+    showSection('facilities');
+  } catch (err) { showToast(err.message, 'error'); }
+  finally { submitBtn && (submitBtn.disabled = false); }
+}
+
+// ── Helper: Fasilitas di form Villa Baru ───────────────────────────
+window._nvFacilities = [];
+
+function nvRenderFacList() {
+  const facs = window._nvFacilities || [];
+  const list = document.getElementById('nv-fac-list');
+  const cnt  = document.getElementById('nv-fac-count');
+  if (!list) return;
+  if (cnt) cnt.textContent = facs.length;
+  list.innerHTML = facs.length ? facs.map((f, i) => `
+    <div class="flex items-center gap-2 bg-slate-50 rounded-lg px-3 py-2">
+      <span class="material-symbols-outlined text-green-600" style="font-size:16px;">${f.icon || 'star'}</span>
+      <span class="text-sm text-slate-700 flex-1 font-medium">${f.name}</span>
+      ${f.description ? `<span class="text-slate-400 text-xs hidden sm:inline">— ${f.description}</span>` : ''}
+      <button onclick="nvRemoveFacility(${i})" class="p-1 rounded hover:bg-red-100 text-red-400" title="Hapus">
+        <span class="material-symbols-outlined" style="font-size:15px;">close</span>
+      </button>
+    </div>`).join('') : '<p class="text-slate-400 text-sm italic">Belum ada fasilitas — tambahkan manual di bawah atau gunakan AI di atas</p>';
+}
+
+function nvAddFacility() {
+  const name = document.getElementById('nv-fac-name')?.value.trim();
+  const icon = document.getElementById('nv-fac-icon')?.value.trim() || 'star';
+  const desc = document.getElementById('nv-fac-desc')?.value.trim() || '';
+  if (!name) return showToast('Nama fasilitas wajib diisi', 'error');
+  if (!window._nvFacilities) window._nvFacilities = [];
+  window._nvFacilities.push({ name, icon, description: desc, sort_order: window._nvFacilities.length, is_active: true });
+  document.getElementById('nv-fac-name').value = '';
+  document.getElementById('nv-fac-icon').value = '';
+  document.getElementById('nv-fac-desc').value = '';
+  nvRenderFacList();
+  showToast('Fasilitas ditambahkan', 'success');
+}
+
+function nvRemoveFacility(idx) {
+  if (!window._nvFacilities) return;
+  window._nvFacilities.splice(idx, 1);
+  window._nvFacilities.forEach((f, i) => f.sort_order = i);
+  nvRenderFacList();
 }
 
 // ── Utils ──────────────────────────────────────────────────────────
