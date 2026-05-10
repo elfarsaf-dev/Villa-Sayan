@@ -135,6 +135,12 @@ New users register → status=`pending` → superadmin approves → status=`acti
 - Single-file Cloudflare Worker for backend
 - GitHub API for photo storage
 
+## Clean URLs (Villa Detail)
+
+Villa detail pages use slug-based clean URLs: `/villa/{slug}` (e.g. `/villa/villa-sora`).
+- **Dev (Replit)**: Vite middleware in `vite.config.ts` rewrites `/villa/*` → `villa.html`
+- **Production (Cloudflare Pages)**: `_redirects` file in `artifacts/lumina-villa/` handles the rewrite
+
 ## Gotchas
 
 - After deploying worker, paste the worker URL into admin dashboard settings (saved to localStorage)
