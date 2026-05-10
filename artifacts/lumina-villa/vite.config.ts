@@ -1,4 +1,4 @@
-import { defineConfig, type Plugin } from "vite";
+import { defineConfig, type Plugin, type ViteDevServer } from "vite";
 import path from "path";
 
 const rawPort = process.env.PORT;
@@ -26,10 +26,26 @@ function injectEnvPlugin(): Plugin {
   };
 }
 
+// Plugin: rewrite /villa/:slug → /villa.html so clean URLs work in dev
+function villaSlugRewritePlugin(): Plugin {
+  return {
+    name: "villa-slug-rewrite",
+    configureServer(server: ViteDevServer) {
+      server.middlewares.use((req, _res, next) => {
+        if (req.url && /^\/villa\/[^/?#]+\/?(\?.*)?$/.test(req.url)) {
+          const qs = req.url.includes("?") ? req.url.slice(req.url.indexOf("?")) : "";
+          req.url = "/villa.html" + qs;
+        }
+        next();
+      });
+    },
+  };
+}
+
 export default defineConfig({
   base: basePath,
   root: path.resolve(import.meta.dirname),
-  plugins: [injectEnvPlugin()],
+  plugins: [injectEnvPlugin(), villaSlugRewritePlugin()],
   build: {
     outDir: path.resolve(import.meta.dirname, "dist/public"),
     emptyOutDir: true,

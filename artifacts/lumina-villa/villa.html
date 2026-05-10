@@ -284,7 +284,9 @@ const SUPABASE_URL = window.__SUPABASE_URL__;
 const SUPABASE_KEY = window.__SUPABASE_KEY__;
 const params     = new URLSearchParams(window.location.search);
 const VILLA_ID   = params.get('id');
-const VILLA_SLUG = params.get('slug');
+// Support /villa/slug path-based URLs as well as ?slug= query param
+const _pathSlug  = (window.location.pathname.match(/\/villa\/([^/]+)\/?$/) || [])[1];
+const VILLA_SLUG = _pathSlug ? decodeURIComponent(_pathSlug) : params.get('slug');
 
 let sb = null;
 let villaData = null;
