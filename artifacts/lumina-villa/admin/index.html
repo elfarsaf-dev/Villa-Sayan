@@ -1136,42 +1136,48 @@ async function doAIImport() {
 
   const logic = `Kamu adalah asisten ekstraksi data villa profesional. Tugasmu: baca teks bebas tentang villa dan kembalikan HANYA JSON valid tanpa penjelasan, tanpa markdown, tanpa kode block.
 
-Skema JSON yang harus dikembalikan:
+OUTPUT WAJIB berisi 4 key: villa_info, facilities, policies, contacts.
+
+Contoh output LENGKAP:
 {
   "villa_info": {
-    "name": "nama villa",
-    "slug": "nama-villa-huruf-kecil-pakai-strip",
-    "tagline": "tagline singkat menarik",
-    "description": "deskripsi lengkap villa",
-    "address": "alamat lengkap",
-    "city": "kota",
-    "province": "provinsi",
+    "name": "Villa Diandra 2",
+    "slug": "villa-diandra-2",
+    "tagline": "Villa eksklusif dengan kolam renang privat",
+    "description": "Deskripsi lengkap villa...",
+    "address": "Sekipan, Tawangmangu",
+    "city": "Karanganyar",
+    "province": "Jawa Tengah",
     "max_guests": 25,
-    "max_guests_note": "catatan kapasitas jika ada",
-    "extra_bed_price": 100000,
-    "extra_bed_note": "catatan extra bed jika ada",
+    "max_guests_note": "Dengan extra bed maks 30 orang",
+    "extra_bed_price": 150000,
+    "extra_bed_note": "Per malam per extra bed",
     "checkin_time": "14.00 WIB",
     "checkout_time": "12.00 WIB"
   },
   "facilities": [
-    { "name": "Nama Fasilitas", "icon": "nama_material_icon", "description": "deskripsi singkat", "sort_order": 1 }
+    { "name": "Kolam Renang Privat", "icon": "pool", "description": "Kolam renang khusus tamu villa", "sort_order": 1 },
+    { "name": "WiFi", "icon": "wifi", "description": "Internet gratis seluruh area", "sort_order": 2 },
+    { "name": "Parkir Luas", "icon": "local_parking", "description": "Area parkir dalam", "sort_order": 3 }
   ],
   "policies": [
-    { "type": "schedule", "content": "isi kebijakan", "sort_order": 1 }
+    { "type": "schedule", "content": "Check-in 14.00 WIB, Check-out 12.00 WIB", "sort_order": 1 },
+    { "type": "prohibition", "content": "Dilarang membawa hewan peliharaan", "sort_order": 2 }
   ],
   "contacts": [
-    { "type": "whatsapp", "label": "Admin Villa", "value": "08xxxxxxxxxx", "is_primary": true }
+    { "type": "whatsapp", "label": "Admin Villa", "value": "082228981345", "is_primary": true }
   ]
 }
 
-Aturan penting:
-- slug: huruf kecil semua, spasi jadi tanda hubung, hapus karakter aneh
-- facilities.icon: nama ikon Material Symbols yang sesuai (contoh: pool, wifi, local_parking, kitchen, tv, king_bed, shower, outdoor_grill, meeting_room, spa, fitness_center, ac_unit, balcony, camera_outdoor, restaurant)
-- policies.type harus salah satu: "schedule" (jadwal checkin/out, jam malam), "prohibition" (larangan), "note" (catatan penting), "rule" (aturan umum)
-- Pisahkan setiap larangan dan aturan menjadi item terpisah
-- extra_bed_price dan max_guests harus integer, bukan string
-- contacts: ekstrak semua nomor telpon/WA dari teks, format value tanpa tanda + atau 62 (gunakan 08xxx)
-- Jawab HANYA JSON mentah, tidak ada teks lain sebelum atau sesudah JSON`;
+ATURAN WAJIB:
+1. KEY "facilities" HARUS ADA dan HARUS DIISI dari teks — ekstrak SEMUA fasilitas yang disebut (kolam renang, kamar tidur, dapur, wifi, AC, TV, parkir, bbq, dll)
+2. Setiap fasilitas beri "description" yang deskriptif berdasarkan teks
+3. slug: huruf kecil, spasi jadi tanda hubung, hapus karakter aneh
+4. facilities.icon: gunakan nama ikon Material Symbols (pool, wifi, local_parking, kitchen, tv, king_bed, shower, outdoor_grill, meeting_room, spa, fitness_center, ac_unit, balcony, camera_outdoor, restaurant, hot_tub, forest, water, backyard, deck, fireplace, checkroom, bed, chair, counter_7, living)
+5. policies.type harus salah satu: "schedule", "prohibition", "note", "rule"
+6. max_guests dan extra_bed_price harus integer, bukan string
+7. contacts.value: format 08xxx (tanpa +62 atau 62)
+8. Jawab HANYA JSON mentah, tidak ada teks lain sebelum atau sesudah JSON`;
 
   const message = `Ekstrak data villa dari teks berikut dan kembalikan JSON sesuai skema:\n\n${rawText}`;
 
@@ -1196,7 +1202,27 @@ Aturan penting:
 
     // Bersihkan markdown code block jika ada
     let text = rawReply.replace(/^```json\s*/i,'').replace(/^```\s*/i,'').replace(/\s*```$/i,'').trim();
-    const data = JSON.parse(text);
+    const raw = JSON.parse(text);
+
+    // Normalisasi: handle jika AI balik struktur flat (tanpa villa_info wrapper)
+    const VILLA_INFO_KEYS = ['name','slug','tagline','description','address','city','province','max_guests','checkin_time','checkout_time'];
+    let data = raw;
+    if (!raw.villa_info && VILLA_INFO_KEYS.some(k => k in raw)) {
+      // AI returned flat — lift villa fields into villa_info
+      const villa_info = {};
+      VILLA_INFO_KEYS.concat(['max_guests_note','extra_bed_price','extra_bed_note']).forEach(k => { if (k in raw) villa_info[k] = raw[k]; });
+      data = {
+        villa_info,
+        facilities: raw.facilities || [],
+        policies:   raw.policies   || [],
+        contacts:   raw.contacts   || [],
+      };
+    }
+    // Pastikan semua array ada
+    data.facilities = data.facilities || [];
+    data.policies   = data.policies   || [];
+    data.contacts   = data.contacts   || [];
+
     showAIResult(data);
     status.innerHTML = '<span class="material-symbols-outlined" style="font-size:14px;color:#16a34a;">check_circle</span> Selesai! Cek hasil di bawah lalu simpan.';
   } catch (e) {
