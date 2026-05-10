@@ -1098,9 +1098,24 @@ Aturan penting:
   try {
     const res  = await fetch(`${AI_URL}?${new URLSearchParams({ message, logic, memory: '[]' })}`);
     if (!res.ok) throw new Error(`AI error: HTTP ${res.status}`);
-    let text = (await res.text()).trim();
+    const envelope = await res.json();
+    const rawReply = (envelope.reply || envelope.message || envelope.text || JSON.stringify(envelope)).trim();
+
+    // Tampilkan raw response untuk debugging
+    const resultEl = document.getElementById('ai-result');
+    resultEl.innerHTML = `
+      <div class="card p-4 mb-4">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs font-semibold text-slate-400 uppercase tracking-wide">Respons Mentah AI</span>
+          <button onclick="this.closest('.card').querySelector('pre').classList.toggle('hidden')" class="text-xs text-slate-400 hover:text-slate-600">tampilkan/sembunyikan</button>
+        </div>
+        <pre class="text-xs text-slate-600 bg-slate-50 rounded-lg p-3 overflow-x-auto whitespace-pre-wrap hidden" style="max-height:200px;overflow-y:auto">${rawReply.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</pre>
+        <p class="text-xs text-slate-400 mt-1">Klik "tampilkan/sembunyikan" untuk lihat output mentah</p>
+      </div>
+      <div id="ai-parsed-result"></div>`;
+
     // Bersihkan markdown code block jika ada
-    text = text.replace(/^```json\s*/i,'').replace(/^```\s*/i,'').replace(/\s*```$/i,'').trim();
+    let text = rawReply.replace(/^```json\s*/i,'').replace(/^```\s*/i,'').replace(/\s*```$/i,'').trim();
     const data = JSON.parse(text);
     showAIResult(data);
     status.innerHTML = '<span class="material-symbols-outlined" style="font-size:14px;color:#16a34a;">check_circle</span> Selesai! Cek hasil di bawah lalu simpan.';
@@ -1122,7 +1137,8 @@ function showAIResult(data) {
   const policyTypeColor = { schedule:'bg-blue-50 text-blue-700', note:'bg-yellow-50 text-yellow-700', prohibition:'bg-red-50 text-red-700', rule:'bg-slate-100 text-slate-600' };
   const contactIcon = { whatsapp:'chat', phone:'phone', email:'email', instagram:'photo_camera' };
 
-  document.getElementById('ai-result').innerHTML = `
+  const target = document.getElementById('ai-parsed-result') || document.getElementById('ai-result');
+  target.innerHTML = `
     <div class="mb-4 p-4 rounded-xl bg-violet-50 border border-violet-100 text-sm text-violet-700 flex items-start gap-2">
       <span class="material-symbols-outlined icon-fill" style="font-size:18px;color:#7c3aed;flex-shrink:0">info</span>
       <span>Periksa hasil ekstraksi AI di bawah. Klik <strong>Simpan Semua ke Villa</strong> untuk menyimpan sekaligus, atau simpan per-bagian.</span>
