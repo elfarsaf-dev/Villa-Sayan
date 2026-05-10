@@ -241,7 +241,7 @@ async function loadVillas() {
       const location = [v.city, v.province].filter(Boolean).join(', ');
       const waNum   = contact?.value?.replace(/\D/g,'');
       const waHref  = waNum ? `https://wa.me/62${waNum.replace(/^0/,'')}` : null;
-      const detailHref = v.slug ? `/villa/${encodeURIComponent(v.slug)}` : `villa.html?id=${v.id}`;
+      const detailHref = v.slug ? `villa.html?slug=${encodeURIComponent(v.slug)}` : `villa.html?id=${v.id}`;
 
       return `
         <div class="villa-card">
