@@ -34,7 +34,7 @@ function villaSlugRewritePlugin(): Plugin {
       server.middlewares.use((req, _res, next) => {
         if (req.url && /^\/villa\/[^/?#]+\/?(\?.*)?$/.test(req.url)) {
           const qs = req.url.includes("?") ? req.url.slice(req.url.indexOf("?")) : "";
-          req.url = "/villa.html" + qs;
+          req.url = "/villa/index.html" + qs;
         }
         next();
       });
