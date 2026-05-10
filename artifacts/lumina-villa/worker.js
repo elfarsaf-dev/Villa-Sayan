@@ -416,7 +416,13 @@ async function uploadGithub(request) {
   const ext    = (file.name.split('.').pop() || 'jpg').toLowerCase();
   const path   = `${GITHUB_IMG_PATH}/${villaId}/${Date.now()}.${ext}`;
   const ab     = await file.arrayBuffer();
-  const base64 = btoa(String.fromCharCode(...new Uint8Array(ab)));
+  const bytes  = new Uint8Array(ab);
+  let base64 = '';
+  const chunk = 8192;
+  for (let i = 0; i < bytes.length; i += chunk) {
+    base64 += String.fromCharCode(...bytes.subarray(i, i + chunk));
+  }
+  base64 = btoa(base64);
 
   const ghRes = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${path}`, {
     method: 'PUT',
