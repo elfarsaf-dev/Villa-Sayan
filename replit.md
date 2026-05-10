@@ -5,7 +5,8 @@ Multi-villa management system: static villa landing pages + Cloudflare Worker ba
 ## Run & Operate
 
 - `pnpm --filter @workspace/lumina-villa run dev` — serve villa frontend (Vite, reads PORT env)
-- Villa site: `/` — Villa Diandra 2 public landing page
+- Villa site: `/` — Halaman utama listing semua villa
+- Villa detail: `/villa.html?id=VILLA_ID` — Halaman detail villa (generic, semua data dari DB)
 - Admin dashboard: `/admin/` — login required
 
 ## Stack
@@ -20,7 +21,8 @@ Multi-villa management system: static villa landing pages + Cloudflare Worker ba
 
 | Path | Description |
 |---|---|
-| `artifacts/lumina-villa/index.html` | Villa Diandra 2 public page |
+| `artifacts/lumina-villa/index.html` | Halaman utama — listing semua villa dari DB |
+| `artifacts/lumina-villa/villa.html` | Halaman detail villa (generic, load semua data dari DB via ?id=) |
 | `artifacts/lumina-villa/admin/index.html` | Admin dashboard (all roles) |
 | `artifacts/lumina-villa/vite.config.ts` | Vite config + `injectEnvPlugin` for `%VITE_*%` tokens |
 | `worker.js` | Cloudflare Worker — all API, auth, upload logic |

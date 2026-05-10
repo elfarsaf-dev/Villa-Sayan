@@ -3,308 +3,109 @@
 <head>
   <meta charset="utf-8"/>
   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-  <title>Villa Diandra 2 — Sekipan, Tawangmangu</title>
-  <meta name="description" content="Villa Diandra 2 — Private villa eksklusif di Sekipan, Tawangmangu. Kolam renang privat, pemandangan pegunungan, kapasitas 25–30 orang."/>
+  <title>Lumina Villa — Villa Eksklusif Tawangmangu</title>
+  <meta name="description" content="Temukan villa eksklusif terbaik di Tawangmangu. Kolam renang privat, pemandangan pegunungan, cocok untuk keluarga dan gathering."/>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏡</text></svg>"/>
 
-  <!-- Supabase CDN -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
 
-  <!-- Supabase config -->
   <script>
     window.__SUPABASE_URL__ = 'https://bgwkwlrkvbspycqsdeif.supabase.co';
     window.__SUPABASE_KEY__ = 'sb_publishable_2ox7OQXXg6FD-ogtiDyxfA_eGdUo5Jl';
   </script>
 
-  <script id="tailwind-config">
+  <script>
     tailwind.config = {
       darkMode: "class",
       theme: {
         extend: {
           colors: {
-            "primary": "#1e3a2f",
-            "primary-container": "#2d4f3f",
-            "on-primary": "#ffffff",
-            "on-primary-container": "#a8c5b5",
-            "secondary": "#5c6b5e",
-            "secondary-container": "#dde8df",
-            "on-secondary": "#ffffff",
-            "on-secondary-container": "#3a4d3d",
-            "background": "#f8faf8",
-            "surface": "#f8faf8",
-            "surface-dim": "#d8ddd9",
-            "surface-container-lowest": "#ffffff",
-            "surface-container-low": "#f2f5f2",
-            "surface-container": "#ecefec",
-            "surface-container-high": "#e6eae6",
-            "surface-container-highest": "#e0e4e0",
-            "on-surface": "#191d1a",
-            "on-surface-variant": "#404944",
-            "outline": "#707973",
-            "outline-variant": "#bfc9c1",
+            "primary": "#1e3a2f","primary-container": "#2d4f3f","on-primary": "#ffffff",
+            "secondary": "#5c6b5e","on-secondary": "#ffffff","background": "#f8faf8","surface": "#f8faf8",
+            "surface-container": "#ecefec","surface-container-high": "#e6eae6","surface-container-highest": "#e0e4e0",
+            "on-surface": "#191d1a","on-surface-variant": "#404944","outline": "#707973","outline-variant": "#bfc9c1",
           },
-          borderRadius: {
-            "DEFAULT": "0.125rem",
-            "lg": "0.375rem",
-            "xl": "0.5rem",
-            "2xl": "0.75rem",
-            "full": "9999px",
-          },
-          fontFamily: {
-            "serif": ["Noto Serif", "Georgia", "serif"],
-            "sans": ["Plus Jakarta Sans", "sans-serif"],
-          },
+          fontFamily: { "serif": ["Noto Serif","Georgia","serif"],"sans": ["Plus Jakarta Sans","sans-serif"] },
         },
       },
     }
   </script>
 
   <style>
-    .material-symbols-outlined {
-      font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
-      font-size: 24px;
-    }
-    body {
-      background-color: #f8faf8;
-      color: #191d1a;
-      -webkit-font-smoothing: antialiased;
-      font-family: "Plus Jakarta Sans", sans-serif;
-    }
-    .snap-x { scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }
-    .snap-start { scroll-snap-align: start; }
-    .no-scrollbar::-webkit-scrollbar { display: none; }
-    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-    .font-serif { font-family: "Noto Serif", Georgia, serif; }
-    html { scroll-behavior: smooth; }
+    .material-symbols-outlined { font-variation-settings:'FILL' 0,'wght' 300,'GRAD' 0,'opsz' 24; font-size:24px; }
+    body { background:#f8faf8; color:#191d1a; -webkit-font-smoothing:antialiased; font-family:"Plus Jakarta Sans",sans-serif; }
+    html { scroll-behavior:smooth; }
+    .font-serif { font-family:"Noto Serif",Georgia,serif; }
 
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(24px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    .fade-up          { animation: fadeUp 0.8s ease forwards; }
-    .fade-up-delay-1  { animation: fadeUp 0.8s ease 0.15s both; }
-    .fade-up-delay-2  { animation: fadeUp 0.8s ease 0.3s both; }
-    .fade-up-delay-3  { animation: fadeUp 0.8s ease 0.45s both; }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+    .fade-up { animation:fadeUp 0.7s ease both; }
+    .fade-up-1 { animation:fadeUp 0.7s ease 0.1s both; }
+    .fade-up-2 { animation:fadeUp 0.7s ease 0.2s both; }
 
-    .img-zoom img { transition: transform 0.6s ease; }
-    .img-zoom:hover img { transform: scale(1.04); }
+    .skeleton { background:linear-gradient(90deg,#e0e4e0 25%,#ecefec 50%,#e0e4e0 75%); background-size:200% 100%; animation:shimmer 1.5s infinite; border-radius:8px; }
+    @keyframes shimmer { 0%{background-position:-200% 0} 100%{background-position:200% 0} }
 
-    nav.scrolled { background: rgba(248,250,248,0.96) !important; border-bottom: 1px solid #e0e4e0; }
+    .villa-card { background:#fff; border-radius:16px; overflow:hidden; border:1px solid #e0e4e0; transition:transform 0.25s ease,box-shadow 0.25s ease; }
+    .villa-card:hover { transform:translateY(-4px); box-shadow:0 12px 40px rgba(0,0,0,0.10); }
+    .villa-card img { transition:transform 0.5s ease; }
+    .villa-card:hover img { transform:scale(1.04); }
 
-    input, textarea, select {
-      background: #fff; border: 1px solid #bfc9c1; border-radius: 0.375rem;
-      padding: 12px 16px; width: 100%;
-      font-family: "Plus Jakarta Sans", sans-serif; font-size: 0.9375rem;
-      color: #191d1a; outline: none; transition: border-color 0.2s;
-    }
-    input:focus, textarea:focus, select:focus { border-color: #1e3a2f; }
-    textarea { resize: vertical; min-height: 110px; }
+    nav.scrolled { background:rgba(248,250,248,0.96)!important; border-bottom:1px solid #e0e4e0; }
 
-    .btn-primary {
-      background: #1e3a2f; color: #fff; padding: 13px 28px;
-      border-radius: 0.375rem; font-size: 0.7rem; letter-spacing: 0.12em;
-      font-weight: 600; text-transform: uppercase; transition: background 0.2s;
-      cursor: pointer; border: none; display: inline-block; text-decoration: none;
+    .hero-bg {
+      background: linear-gradient(135deg, #1e3a2f 0%, #2d4f3f 50%, #1a3329 100%);
+      min-height: 70vh;
+      position: relative;
+      overflow: hidden;
     }
-    .btn-primary:hover { background: #2d4f3f; }
-    .btn-outline {
-      background: transparent; color: #1e3a2f; padding: 12px 28px;
-      border-radius: 0.375rem; font-size: 0.7rem; letter-spacing: 0.12em;
-      font-weight: 600; text-transform: uppercase; border: 1.5px solid #1e3a2f;
-      transition: all 0.2s; cursor: pointer; display: inline-block; text-decoration: none;
+    .hero-bg::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
     }
-    .btn-outline:hover { background: #1e3a2f; color: #fff; }
-    .btn-outline-white {
-      background: transparent; color: rgba(255,255,255,0.8);
-      padding: 12px 28px; border-radius: 0.375rem; font-size: 0.7rem;
-      letter-spacing: 0.12em; font-weight: 600; text-transform: uppercase;
-      border: 1.5px solid rgba(255,255,255,0.4); transition: all 0.2s;
-      cursor: pointer; display: inline-block; text-decoration: none;
-    }
-    .btn-outline-white:hover { background: rgba(255,255,255,0.15); color: #fff; }
-
-    .faq-content { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; }
-    .faq-content.open { max-height: 300px; }
-    .faq-icon { transition: transform 0.3s ease; }
-    .faq-item.open .faq-icon { transform: rotate(45deg); }
-
-    /* Prohibition badge */
-    .prohibition-badge {
-      display: flex; align-items: flex-start; gap: 10px;
-      padding: 10px 14px; border-radius: 0.375rem;
-      background: #fff5f5; border: 1px solid #fecaca;
-    }
-    .note-badge {
-      display: flex; align-items: flex-start; gap: 10px;
-      padding: 10px 14px; border-radius: 0.375rem;
-      background: #fffbeb; border: 1px solid #fde68a;
-    }
-
-    /* Skeleton loader */
-    .skeleton { background: linear-gradient(90deg, #e0e4e0 25%, #ecefec 50%, #e0e4e0 75%);
-      background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 6px; }
-    @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
-
-    /* WhatsApp float */
-    .wa-float {
-      position: fixed; bottom: 24px; right: 24px; z-index: 100;
-      width: 56px; height: 56px; border-radius: 50%;
-      background: #25D366; color: #fff;
-      display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 4px 20px rgba(37,211,102,0.4);
-      text-decoration: none; transition: transform 0.2s, box-shadow 0.2s;
-    }
-    .wa-float:hover { transform: scale(1.08); box-shadow: 0 6px 24px rgba(37,211,102,0.5); }
   </style>
 </head>
 <body>
 
-<!-- WhatsApp float button -->
-<a class="wa-float" href="https://wa.me/6282228981345" target="_blank" title="Hubungi via WhatsApp">
-  <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-  </svg>
-</a>
-
-<!-- ─── NAVIGATION ─── -->
-<nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300" style="background: transparent;">
+<!-- NAV -->
+<nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300" style="background:transparent;">
   <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-    <a href="#" class="font-serif text-lg tracking-widest text-white" id="nav-logo">DIANDRA 2</a>
-    <div class="hidden md:flex items-center gap-8" id="nav-links">
-      <a href="#about" class="text-[11px] tracking-widest uppercase font-semibold text-white/80 hover:text-white transition-colors">Villa</a>
-      <a href="#facilities" class="text-[11px] tracking-widest uppercase font-semibold text-white/80 hover:text-white transition-colors">Fasilitas</a>
-      <a href="#gallery" class="text-[11px] tracking-widest uppercase font-semibold text-white/80 hover:text-white transition-colors">Galeri</a>
-      <a href="#rules" class="text-[11px] tracking-widest uppercase font-semibold text-white/80 hover:text-white transition-colors">Aturan</a>
-      <a href="#contact" class="btn-primary text-[11px] py-2 px-5">Reservasi</a>
-    </div>
-    <button id="menu-btn" class="md:hidden text-white" onclick="toggleMenu()">
-      <span class="material-symbols-outlined">menu</span>
-    </button>
-  </div>
-  <div id="mobile-menu" class="hidden md:hidden px-6 py-4 space-y-4" style="background: rgba(248,250,248,0.98); border-top: 1px solid #e0e4e0;">
-    <a href="#about"      class="block text-[11px] tracking-widest uppercase font-semibold text-on-surface" onclick="toggleMenu()">Villa</a>
-    <a href="#facilities" class="block text-[11px] tracking-widest uppercase font-semibold text-on-surface" onclick="toggleMenu()">Fasilitas</a>
-    <a href="#gallery"    class="block text-[11px] tracking-widest uppercase font-semibold text-on-surface" onclick="toggleMenu()">Galeri</a>
-    <a href="#rules"      class="block text-[11px] tracking-widest uppercase font-semibold text-on-surface" onclick="toggleMenu()">Aturan</a>
-    <a href="#contact"    class="block text-[11px] tracking-widest uppercase font-semibold text-primary" onclick="toggleMenu()">Reservasi</a>
+    <span class="font-serif text-lg tracking-widest text-white font-bold">LUMINA VILLA</span>
+    <a href="admin/index.html" class="text-[10px] tracking-widest uppercase font-semibold text-white/60 hover:text-white transition-colors flex items-center gap-1.5">
+      <span class="material-symbols-outlined" style="font-size:16px;">admin_panel_settings</span>Admin
+    </a>
   </div>
 </nav>
 
-<!-- ─── HERO ─── -->
-<section class="w-full relative overflow-hidden" id="hero">
-  <div class="flex overflow-x-auto snap-x no-scrollbar h-screen" id="gallery-slider">
-    <div class="flex-none w-full h-full snap-start relative">
-      <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBpg7UQBgDi6Q7WNDt9zOfmGmvY-F9cqVup-JC4WsS43ZV1jPQLK0QgrzHZSgkKQadlZe9GvkmmeeK2J_46nWG_1YmPz3veJBnFXZeQX6cKlP9VOpUUbRYNVJbNbK-TMlrFfOOXSTU2xZCdt4l_YA2eqEDybQA6Z-umEaltpevgwpeBny1ginKgHMPolQwQcT5Y5MmIdyb0Xct5c9F4ox2npVDYUPc-o_1mq8pFFjP0Z0vDNRq6esEYnwdro5aQAWg8JaMKtdiC8Uc" alt="Villa Diandra 2"/>
-      <div class="absolute inset-0 bg-gradient-to-b from-black/40 via-black/10 to-black/70"></div>
+<!-- HERO -->
+<div class="hero-bg flex flex-col items-center justify-center text-center px-6 py-32 pt-40">
+  <div class="relative z-10">
+    <p class="fade-up text-[10px] tracking-[0.25em] uppercase font-semibold text-white/50 mb-4">Sekipan · Tawangmangu · Karanganyar</p>
+    <h1 class="fade-up-1 font-serif text-5xl md:text-7xl text-white leading-tight mb-5">Lumina Villa</h1>
+    <p class="fade-up-2 text-base md:text-lg text-white/70 leading-relaxed max-w-lg mx-auto">
+      Villa eksklusif di pegunungan Tawangmangu — privat, nyaman, dan tak terlupakan
+    </p>
+    <div class="fade-up-2 flex items-center justify-center gap-3 mt-3 text-white/40 text-xs tracking-widest uppercase">
+      <span>Kolam Renang Privat</span><span>·</span><span>Pemandangan Pegunungan</span><span>·</span><span>Kapasitas Besar</span>
     </div>
-    <div class="flex-none w-full h-full snap-start relative">
-      <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDXJcGzpc5CZ3_9wj_DE5uJMPAv9AHichosqHrDH9RIKFZsgmPZei71ZLIsYOsM4DT2-0cn0cXI4t-Q5a1s9S98T1xAKyaN4G_4nzaqyyJN-UdogQl_nfHZnXHcI1gOrMfcVUadaI2kqjhNtONZG_XNHm4k2iVsDo0loKxZfP-ev5lI_jcQG40-Sc6LQy9q4fXA2fybJQ4wbN7KxBcnTMtuCq33O8NOAkXVKhBsTzCN4w8GaFV2awihmqvDyLYIBIO_fACGs3EY9fg" alt="Kolam renang privat"/>
-      <div class="absolute inset-0 bg-gradient-to-b from-black/40 via-black/10 to-black/70"></div>
-    </div>
-    <div class="flex-none w-full h-full snap-start relative">
-      <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCnMOxZu592uhJmT2hDksI3xkvZ_M9ea75nvl_qGUReiLv8cFsokRO-kkY3BK9OMetactQJOSzArvPLVhBGZXQA2WYSCNNcodc5w9_qPdXugfwQMceGbmmTFSrnij8G-XRlf2VhrIInFLqlyj5Rwm0-NcHksloUiSaZIVyTMzi-4kcHfGfDgDqZTdznvGpZYLTQcj_ifA7OdtpAFpsQNRbvLb7qhA92hfvKSpU-NRGTvVi4p6lQRaMh-Q--ojsW8k64DYiJlLk6XkM" alt="Pemandangan pegunungan"/>
-      <div class="absolute inset-0 bg-gradient-to-b from-black/40 via-black/10 to-black/70"></div>
-    </div>
-  </div>
-
-  <div class="absolute bottom-24 left-6 md:left-16 z-10 text-white max-w-xl">
-    <p class="fade-up text-[10px] tracking-[0.2em] uppercase font-semibold mb-3 opacity-70">Sekipan, Tawangmangu · Karanganyar</p>
-    <h1 id="hero-title" class="fade-up-delay-1 font-serif text-4xl md:text-6xl leading-tight mb-3">Villa Diandra 2</h1>
-    <p id="hero-tagline" class="fade-up-delay-2 text-sm md:text-base opacity-80 leading-relaxed max-w-sm">Private Villa Eksklusif dengan Kolam Renang Pribadi &amp; Panorama Pegunungan Sekipan</p>
-    <div class="fade-up-delay-3 flex flex-wrap gap-3 mt-6">
-      <a href="#contact" class="btn-primary">Hubungi Admin</a>
-      <a href="#about"   class="btn-outline-white">Selengkapnya</a>
+    <div class="mt-8">
+      <a href="#villas" class="inline-flex items-center gap-2 px-7 py-3.5 rounded-full text-sm font-semibold text-primary bg-white hover:bg-white/90 transition-all shadow-lg" style="letter-spacing:0.05em;">
+        <span class="material-symbols-outlined" style="font-size:18px;">villa</span>Lihat Villa
+      </a>
     </div>
   </div>
+</div>
 
-  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-2 z-10" id="dots">
-    <button class="dot-btn transition-all duration-300" style="width:20px;height:3px;border-radius:2px;background:white;opacity:1;border:none;cursor:pointer;" onclick="goToSlide(0)"></button>
-    <button class="dot-btn transition-all duration-300" style="width:8px;height:3px;border-radius:2px;background:white;opacity:0.4;border:none;cursor:pointer;"  onclick="goToSlide(1)"></button>
-    <button class="dot-btn transition-all duration-300" style="width:8px;height:3px;border-radius:2px;background:white;opacity:0.4;border:none;cursor:pointer;"  onclick="goToSlide(2)"></button>
-  </div>
-
-  <div class="absolute right-6 bottom-14 flex flex-col items-center gap-2 text-white opacity-40 hidden md:flex">
-    <div class="w-[1px] h-12 bg-white"></div>
-    <span class="text-[9px] tracking-widest uppercase" style="writing-mode:vertical-rl;">Scroll</span>
-  </div>
-</section>
-
-<!-- ─── STATS STRIP ─── -->
-<section class="bg-primary text-white">
-  <div class="max-w-6xl mx-auto px-6 py-7 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-    <div>
-      <div class="font-serif text-3xl mb-1">3</div>
-      <div class="text-[10px] tracking-widest uppercase opacity-60">Kamar Tidur</div>
-    </div>
-    <div>
-      <div class="font-serif text-3xl mb-1">3</div>
-      <div class="text-[10px] tracking-widest uppercase opacity-60">Kamar Mandi</div>
-    </div>
-    <div>
-      <div class="font-serif text-3xl mb-1">2</div>
-      <div class="text-[10px] tracking-widest uppercase opacity-60">Lantai</div>
-    </div>
-    <div>
-      <div class="font-serif text-3xl mb-1">25–30</div>
-      <div class="text-[10px] tracking-widest uppercase opacity-60">Tamu Maksimal</div>
-    </div>
-  </div>
-</section>
-
-<!-- ─── ABOUT ─── -->
-<section id="about" class="py-24 px-6">
-  <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-16 items-center">
-    <div>
-      <span class="text-[10px] tracking-[0.2em] uppercase font-semibold text-secondary block mb-4">Tentang Villa</span>
-      <h2 id="about-title" class="font-serif text-3xl md:text-4xl text-primary leading-snug mb-6">Villa Diandra 2<br/>Sekipan, Tawangmangu</h2>
-      <div id="about-desc" class="space-y-4 text-on-surface-variant text-[0.9375rem] leading-relaxed">
-        <p>Villa 2 lantai eksklusif dengan bangunan dan furniture serba baru, terletak di kawasan Sekipan yang asri. Nikmati udara pegunungan yang segar dan pemandangan hutan hijau yang memanjakan mata.</p>
-        <p>Dilengkapi kolam renang privat, balkon lantai atas dengan panorama pegunungan Sekipan yang memukau, serta berbagai fasilitas lengkap untuk kenyamanan maksimal selama menginap.</p>
-        <p>Cocok untuk keluarga besar, reuni, gathering perusahaan, atau liburan bersama teman — dengan kapasitas hingga 25–30 orang.</p>
-      </div>
-
-      <!-- Check in/out -->
-      <div class="mt-8 flex gap-6">
-        <div class="border-l-2 border-primary/20 pl-4 py-1">
-          <h4 class="text-[10px] tracking-widest uppercase font-semibold text-primary mb-1">Check-in</h4>
-          <p class="text-[0.875rem] text-on-surface-variant font-semibold">14.00 WIB</p>
-        </div>
-        <div class="border-l-2 border-primary/20 pl-4 py-1">
-          <h4 class="text-[10px] tracking-widest uppercase font-semibold text-primary mb-1">Check-out</h4>
-          <p class="text-[0.875rem] text-on-surface-variant font-semibold">12.00 WIB</p>
-        </div>
-        <div class="border-l-2 border-primary/20 pl-4 py-1">
-          <h4 class="text-[10px] tracking-widest uppercase font-semibold text-primary mb-1">Extra Bed</h4>
-          <p class="text-[0.875rem] text-on-surface-variant font-semibold">Rp100.000/bed</p>
-          <p class="text-[10px] text-on-surface-variant">Weekday: gratis</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="grid grid-cols-2 gap-3">
-      <div class="img-zoom overflow-hidden rounded-xl row-span-2">
-        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBpg7UQBgDi6Q7WNDt9zOfmGmvY-F9cqVup-JC4WsS43ZV1jPQLK0QgrzHZSgkKQadlZe9GvkmmeeK2J_46nWG_1YmPz3veJBnFXZeQX6cKlP9VOpUUbRYNVJbNbK-TMlrFfOOXSTU2xZCdt4l_YA2eqEDybQA6Z-umEaltpevgwpeBny1ginKgHMPolQwQcT5Y5MmIdyb0Xct5c9F4ox2npVDYUPc-o_1mq8pFFjP0Z0vDNRq6esEYnwdro5aQAWg8JaMKtdiC8Uc" alt="Villa eksterior" class="w-full h-full object-cover"/>
-      </div>
-      <div class="img-zoom overflow-hidden rounded-xl">
-        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDXJcGzpc5CZ3_9wj_DE5uJMPAv9AHichosqHrDH9RIKFZsgmPZei71ZLIsYOsM4DT2-0cn0cXI4t-Q5a1s9S98T1xAKyaN4G_4nzaqyyJN-UdogQl_nfHZnXHcI1gOrMfcVUadaI2kqjhNtONZG_XNHm4k2iVsDo0loKxZfP-ev5lI_jcQG40-Sc6LQy9q4fXA2fybJQ4wbN7KxBcnTMtuCq33O8NOAkXVKhBsTzCN4w8GaFV2awihmqvDyLYIBIO_fACGs3EY9fg" alt="Pool" class="w-full h-48 object-cover"/>
-      </div>
-      <div class="img-zoom overflow-hidden rounded-xl">
-        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCnMOxZu592uhJmT2hDksI3xkvZ_M9ea75nvl_qGUReiLv8cFsokRO-kkY3BK9OMetactQJOSzArvPLVhBGZXQA2WYSCNNcodc5w9_qPdXugfwQMceGbmmTFSrnij8G-XRlf2VhrIInFLqlyj5Rwm0-NcHksloUiSaZIVyTMzi-4kcHfGfDgDqZTdznvGpZYLTQcj_ifA7OdtpAFpsQNRbvLb7qhA92hfvKSpU-NRGTvVi4p6lQRaMh-Q--ojsW8k64DYiJlLk6XkM" alt="Pemandangan" class="w-full h-48 object-cover"/>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ─── FACILITIES ─── -->
-<section id="facilities" class="py-24 px-6" style="background:#ecefec;">
+<!-- VILLAS SECTION -->
+<section id="villas" class="py-20 px-6 bg-surface">
   <div class="max-w-6xl mx-auto">
     <div class="text-center mb-14">
-      <span class="text-[10px] tracking-[0.2em] uppercase font-semibold text-secondary block mb-3">Yang Kami Sediakan</span>
-      <h2 class="font-serif text-3xl md:text-4xl text-primary">Fasilitas Lengkap</h2>
+      <span class="text-[10px] tracking-[0.2em] uppercase font-semibold text-secondary block mb-3">Pilihan Villa Kami</span>
+      <h2 class="font-serif text-3xl md:text-4xl text-primary">Temukan Villa Impian Anda</h2>
       <div class="flex items-center justify-center mt-4">
         <div class="w-12 h-[1px] bg-outline-variant"></div>
         <div class="w-1.5 h-1.5 rounded-full bg-primary/30 mx-3"></div>
@@ -312,449 +113,165 @@
       </div>
     </div>
 
-    <!-- Facilities grid — rendered by JS -->
-    <div id="facilities-grid" class="grid grid-cols-2 md:grid-cols-4 gap-4">
-      <!-- Static fallback (replaced by JS if Supabase loads) -->
-      <div class="bg-white rounded-xl p-5 flex flex-col items-center text-center hover:shadow-md transition-shadow">
-        <span class="material-symbols-outlined text-primary mb-3" style="font-size:30px;">pool</span>
-        <h5 class="text-[10px] tracking-widest uppercase font-semibold text-primary mb-2">Kolam Renang Privat</h5>
-        <p class="text-[0.75rem] text-on-surface-variant leading-relaxed">Private pool eksklusif hanya untuk tamu villa</p>
+    <!-- Villa cards -->
+    <div id="villa-list" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Skeleton -->
+      <div class="villa-card"><div class="skeleton h-56 w-full"></div><div class="p-5"><div class="skeleton h-5 w-3/4 mb-3"></div><div class="skeleton h-4 w-full mb-2"></div><div class="skeleton h-4 w-2/3 mb-4"></div><div class="skeleton h-10 w-full rounded-xl"></div></div></div>
+      <div class="villa-card"><div class="skeleton h-56 w-full"></div><div class="p-5"><div class="skeleton h-5 w-3/4 mb-3"></div><div class="skeleton h-4 w-full mb-2"></div><div class="skeleton h-4 w-2/3 mb-4"></div><div class="skeleton h-10 w-full rounded-xl"></div></div></div>
+    </div>
+
+    <div id="villa-empty" class="hidden text-center py-16 text-on-surface-variant">
+      <span class="material-symbols-outlined text-5xl mb-4 block opacity-30">villa</span>
+      <p class="text-base">Belum ada villa terdaftar.</p>
+      <p class="text-sm mt-1 opacity-60">Hubungi admin untuk informasi lebih lanjut.</p>
+    </div>
+  </div>
+</section>
+
+<!-- WHY US -->
+<section class="py-20 px-6" style="background:#1e3a2f;">
+  <div class="max-w-4xl mx-auto text-center text-white">
+    <h2 class="font-serif text-3xl md:text-4xl mb-3">Kenapa Pilih Kami?</h2>
+    <p class="text-white/50 text-sm mb-12">Kami menyediakan pengalaman menginap terbaik di kawasan Tawangmangu</p>
+    <div class="grid md:grid-cols-3 gap-8">
+      <div class="flex flex-col items-center gap-3">
+        <span class="material-symbols-outlined text-white/60" style="font-size:36px;">pool</span>
+        <h3 class="font-semibold text-sm tracking-wide">Kolam Renang Privat</h3>
+        <p class="text-white/40 text-xs leading-relaxed">Setiap villa memiliki kolam renang pribadi eksklusif untuk tamu</p>
       </div>
-      <div class="bg-white rounded-xl p-5 flex flex-col items-center text-center hover:shadow-md transition-shadow">
-        <span class="material-symbols-outlined text-primary mb-3" style="font-size:30px;">landscape</span>
-        <h5 class="text-[10px] tracking-widest uppercase font-semibold text-primary mb-2">Balkon Panorama</h5>
-        <p class="text-[0.75rem] text-on-surface-variant leading-relaxed">Pemandangan hutan dan pegunungan Sekipan</p>
+      <div class="flex flex-col items-center gap-3">
+        <span class="material-symbols-outlined text-white/60" style="font-size:36px;">landscape</span>
+        <h3 class="font-semibold text-sm tracking-wide">Pemandangan Pegunungan</h3>
+        <p class="text-white/40 text-xs leading-relaxed">Nikmati udara segar dan panorama hutan Sekipan yang memukau</p>
       </div>
-      <div class="bg-white rounded-xl p-5 flex flex-col items-center text-center hover:shadow-md transition-shadow">
-        <span class="material-symbols-outlined text-primary mb-3" style="font-size:30px;">bed</span>
-        <h5 class="text-[10px] tracking-widest uppercase font-semibold text-primary mb-2">3 Kamar Tidur</h5>
-        <p class="text-[0.75rem] text-on-surface-variant leading-relaxed">3 kamar dengan total 4 tempat tidur nyaman</p>
-      </div>
-      <div class="bg-white rounded-xl p-5 flex flex-col items-center text-center hover:shadow-md transition-shadow">
-        <span class="material-symbols-outlined text-primary mb-3" style="font-size:30px;">shower</span>
-        <h5 class="text-[10px] tracking-widest uppercase font-semibold text-primary mb-2">3 Kamar Mandi</h5>
-        <p class="text-[0.75rem] text-on-surface-variant leading-relaxed">Semua dilengkapi fasilitas air panas</p>
-      </div>
-      <div class="bg-white rounded-xl p-5 flex flex-col items-center text-center hover:shadow-md transition-shadow">
-        <span class="material-symbols-outlined text-primary mb-3" style="font-size:30px;">kitchen</span>
-        <h5 class="text-[10px] tracking-widest uppercase font-semibold text-primary mb-2">Dapur Lengkap</h5>
-        <p class="text-[0.75rem] text-on-surface-variant leading-relaxed">Kulkas, rice cooker, dispenser, minibar</p>
-      </div>
-      <div class="bg-white rounded-xl p-5 flex flex-col items-center text-center hover:shadow-md transition-shadow">
-        <span class="material-symbols-outlined text-primary mb-3" style="font-size:30px;">tv</span>
-        <h5 class="text-[10px] tracking-widest uppercase font-semibold text-primary mb-2">2 Smart TV</h5>
-        <p class="text-[0.75rem] text-on-surface-variant leading-relaxed">Karaoke &amp; sound system tersedia</p>
-      </div>
-      <div class="bg-white rounded-xl p-5 flex flex-col items-center text-center hover:shadow-md transition-shadow">
-        <span class="material-symbols-outlined text-primary mb-3" style="font-size:30px;">videogame_asset</span>
-        <h5 class="text-[10px] tracking-widest uppercase font-semibold text-primary mb-2">Free PS3</h5>
-        <p class="text-[0.75rem] text-on-surface-variant leading-relaxed">PlayStation 3 gratis selama menginap</p>
-      </div>
-      <div class="bg-white rounded-xl p-5 flex flex-col items-center text-center hover:shadow-md transition-shadow">
-        <span class="material-symbols-outlined text-primary mb-3" style="font-size:30px;">outdoor_grill</span>
-        <h5 class="text-[10px] tracking-widest uppercase font-semibold text-primary mb-2">Fasilitas BBQ</h5>
-        <p class="text-[0.75rem] text-on-surface-variant leading-relaxed">Peralatan bakar untuk sesi barbekyu</p>
-      </div>
-      <div class="bg-white rounded-xl p-5 flex flex-col items-center text-center hover:shadow-md transition-shadow">
-        <span class="material-symbols-outlined text-primary mb-3" style="font-size:30px;">wifi</span>
-        <h5 class="text-[10px] tracking-widest uppercase font-semibold text-primary mb-2">WiFi Seluruh Area</h5>
-        <p class="text-[0.75rem] text-on-surface-variant leading-relaxed">Internet cepat di lantai 1 dan 2</p>
-      </div>
-      <div class="bg-white rounded-xl p-5 flex flex-col items-center text-center hover:shadow-md transition-shadow">
-        <span class="material-symbols-outlined text-primary mb-3" style="font-size:30px;">local_parking</span>
-        <h5 class="text-[10px] tracking-widest uppercase font-semibold text-primary mb-2">Parkir Luas</h5>
-        <p class="text-[0.75rem] text-on-surface-variant leading-relaxed">Kapasitas hingga 5 mobil</p>
-      </div>
-      <div class="bg-white rounded-xl p-5 flex flex-col items-center text-center hover:shadow-md transition-shadow">
-        <span class="material-symbols-outlined text-primary mb-3" style="font-size:30px;">restaurant</span>
-        <h5 class="text-[10px] tracking-widest uppercase font-semibold text-primary mb-2">Layanan Catering</h5>
-        <p class="text-[0.75rem] text-on-surface-variant leading-relaxed">Pilihan menu sesuai selera tersedia</p>
-      </div>
-      <div class="bg-white rounded-xl p-5 flex flex-col items-center text-center hover:shadow-md transition-shadow">
-        <span class="material-symbols-outlined text-primary mb-3" style="font-size:30px;">groups</span>
-        <h5 class="text-[10px] tracking-widest uppercase font-semibold text-primary mb-2">Kapasitas 25–30 Orang</h5>
-        <p class="text-[0.75rem] text-on-surface-variant leading-relaxed">Ideal untuk gathering keluarga besar</p>
+      <div class="flex flex-col items-center gap-3">
+        <span class="material-symbols-outlined text-white/60" style="font-size:36px;">groups</span>
+        <h3 class="font-semibold text-sm tracking-wide">Kapasitas Besar</h3>
+        <p class="text-white/40 text-xs leading-relaxed">Ideal untuk keluarga besar, reuni, dan gathering perusahaan</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ─── GALLERY ─── -->
-<section id="gallery" class="py-24 px-6">
-  <div class="max-w-6xl mx-auto">
-    <div class="text-center mb-14">
-      <span class="text-[10px] tracking-[0.2em] uppercase font-semibold text-secondary block mb-3">Galeri Foto</span>
-      <h2 class="font-serif text-3xl md:text-4xl text-primary">Lihat Sendiri Keindahannya</h2>
-    </div>
-    <div id="gallery-grid" class="grid grid-cols-2 md:grid-cols-3 gap-3">
-      <div class="col-span-2 md:col-span-3 text-center py-12 text-on-surface-variant text-sm" id="gallery-loading">
-        Memuat galeri...
-      </div>
-    </div>
+<!-- FOOTER -->
+<footer class="px-6 py-10" style="background:#ecefec;border-top:1px solid #bfc9c1;">
+  <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+    <div class="font-serif text-lg tracking-widest text-primary">LUMINA VILLA</div>
+    <p class="text-[0.8125rem] text-on-surface-variant text-center">Villa eksklusif di Sekipan, Tawangmangu, Karanganyar</p>
+    <a href="admin/index.html" class="text-[10px] tracking-widest uppercase text-on-surface-variant hover:text-primary transition-colors flex items-center gap-1">
+      <span class="material-symbols-outlined" style="font-size:14px;">settings</span>Admin Dashboard
+    </a>
   </div>
-</section>
-
-<!-- ─── RULES & POLICIES ─── -->
-<section id="rules" class="py-24 px-6" style="background:#ecefec;">
-  <div class="max-w-4xl mx-auto">
-    <div class="text-center mb-12">
-      <span class="text-[10px] tracking-[0.2em] uppercase font-semibold text-secondary block mb-3">Ketentuan</span>
-      <h2 class="font-serif text-3xl text-primary">Aturan &amp; Kebijakan Villa</h2>
-      <p class="text-on-surface-variant text-sm mt-3">Demi kenyamanan bersama, mohon untuk diperhatikan</p>
-    </div>
-
-    <div class="grid md:grid-cols-2 gap-6">
-      <!-- Schedule -->
-      <div class="bg-white rounded-xl p-6">
-        <div class="flex items-center gap-3 mb-4">
-          <span class="material-symbols-outlined text-primary">schedule</span>
-          <h3 class="font-semibold text-primary">Jadwal &amp; Waktu</h3>
-        </div>
-        <ul id="schedule-list" class="space-y-2 text-[0.875rem] text-on-surface-variant">
-          <li class="flex gap-2 items-start"><span class="material-symbols-outlined text-secondary" style="font-size:16px;margin-top:2px;">circle</span>Check-in: 14.00 WIB</li>
-          <li class="flex gap-2 items-start"><span class="material-symbols-outlined text-secondary" style="font-size:16px;margin-top:2px;">circle</span>Check-out: 12.00 WIB</li>
-          <li class="flex gap-2 items-start"><span class="material-symbols-outlined text-secondary" style="font-size:16px;margin-top:2px;">circle</span>Jam malam: maks. aktivitas luar s/d 23.30 WIB</li>
-        </ul>
-      </div>
-
-      <!-- Notes -->
-      <div class="bg-white rounded-xl p-6">
-        <div class="flex items-center gap-3 mb-4">
-          <span class="material-symbols-outlined text-yellow-600">info</span>
-          <h3 class="font-semibold text-primary">Catatan Penting</h3>
-        </div>
-        <ul id="notes-list" class="space-y-2 text-[0.875rem] text-on-surface-variant">
-          <li class="flex gap-2 items-start"><span class="material-symbols-outlined text-yellow-500" style="font-size:16px;margin-top:2px;">warning</span>Harga dapat berubah sewaktu-waktu</li>
-          <li class="flex gap-2 items-start"><span class="material-symbols-outlined text-yellow-500" style="font-size:16px;margin-top:2px;">warning</span>Extra bed weekend: Rp100.000/bed</li>
-          <li class="flex gap-2 items-start"><span class="material-symbols-outlined text-yellow-500" style="font-size:16px;margin-top:2px;">warning</span>Weekday: free extra bed</li>
-        </ul>
-      </div>
-
-      <!-- Prohibitions -->
-      <div class="bg-white rounded-xl p-6 md:col-span-2">
-        <div class="flex items-center gap-3 mb-4">
-          <span class="material-symbols-outlined text-red-500">block</span>
-          <h3 class="font-semibold text-primary">Larangan</h3>
-        </div>
-        <div id="prohibition-list" class="grid sm:grid-cols-2 gap-3">
-          <div class="prohibition-badge">
-            <span class="material-symbols-outlined text-red-400" style="font-size:18px;flex-shrink:0;margin-top:1px;">cancel</span>
-            <span class="text-[0.8125rem] text-on-surface-variant">Minuman keras / alkohol</span>
-          </div>
-          <div class="prohibition-badge">
-            <span class="material-symbols-outlined text-red-400" style="font-size:18px;flex-shrink:0;margin-top:1px;">cancel</span>
-            <span class="text-[0.8125rem] text-on-surface-variant">Narkoba / obat terlarang</span>
-          </div>
-          <div class="prohibition-badge">
-            <span class="material-symbols-outlined text-red-400" style="font-size:18px;flex-shrink:0;margin-top:1px;">cancel</span>
-            <span class="text-[0.8125rem] text-on-surface-variant">Aktivitas pacaran atau asusila</span>
-          </div>
-          <div class="prohibition-badge">
-            <span class="material-symbols-outlined text-red-400" style="font-size:18px;flex-shrink:0;margin-top:1px;">cancel</span>
-            <span class="text-[0.8125rem] text-on-surface-variant">Dangdutan, orgen tunggal, atau live music sejenis</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ─── RESERVATION / CONTACT ─── -->
-<section id="contact" class="py-24 px-6" style="background:#1e3a2f;">
-  <div class="max-w-2xl mx-auto">
-    <div class="text-center mb-12 text-white">
-      <span class="text-[10px] tracking-[0.2em] uppercase font-semibold opacity-60 block mb-3">Reservasi</span>
-      <h2 class="font-serif text-3xl md:text-4xl mb-4">Hubungi Admin Villa</h2>
-      <p class="text-sm opacity-60 leading-relaxed">Kirim pesan WhatsApp atau isi formulir di bawah — kami akan membalas secepatnya</p>
-    </div>
-
-    <!-- WA CTA Button -->
-    <div class="text-center mb-10">
-      <a href="https://wa.me/6282228981345" target="_blank"
-         class="inline-flex items-center gap-3 px-8 py-4 rounded-xl text-white font-semibold text-base transition-transform hover:scale-105"
-         style="background:#25D366; box-shadow:0 4px 20px rgba(37,211,102,0.35);">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-        </svg>
-        Chat WhatsApp Sekarang — 082228981345
-      </a>
-      <p class="text-white/40 text-xs mt-3">Atau isi formulir di bawah dan kami akan menghubungi Anda</p>
-    </div>
-
-    <!-- Divider -->
-    <div class="flex items-center gap-4 mb-8">
-      <div class="flex-1 h-[1px] bg-white/10"></div>
-      <span class="text-white/30 text-xs tracking-widest uppercase">Formulir Reservasi</span>
-      <div class="flex-1 h-[1px] bg-white/10"></div>
-    </div>
-
-    <!-- Booking form — saved to Supabase inquiries table -->
-    <form class="space-y-4" onsubmit="submitInquiry(event)">
-      <div class="grid md:grid-cols-2 gap-4">
-        <div>
-          <label class="block text-[10px] tracking-widest uppercase font-semibold text-white/50 mb-2">Nama Lengkap *</label>
-          <input id="f-name" type="text" placeholder="Nama Anda" required/>
-        </div>
-        <div>
-          <label class="block text-[10px] tracking-widest uppercase font-semibold text-white/50 mb-2">Nomor WhatsApp *</label>
-          <input id="f-phone" type="tel" placeholder="08xxxxxxxxxx" required/>
-        </div>
-      </div>
-      <div>
-        <label class="block text-[10px] tracking-widest uppercase font-semibold text-white/50 mb-2">Email (opsional)</label>
-        <input id="f-email" type="email" placeholder="email@contoh.com"/>
-      </div>
-      <div class="grid md:grid-cols-2 gap-4">
-        <div>
-          <label class="block text-[10px] tracking-widest uppercase font-semibold text-white/50 mb-2">Tanggal Check-In *</label>
-          <input id="f-checkin" type="date" required/>
-        </div>
-        <div>
-          <label class="block text-[10px] tracking-widest uppercase font-semibold text-white/50 mb-2">Tanggal Check-Out *</label>
-          <input id="f-checkout" type="date" required/>
-        </div>
-      </div>
-      <div>
-        <label class="block text-[10px] tracking-widest uppercase font-semibold text-white/50 mb-2">Jumlah Tamu</label>
-        <select id="f-guests">
-          <option value="1-10">1–10 Orang</option>
-          <option value="10-15">10–15 Orang</option>
-          <option value="15-20">15–20 Orang</option>
-          <option value="20-25">20–25 Orang</option>
-          <option value="25-30">25–30 Orang</option>
-        </select>
-      </div>
-      <div>
-        <label class="block text-[10px] tracking-widest uppercase font-semibold text-white/50 mb-2">Pesan / Kebutuhan Khusus</label>
-        <textarea id="f-message" placeholder="Contoh: perlu catering, extra bed, atau pertanyaan lainnya..."></textarea>
-      </div>
-      <button type="submit" id="submit-btn" class="btn-primary w-full text-center mt-2"
-        style="background:#a8c5b5; color:#1e3a2f; font-weight:700;">
-        Kirim Permintaan Reservasi
-      </button>
-    </form>
-
-    <!-- Contact info row -->
-    <div class="mt-10 pt-8 border-t border-white/10 flex flex-col sm:flex-row justify-center gap-8 text-center text-white">
-      <div>
-        <span class="material-symbols-outlined opacity-40 block mb-1" style="font-size:20px;">phone</span>
-        <p class="text-[9px] tracking-widest uppercase opacity-40 mb-1">Telepon / WA</p>
-        <a href="tel:082228981345" class="text-sm opacity-70 hover:opacity-100 transition-opacity">082228981345</a>
-      </div>
-      <div>
-        <span class="material-symbols-outlined opacity-40 block mb-1" style="font-size:20px;">location_on</span>
-        <p class="text-[9px] tracking-widest uppercase opacity-40 mb-1">Lokasi</p>
-        <span class="text-sm opacity-70">Sekipan, Tawangmangu</span>
-      </div>
-      <div>
-        <span class="material-symbols-outlined opacity-40 block mb-1" style="font-size:20px;">schedule</span>
-        <p class="text-[9px] tracking-widest uppercase opacity-40 mb-1">Check-in / out</p>
-        <span class="text-sm opacity-70">14.00 / 12.00 WIB</span>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Toast -->
-<div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-primary text-white px-6 py-3 rounded-lg text-sm shadow-xl transition-all duration-300 opacity-0 pointer-events-none translate-y-2 whitespace-nowrap z-50"></div>
-
-<!-- ─── FOOTER ─── -->
-<footer class="px-6" style="background:#ecefec; border-top:1px solid #bfc9c1;">
-  <div class="max-w-6xl mx-auto py-10">
-    <div class="grid md:grid-cols-3 gap-8 mb-8">
-      <div>
-        <div class="font-serif text-xl tracking-widest text-primary mb-3">VILLA DIANDRA 2</div>
-        <p class="text-[0.8125rem] text-on-surface-variant leading-relaxed max-w-xs">Private villa eksklusif dengan kolam renang pribadi dan pemandangan pegunungan Sekipan, Tawangmangu.</p>
-      </div>
-      <div>
-        <h6 class="text-[10px] tracking-widest uppercase font-semibold text-primary mb-4">Navigasi</h6>
-        <ul class="space-y-2">
-          <li><a href="#about"      class="text-[0.8125rem] text-on-surface-variant hover:text-primary transition-colors">Tentang Villa</a></li>
-          <li><a href="#facilities" class="text-[0.8125rem] text-on-surface-variant hover:text-primary transition-colors">Fasilitas</a></li>
-          <li><a href="#gallery"    class="text-[0.8125rem] text-on-surface-variant hover:text-primary transition-colors">Galeri</a></li>
-          <li><a href="#rules"      class="text-[0.8125rem] text-on-surface-variant hover:text-primary transition-colors">Aturan Villa</a></li>
-          <li><a href="#contact"    class="text-[0.8125rem] text-on-surface-variant hover:text-primary transition-colors">Reservasi</a></li>
-        </ul>
-      </div>
-      <div>
-        <h6 class="text-[10px] tracking-widest uppercase font-semibold text-primary mb-4">Kontak</h6>
-        <ul class="space-y-2 text-[0.8125rem] text-on-surface-variant">
-          <li>Sekipan, Tawangmangu</li>
-          <li>Karanganyar, Jawa Tengah</li>
-          <li class="pt-1">
-            <a href="https://wa.me/6282228981345" class="hover:text-primary transition-colors flex items-center gap-1">
-              <span class="material-symbols-outlined" style="font-size:14px;">chat</span>082228981345
-            </a>
-          </li>
-        </ul>
-      </div>
-    </div>
-    <div class="pt-6 border-t border-outline-variant text-center">
-      <p class="text-[9px] text-on-surface-variant tracking-widest uppercase">&copy; 2025 Villa Diandra 2 Sekipan. All Rights Reserved.</p>
-    </div>
+  <div class="max-w-6xl mx-auto mt-6 pt-5 border-t border-outline-variant text-center">
+    <p class="text-[9px] text-on-surface-variant tracking-widest uppercase">&copy; <span id="year"></span> Lumina Villa. All Rights Reserved.</p>
   </div>
 </footer>
 
 <script>
-  // ── Supabase init ──
-  const SUPABASE_URL = window.__SUPABASE_URL__;
-  const SUPABASE_KEY = window.__SUPABASE_KEY__;
-  const VILLA_ID     = 'a1b2c3d4-e5f6-7890-abcd-ef1234567890';
+document.getElementById('year').textContent = new Date().getFullYear();
 
-  let sb = null;
-  if (SUPABASE_URL && SUPABASE_KEY &&
-      !SUPABASE_URL.includes('%VITE_') && !SUPABASE_KEY.includes('%VITE_')) {
-    try {
-      sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-      loadVillaData();
-    } catch (e) {
-      console.warn('Supabase init failed, using static data:', e);
-      renderGallery([]);
-    }
+const SUPABASE_URL = window.__SUPABASE_URL__;
+const SUPABASE_KEY = window.__SUPABASE_KEY__;
+
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// Navbar scroll
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  if (window.scrollY > 60) {
+    navbar.classList.add('scrolled');
+    navbar.querySelectorAll('*').forEach(el => {
+      if (el.classList.contains('text-white')) { el.classList.remove('text-white'); el.classList.add('text-primary'); }
+      if (el.style.color === 'rgba(255, 255, 255, 0.6)' || el.classList.contains('text-white/60')) {}
+    });
+    navbar.querySelector('span.font-serif')?.style && (navbar.querySelector('span.font-serif').style.color = '#1e3a2f');
+    navbar.querySelector('a')?.style && (navbar.querySelector('a').style.color = '#5c6b5e');
   } else {
-    renderGallery([]);
+    navbar.querySelector('span.font-serif')?.style && (navbar.querySelector('span.font-serif').style.color = '');
+    navbar.querySelector('a')?.style && (navbar.querySelector('a').style.color = '');
   }
+});
 
-  async function loadVillaData() {
-    if (!sb) return;
-    try {
-      const [{ data: facilities }, { data: gallery }] = await Promise.all([
-        sb.from('facilities').select('*').eq('villa_id', VILLA_ID).eq('is_active', true).order('sort_order'),
-        sb.from('gallery').select('*').eq('villa_id', VILLA_ID).eq('is_active', true).order('sort_order'),
-      ]);
-
-      if (facilities && facilities.length > 0) renderFacilities(facilities);
-      renderGallery(gallery || []);
-    } catch (e) {
-      console.warn('Failed to load Supabase data:', e);
-      renderGallery([]);
-    }
-  }
-
-  function renderFacilities(list) {
-    const grid = document.getElementById('facilities-grid');
-    grid.innerHTML = list.map(f => `
-      <div class="bg-white rounded-xl p-5 flex flex-col items-center text-center hover:shadow-md transition-shadow">
-        <span class="material-symbols-outlined text-primary mb-3" style="font-size:30px;">${f.icon || 'star'}</span>
-        <h5 class="text-[10px] tracking-widest uppercase font-semibold text-primary mb-2">${f.name}</h5>
-        <p class="text-[0.75rem] text-on-surface-variant leading-relaxed">${f.description || ''}</p>
-      </div>
-    `).join('');
-  }
-
-  function renderGallery(list) {
-    const grid = document.getElementById('gallery-grid');
-    if (!list || list.length === 0) {
-      grid.innerHTML = `<div class="col-span-2 md:col-span-3 text-center py-16 text-on-surface-variant">
-        <span class="material-symbols-outlined text-4xl mb-3 block" style="opacity:0.4;">photo_library</span>
-        <p class="text-sm">Foto galeri akan segera hadir.</p>
-      </div>`;
+async function loadVillas() {
+  try {
+    const { data: villas, error } = await sb.from('villa_info').select('*').order('created_at');
+    if (error || !villas?.length) {
+      document.getElementById('villa-list').innerHTML = '';
+      document.getElementById('villa-empty').classList.remove('hidden');
       return;
     }
-    grid.innerHTML = list.map((img, i) => {
-      const isFirst = i === 0;
-      const isWide  = i === list.length - 1 && list.length % 2 === 0;
-      const cls     = isFirst ? 'col-span-2 md:col-span-1 md:row-span-2' : isWide ? 'col-span-2' : '';
-      const hClass  = isFirst ? 'h-60 md:h-full' : 'h-52';
-      return `<div class="img-zoom overflow-hidden rounded-xl ${cls}">
-        <img src="${img.url}" alt="${img.alt || 'Galeri Villa'}" class="w-full ${hClass} object-cover" loading="lazy"/>
-      </div>`;
-    }).join('');
-  }
 
-  // ── Submit inquiry to Supabase ──
-  async function submitInquiry(e) {
-    e.preventDefault();
-    const btn = document.getElementById('submit-btn');
-    btn.textContent = 'Mengirim...';
-    btn.disabled = true;
+    // Load cover photos (first gallery image per villa)
+    const villaIds = villas.map(v => v.id);
+    const { data: allGallery } = await sb
+      .from('gallery')
+      .select('villa_id, url, alt, sort_order')
+      .in('villa_id', villaIds)
+      .eq('is_active', true)
+      .order('sort_order');
 
-    const checkinVal  = document.getElementById('f-checkin').value;
-    const checkoutVal = document.getElementById('f-checkout').value;
-
-    const payload = {
-      villa_id:      VILLA_ID,
-      name:          document.getElementById('f-name').value,
-      phone:         document.getElementById('f-phone').value,
-      email:         document.getElementById('f-email').value || null,
-      checkin_date:  checkinVal  || null,
-      checkout_date: checkoutVal || null,
-      num_guests:    parseInt(document.getElementById('f-guests').value) || null,
-      message:       document.getElementById('f-message').value || null,
-      status:        'pending',
-    };
-
-    let success = false;
-
-    if (sb) {
-      try {
-        const { error } = await sb.from('inquiries').insert([payload]);
-        if (!error) success = true;
-        else console.warn('Supabase insert error:', error);
-      } catch (err) {
-        console.warn('Failed to save inquiry:', err);
-      }
-    }
-
-    btn.textContent = 'Kirim Permintaan Reservasi';
-    btn.disabled = false;
-    e.target.reset();
-
-    showToast(success
-      ? '✓ Permintaan terkirim! Kami akan segera menghubungi Anda.'
-      : '✓ Terima kasih! Hubungi kami via WhatsApp untuk konfirmasi.');
-  }
-
-  function showToast(msg) {
-    const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.style.opacity = '1';
-    t.style.transform = 'translateX(-50%) translateY(0)';
-    t.style.pointerEvents = 'auto';
-    setTimeout(() => {
-      t.style.opacity = '0';
-      t.style.transform = 'translateX(-50%) translateY(8px)';
-      t.style.pointerEvents = 'none';
-    }, 5000);
-  }
-
-  // ── Navbar scroll ──
-  const navbar   = document.getElementById('navbar');
-  const navLogo  = document.getElementById('nav-logo');
-  const navLinks = document.querySelectorAll('#nav-links a:not(.btn-primary)');
-
-  window.addEventListener('scroll', () => {
-    if (window.scrollY > 60) {
-      navbar.classList.add('scrolled');
-      navLogo.style.color = '#1e3a2f';
-      navLinks.forEach(l => l.style.color = '#404944');
-    } else {
-      navbar.classList.remove('scrolled');
-      navLogo.style.color = '#fff';
-      navLinks.forEach(l => l.style.color = 'rgba(255,255,255,0.8)');
-    }
-  });
-
-  // ── Mobile menu ──
-  function toggleMenu() {
-    document.getElementById('mobile-menu').classList.toggle('hidden');
-  }
-
-  // ── Hero slider ──
-  const slider  = document.getElementById('gallery-slider');
-  const dotBtns = document.querySelectorAll('.dot-btn');
-  let current = 0;
-
-  function goToSlide(i) {
-    current = i;
-    slider.scrollTo({ left: slider.offsetWidth * i, behavior: 'smooth' });
-    dotBtns.forEach((d, idx) => {
-      d.style.opacity = idx === i ? '1' : '0.4';
-      d.style.width   = idx === i ? '20px' : '8px';
+    // Build a map of villa_id -> first image
+    const coverMap = {};
+    (allGallery || []).forEach(img => {
+      if (!coverMap[img.villa_id]) coverMap[img.villa_id] = img;
     });
-  }
 
-  setInterval(() => goToSlide((current + 1) % 3), 5000);
+    // Load primary contacts (whatsapp) per villa
+    const { data: allContacts } = await sb
+      .from('contacts')
+      .select('villa_id, type, value, is_primary')
+      .in('villa_id', villaIds)
+      .eq('type', 'whatsapp');
+
+    const contactMap = {};
+    (allContacts || []).forEach(c => {
+      if (!contactMap[c.villa_id] || c.is_primary) contactMap[c.villa_id] = c;
+    });
+
+    document.getElementById('villa-list').innerHTML = villas.map(v => {
+      const cover   = coverMap[v.id];
+      const contact = contactMap[v.id];
+      const location = [v.city, v.province].filter(Boolean).join(', ');
+      const waNum   = contact?.value?.replace(/\D/g,'');
+      const waHref  = waNum ? `https://wa.me/62${waNum.replace(/^0/,'')}` : null;
+      const detailHref = `villa.html?id=${v.id}`;
+
+      return `
+        <div class="villa-card">
+          <a href="${detailHref}" class="block overflow-hidden" style="height:220px;">
+            ${cover
+              ? `<img src="${cover.url}" alt="${cover.alt||v.name}" class="w-full h-full object-cover"/>`
+              : `<div class="w-full h-full bg-surface-container-highest flex items-center justify-center"><span class="material-symbols-outlined text-outline" style="font-size:56px;">villa</span></div>`
+            }
+          </a>
+          <div class="p-5">
+            <div class="flex items-start justify-between gap-2 mb-2">
+              <h3 class="font-serif text-xl text-primary leading-snug">${v.name}</h3>
+              ${location ? `<span class="text-[9px] tracking-widest uppercase text-secondary bg-surface-container px-2 py-1 rounded-full whitespace-nowrap">${location}</span>` : ''}
+            </div>
+            ${v.tagline ? `<p class="text-[0.8125rem] text-on-surface-variant leading-relaxed mb-1">${v.tagline}</p>` : ''}
+            <div class="flex flex-wrap gap-3 text-[0.75rem] text-secondary mt-2 mb-4">
+              ${v.max_guests ? `<span class="flex items-center gap-1"><span class="material-symbols-outlined" style="font-size:14px;">groups</span>Maks. ${v.max_guests} orang</span>` : ''}
+              ${v.checkin_time ? `<span class="flex items-center gap-1"><span class="material-symbols-outlined" style="font-size:14px;">schedule</span>CI ${v.checkin_time}</span>` : ''}
+            </div>
+            <div class="flex gap-2">
+              <a href="${detailHref}" class="flex-1 text-center py-2.5 rounded-xl text-[0.8rem] font-semibold text-white transition-colors" style="background:#1e3a2f;letter-spacing:0.05em;">
+                Lihat Detail
+              </a>
+              ${waHref ? `<a href="${waHref}" target="_blank" class="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-[0.8rem] font-semibold transition-colors" style="background:#dcfce7;color:#166534;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>WA
+              </a>` : ''}
+            </div>
+          </div>
+        </div>`;
+    }).join('');
+
+  } catch(e) {
+    document.getElementById('villa-list').innerHTML = `<div class="md:col-span-3 text-center py-16 text-red-500"><span class="material-symbols-outlined text-4xl block mb-3">error</span><p>${e.message}</p></div>`;
+  }
+}
+
+loadVillas();
 </script>
 </body>
 </html>

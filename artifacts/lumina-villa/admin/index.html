@@ -859,8 +859,14 @@ async function createVilla(e) {
     showToast(`Villa "${v.name}" berhasil dibuat!`, 'success');
     S.villas.push(v);
     const sel = document.getElementById('villa-selector');
-    if (sel) sel.innerHTML += `<option value="${v.id}">${v.name}</option>`;
+    if (sel) {
+      sel.innerHTML += `<option value="${v.id}">${v.name}</option>`;
+      sel.value = v.id;
+    }
+    S.currentVillaId = v.id;
+    localStorage.setItem('villa_current_id', v.id);
     e.target.reset();
+    showSection('info');
   } catch (e) { showToast(e.message, 'error'); }
 }
 
